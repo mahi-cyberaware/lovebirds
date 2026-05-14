@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NeoCountdown · Eternal Bond (Supabase)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 20% 30%, #030318, #000000);
+      min-height: 100vh;
+      color: #fff;
+      position: relative;
+    }
+    .dynamic-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 50%, rgba(76, 0, 255, 0.2), rgba(0, 0, 0, 0.8));
+      z-index: -2;
+      animation: cosmicPulse 8s infinite alternate;
+    }
+    @keyframes cosmicPulse {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.7; }
+    }
+    #particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .glass-card {
+      background: rgba(15, 25, 45, 0.55);
+      backdrop-filter: blur(15px);
+      border-radius: 2rem;
+      border: 1px solid rgba(0, 255, 255, 0.35);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0, 255, 255, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .glass-card:hover {
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+      transform: translateY(-5px);
+    }
+    .neon-btn {
+      background: linear-gradient(90deg, #8a2be2, #00c6ff);
+      border: none;
+      padding: 14px 28px;
+      font-weight: bold;
+      font-size: 1rem;
+      border-radius: 60px;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 0 12px #00a6ff;
+    }
+    .neon-btn:hover { transform: scale(1.02); box-shadow: 0 0 24px #00a6ff; }
+    input, textarea, input[type="date"] {
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
+      border: 1px solid cyan;
+      border-radius: 60px;
+      padding: 12px 20px;
+      color: white;
+      width: 100%;
+      outline: none;
+    }
+    input:focus { border-color: #ff44f0; box-shadow: 0 0 12px #ff44f0; }
+    label { font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.85rem; color: #ccd6ff; }
+    .image-upload-preview { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 2px solid cyan; margin-top: 8px; }
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .neon-loader { width: 80px; height: 80px; border: 5px solid rgba(0,255,255,0.2); border-top: 5px solid cyan; border-radius: 50%; animation: spin 1s infinite; box-shadow: 0 0 20px cyan; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .countdown-digits { font-size: 3rem; font-weight: 900; background: linear-gradient(135deg, #fff, #00ffff); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px cyan; }
+    .heart-beat { animation: beat 1.2s infinite; }
+    @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); text-shadow: 0 0 20px #ff3366; } }
+    @media (max-width: 760px) { .countdown-digits { font-size: 2rem; } .glass-card { margin: 1rem; padding: 1.5rem; } }
+    .glow-text { text-shadow: 0 0 6px cyan, 0 0 12px #aa44ff; }
+  </style>
+</head>
+<body>
+<div class="dynamic-bg"></div>
+<canvas id="particles-canvas"></canvas>
+
+<div id="app" style="padding: 20px; max-width: 1300px; margin: 0 auto;">
+  <!-- GENERATOR -->
+  <div id="generatorSection" class="glass-card" style="padding: 2rem; margin: 2rem auto; max-width: 700px;">
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <i class="fas fa-heart" style="font-size: 2.5rem; color: #ff44f0;"></i>
+      <h1 class="glow-text">✦ RELATIONSHIP COUNTDOWN ✦</h1>
+      <p>Create & share an eternal cosmic link ❤️</p>
+    </div>
+    <form id="relationshipForm">
+      <div style="display: grid; gap: 1.2rem;">
+        <div><label>Your Name</label><input type="text" id="yourName" placeholder="e.g., Mahi" required></div>
+        <div><label>Partner's Name</label><input type="text" id="partnerName" placeholder="e.g., Aanya" required></div>
+        <div><label>Anniversary / Start Date</label><input type="date" id="startDate" required></div>
+        <div><label>Custom Message</label><input type="text" id="customMsg" placeholder="Every moment with you..."></div>
+        <div><label>Emotional Note</label><textarea rows="2" id="emotionalNote" placeholder="Write something that touches the soul..."></textarea></div>
+        <div><label>Upload Couple Image (optional)</label><input type="file" id="imageUpload" accept="image/*"><div id="imagePreviewContainer"></div></div>
+        <button type="submit" class="neon-btn"><i class="fas fa-meteor"></i> GENERATE & SAVE TO CLOUD</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- COUNTDOWN VIEW -->
+  <div id="countdownSection" style="display: none;">
+    <div id="countdownCard" class="glass-card" style="padding: 2rem; margin: 1rem auto; max-width: 1000px;">
+      <div id="countdownDynamicContent"></div>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+        <button id="copyLinkBtn" class="neon-btn"><i class="fas fa-link"></i> Copy Link</button>
+        <button id="shareBtn" class="neon-btn"><i class="fas fa-share-alt"></i> Share</button>
+        <button id="screenshotBtn" class="neon-btn"><i class="fas fa-camera"></i> Screenshot</button>
+        <button id="musicToggleBtn" class="neon-btn"><i class="fas fa-music"></i> Ambient ✦</button>
+        <button id="createNewBtn" class="neon-btn"><i class="fas fa-plus-circle"></i> New Story</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ========== SUPABASE CONFIG ==========
+  const SUPABASE_URL = "YOUR_SUPABASE_URL_HERE";      // replace!
+  const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY_HERE"; // replace!
+  
+  let supabase;
+  let currentId = null;
+  let liveTimer = null;
+  let musicActive = false, audioCtx = null, musicGain = null, musicNodes = null;
+
+  // Initialize Supabase client
+  function initSupabase() {
+    if (!SUPABASE_URL.includes("supabase.co") || SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY_HERE") {
+      console.warn("⚠️ Please set your Supabase URL and anon key in the code.");
+      return null;
+    }
+    return supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+
+  // Helper: generate unique ID
+  function generateId() {
+    return 'rel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+  }
+
+  // Convert file to base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+  }
+
+  // Show/hide loader
+  function showLoader(show) {
+    let loader = document.getElementById('globalLoader');
+    if (show && !loader) {
+      const div = document.createElement('div');
+      div.id = 'globalLoader';
+      div.className = 'loader-overlay';
+      div.innerHTML = `<div class="neon-loader"></div><p style="margin-top:20px; color:cyan;">saving to the stars...</p>`;
+      document.body.appendChild(div);
+    } else if (!show && loader) {
+      loader.remove();
+    }
+  }
+
+  // Countdown logic
+  function computeTimeTogether(startDateStr) {
+    const start = new Date(startDateStr);
+    const now = new Date();
+    if (isNaN(start)) return { years:0, months:0, days:0, totalDays:0, nextAnniversaryDays:0 };
+    let totalDays = Math.floor((now - start) / (1000*60*60*24));
+    if (totalDays < 0) totalDays = 0;
+    let years = Math.floor(totalDays / 365.25);
+    let months = Math.floor((totalDays % 365.25) / 30.44);
+    let days = Math.floor((totalDays % 365.25) % 30.44);
+    // next anniversary
+    let currentYear = now.getFullYear();
+    let anniversaryThis = new Date(currentYear, start.getMonth(), start.getDate());
+    let nextAnn = anniversaryThis > now ? anniversaryThis : new Date(currentYear+1, start.getMonth(), start.getDate());
+    let daysUntil = Math.ceil((nextAnn - now) / (1000*60*60*24));
+    return { years, months, days, totalDays, nextAnniversaryDays: daysUntil >=0 ? daysUntil : 0 };
+  }
+
+  function renderCountdownPage(data, id) {
+    const container = document.getElementById('countdownDynamicContent');
+    if (!container) return;
+    const together = computeTimeTogether(data.start_date);
+    const formattedStart = new Date(data.start_date).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    const imageHtml = data.image_base64 ? `<div style="display:flex; justify-content:center;"><img src="${data.image_base64}" style="width:130px; height:130px; border-radius:50%; object-fit:cover; border:3px solid cyan; box-shadow:0 0 20px magenta;"></div>` : `<div style="font-size:3rem;">💞✨</div>`;
+    
+    container.innerHTML = `
+      <div style="text-align:center;">
+        ${imageHtml}
+        <h2 class="glow-text" style="font-size:2rem;"><span class="heart-beat">❤️</span> ${escapeHtml(data.your_name)} & ${escapeHtml(data.partner_name)} <span class="heart-beat">❤️</span></h2>
+        <p><i class="fas fa-calendar-star"></i> Together since ${formattedStart}</p>
+        <div class="glass-card" style="padding:1rem; margin:1.5rem 0; display:inline-block; width:90%;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem;">
+            <div><span class="countdown-digits" id="yearsCount">${together.years}</span><br>Years</div>
+            <div><span class="countdown-digits" id="monthsCount">${together.months}</span><br>Months</div>
+            <div><span class="countdown-digits" id="daysCount">${together.days}</span><br>Days</div>
+            <div><span class="countdown-digits" id="totalDaysSpan">${together.totalDays}</span><br>Total Days</div>
+          </div>
+        </div>
+        <div class="glass-card" style="padding:1rem; margin-top:1rem;">
+          <i class="fas fa-hourglass-half"></i> <strong>NEXT ANNIVERSARY</strong><br>
+          <span class="countdown-digits" id="nextAnniversaryDays">${together.nextAnniversaryDays}</span> days left ✨
+        </div>
+        ${data.custom_message ? `<div style="margin-top:1rem; background:rgba(0,0,0,0.5); border-radius:60px; padding:10px;">“${escapeHtml(data.custom_message)}”</div>` : ''}
+        ${data.emotional_note ? `<div style="margin-top:1rem; font-style:italic; border-left:3px solid cyan; padding-left:1rem;"><i class="fas fa-feather"></i> ${escapeHtml(data.emotional_note)}</div>` : ''}
+        <div style="margin-top:20px; font-size:12px; color:#aaccff;"><i class="fas fa-cloud-upload-alt"></i> preserved in the cloud · ID: ${id.slice(-8)}</div>
+      </div>
+    `;
+    if (liveTimer) clearInterval(liveTimer);
+    liveTimer = setInterval(() => {
+      const fresh = computeTimeTogether(data.start_date);
+      const y = document.getElementById('yearsCount');
+      if (y) y.innerText = fresh.years;
+      if (document.getElementById('monthsCount')) document.getElementById('monthsCount').innerText = fresh.months;
+      if (document.getElementById('daysCount')) document.getElementById('daysCount').innerText = fresh.days;
+      if (document.getElementById('totalDaysSpan')) document.getElementById('totalDaysSpan').innerText = fresh.totalDays;
+      if (document.getElementById('nextAnniversaryDays')) document.getElementById('nextAnniversaryDays').innerText = fresh.nextAnniversaryDays;
+    }, 1000);
+  }
+
+  function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  // Generate new relationship in Supabase
+  async function handleGenerate(e) {
+    e.preventDefault();
+    const yourName = document.getElementById('yourName').value.trim();
+    const partnerName = document.getElementById('partnerName').value.trim();
+    const startDate = document.getElementById('startDate').value;
+    const customMsg = document.getElementById('customMsg').value;
+    const emotionalNote = document.getElementById('emotionalNote').value;
+    const imageFile = document.getElementById('imageUpload').files[0];
+    if (!yourName || !partnerName || !startDate) { alert("Please fill names and anniversary date 💫"); return; }
+    if (!supabase) { alert("Supabase not configured. Check your URL and anon key."); return; }
+    
+    showLoader(true);
+    let imageBase64 = null;
+    if (imageFile) {
+      try { imageBase64 = await fileToBase64(imageFile); } catch(e) { console.warn(e); }
+    }
+    const newId = generateId();
+    const payload = {
+      id: newId,
+      your_name: yourName,
+      partner_name: partnerName,
+      start_date: startDate,
+      custom_message: customMsg,
+      emotional_note: emotionalNote,
+      image_base64: imageBase64
+    };
+    const { error } = await supabase.from('relationships').insert([payload]);
+    showLoader(false);
+    if (error) { console.error(error); alert("Error saving to Supabase: " + error.message); return; }
+    // redirect to the newly created page
+    const url = new URL(window.location.href);
+    url.searchParams.set('id', newId);
+    window.history.pushState({}, '', url);
+    await loadFromURL();
+  }
+
+  // Load from URL query param
+  async function loadFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (!supabase) supabase = initSupabase();
+    if (!supabase) { 
+      document.getElementById('generatorSection').style.display = 'block';
+      document.getElementById('countdownSection').style.display = 'none';
+      return;
+    }
+    if (id) {
+      const { data, error } = await supabase.from('relationships').select('*').eq('id', id).single();
+      if (error || !data) {
+        document.getElementById('generatorSection').style.display = 'block';
+        document.getElementById('countdownSection').style.display = 'none';
+        alert("This love link doesn't exist yet. Create one ✨");
+        return;
+      }
+      currentId = id;
+      document.getElementById('generatorSection').style.display = 'none';
+      document.getElementById('countdownSection').style.display = 'block';
+      renderCountdownPage(data, id);
+    } else {
+      document.getElementById('generatorSection').style.display = 'block';
+      document.getElementById('countdownSection').style.display = 'none';
+      if (liveTimer) clearInterval(liveTimer);
+    }
+  }
+
+  // Copy shareable link
+  function copyLink() {
+    if (!currentId) { alert("Generate a page first"); return; }
+    const url = window.location.origin + window.location.pathname + '?id=' + encodeURIComponent(currentId);
+    navigator.clipboard.writeText(url);
+    alert("✅ Link copied! Anyone with this link will see your countdown (powered by Supabase).");
+  }
+
+  async function sharePage() {
+    if (!currentId) return;
+    const url = window.location.origin + window.location.pathname + '?id=' + encodeURIComponent(currentId);
+    if (navigator.share) await navigator.share({ title: 'Our Cosmic Countdown', url });
+    else copyLink();
+  }
+
+  function takeScreenshot() {
+    const el = document.getElementById('countdownCard');
+    if (!el) return;
+    html2canvas(el, { scale: 2 }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'relationship_countdown.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  }
+
+  // Ambient music (simple synth)
+  async function initMusic() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    musicGain = audioCtx.createGain();
+    musicGain.gain.value = 0.2;
+    musicGain.connect(audioCtx.destination);
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    osc1.type = 'sine'; osc2.type = 'triangle';
+    osc1.frequency.value = 261.63; osc2.frequency.value = 329.63;
+    osc1.connect(musicGain); osc2.connect(musicGain);
+    osc1.start(); osc2.start();
+    musicNodes = { osc1, osc2 };
+    const lfo = audioCtx.createOscillator();
+    const lfoGain = audioCtx.createGain();
+    lfo.frequency.value = 0.2;
+    lfoGain.gain.value = 5;
+    lfo.connect(lfoGain);
+    lfoGain.connect(osc1.frequency);
+    lfoGain.connect(osc2.frequency);
+    lfo.start();
+    musicNodes.lfo = lfo;
+  }
+
+  async function toggleMusic() {
+    if (!musicActive) {
+      if (!audioCtx) await initMusic();
+      await audioCtx.resume();
+      if (musicGain) musicGain.gain.value = 0.2;
+      musicActive = true;
+    } else {
+      if (musicGain) musicGain.gain.value = 0;
+      musicActive = false;
+    }
+  }
+
+  // Particles (floating hearts/stars)
+  let canvas, ctx, particles = [];
+  function initParticles() {
+    canvas = document.getElementById('particles-canvas');
+    if (!canvas) return;
+    ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
+    for (let i=0;i<80;i++) {
+      particles.push({
+        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+        radius: Math.random() * 3 + 1.5, speedX: (Math.random()-0.5)*0.5, speedY: Math.random()*0.8+0.3,
+        color: `hsl(${Math.random()*60+280}, 100%, 65%)`
+      });
+    }
+    function draw() {
+      if (!ctx) return;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for (let p of particles) {
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+        ctx.fillStyle = p.color; ctx.shadowBlur = 8; ctx.shadowColor = '#ff66ff'; ctx.fill();
+        p.x += p.speedX; p.y += p.speedY;
+        if (p.y > canvas.height) p.y = -5;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.x < 0) p.x = canvas.width;
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  // Event listeners
+  window.addEventListener('DOMContentLoaded', async () => {
+    supabase = initSupabase();
+    initParticles();
+    document.getElementById('relationshipForm')?.addEventListener('submit', handleGenerate);
+    document.getElementById('copyLinkBtn')?.addEventListener('click', copyLink);
+    document.getElementById('shareBtn')?.addEventListener('click', sharePage);
+    document.getElementById('screenshotBtn')?.addEventListener('click', takeScreenshot);
+    document.getElementById('musicToggleBtn')?.addEventListener('click', toggleMusic);
+    document.getElementById('createNewBtn')?.addEventListener('click', () => {
+      window.location.href = window.location.pathname;
+    });
+    document.getElementById('imageUpload')?.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if(file) {
+        const reader = new FileReader();
+        reader.onload = ev => document.getElementById('imagePreviewContainer').innerHTML = `<img src="${ev.target.result}" class="image-upload-preview">`;
+        reader.readAsDataURL(file);
+      }
+    });
+    await loadFromURL();
+  });
+</script>
+</body>
+</html>
