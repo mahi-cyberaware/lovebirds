@@ -275,7 +275,7 @@
 </div>
 
 <script>
-  // ================== QUOTES DATABASE (full) ==================
+  // ================== QUOTES DATABASE (FULL) ==================
   const quotesDB = {
     Wife: {
       English: ["You are my queen, my home, my peace.\nEvery morning I wake up grateful for you.\nIn your arms, I have found forever.","The moment I saw you, I knew.\nYou are not just my wife, but my destiny.\nThank you for choosing me every day.","Through every storm and every sunshine,\nYou stood by me like a rock.\nMy love for you only grows deeper.","I promise to hold your hand till the end of time.\nTo laugh with you, cry with you, grow old with you.\nYou are my greatest blessing.","No words can capture what you mean to me.\nYou are the poetry I never knew I could write.\nI love you, my eternal wife."],
@@ -305,7 +305,7 @@
     bgImageList.push(`assets/bg-img/romantic${i}.jpg`);
     bgImageList.push(`assets/bg-img/romantic${i}.png`);
   }
-  function getRandomBgImage() { return bgImageList[Math.floor(Math.random() * bgImageList.length)]; }
+  function getRandomBgImage() { return bgImageList.length ? bgImageList[Math.floor(Math.random() * bgImageList.length)] : null; }
 
   // Helper functions
   function encodeData(obj) { return btoa(encodeURIComponent(JSON.stringify(obj))); }
@@ -361,9 +361,9 @@
   let currentData = null;
   let currentLanguage = "English";
   let quoteIndices = {};
-  let currentShortLink = null; // stores the short link for the current love page
+  let currentShortLink = null;
 
-  // ================== MULTIPLE SHORTENER APIs ==================
+  // Multiple shortener APIs
   async function shortenUrlWithRetry(longUrl) {
     const shorteners = [
       { name: 'is.gd', url: `https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}` },
@@ -389,7 +389,7 @@
     throw new Error('All shorteners failed');
   }
 
-  // ================== QUOTE & RENDER FUNCTIONS ==================
+  // Quote functions
   function getNextQuote(relType, lang) {
     const arr = quotesDB[relType]?.[lang] || quotesDB.Wife.English;
     const key = `${relType}_${lang}`;
@@ -433,7 +433,11 @@
     const bgImage = getRandomBgImage();
     const bgStyle = bgImage ? `url('${bgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
     const container = document.getElementById('quoteContainer');
-    if (!container) return;
+    if (!container) {
+      console.warn("quoteContainer not ready, retrying in 100ms");
+      setTimeout(() => updateQuote(relType, quoteImageBase64), 100);
+      return;
+    }
     container.innerHTML = `<div class="quote-card" id="dynamicQuoteCard" style="background-image: ${bgStyle}; background-size: cover;"><div class="quote-overlay"><div class="quote-text">${escapeHtml(quote)}</div><div class="tap-hint">✨ tap for next ✨</div></div></div>`;
     const quoteDiv = document.getElementById('dynamicQuoteCard');
     if (quoteDiv) {
@@ -513,7 +517,7 @@
   
   function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
   
-  // ================== GENERATE BUTTON ==================
+  // Generate button
   document.getElementById('generateBtn').onclick = async () => {
     const yourName = document.getElementById('yourName').value.trim();
     const partnerName = document.getElementById('partnerName').value.trim();
@@ -538,7 +542,7 @@
     const longUrl = window.location.origin + window.location.pathname + '?love=' + encoded;
     window.history.pushState({}, '', longUrl);
     
-    // Generate short link in background (don't show long URL)
+    // Generate short link in background (no long URL displayed)
     try {
       currentShortLink = await shortenUrlWithRetry(longUrl);
     } catch (err) {
@@ -558,11 +562,9 @@
         document.getElementById('countdownSection').style.display = 'block';
         renderCountdown(data);
         currentData = data;
-        // If short link not already set (e.g., direct link load), generate it now
         if (!currentShortLink) {
-          const longUrl = window.location.href;
           try {
-            currentShortLink = await shortenUrlWithRetry(longUrl);
+            currentShortLink = await shortenUrlWithRetry(window.location.href);
           } catch (err) {
             console.error("Shortening failed on load", err);
             currentShortLink = null;
@@ -576,13 +578,12 @@
     currentShortLink = null;
   }
   
-  // Copy short link button – never shows the long URL
+  // Copy short link button (no long URL ever shown)
   document.getElementById('copyShortOnlyBtn')?.addEventListener('click', async () => {
     if (currentShortLink) {
       navigator.clipboard.writeText(currentShortLink);
       alert("✅ Short love link copied! Share it with your partner.");
     } else {
-      // If for some reason short link missing, generate it on the fly (still no long URL displayed)
       const longUrl = window.location.href;
       try {
         const shortUrl = await shortenUrlWithRetry(longUrl);
@@ -590,7 +591,7 @@
         navigator.clipboard.writeText(shortUrl);
         alert("✅ Short love link copied! Share it with your partner.");
       } catch (err) {
-        alert("⚠️ Could not shorten link. Please try again or check your internet.");
+        alert("⚠️ Could not create short link. Please check your internet connection.");
       }
     }
   });
@@ -598,9 +599,8 @@
   document.getElementById('shareBtn')?.addEventListener('click', async () => {
     let linkToShare = currentShortLink;
     if (!linkToShare) {
-      const longUrl = window.location.href;
       try {
-        linkToShare = await shortenUrlWithRetry(longUrl);
+        linkToShare = await shortenUrlWithRetry(window.location.href);
         currentShortLink = linkToShare;
       } catch (err) {
         alert("Unable to get short link. Use copy button instead.");
