@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>💞 Eternal Vows · Multi‑Language Love Countdown 💞</title>
+  <title>💞 Eternal Vows · Love Countdown with Visual Quotes 💞</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -105,23 +105,77 @@
     }
     .font-btn.active { background: #ff4d6d; border-color: white; }
     .count-number { font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg,#fff,#ff99cc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    
+    /* QUOTE CARD WITH BACKGROUND IMAGE (4:5 ratio) */
     .quote-card {
-      border-radius: 50px;
-      padding: 18px;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      background-size: cover;
+      background-position: center;
+      border-radius: 32px;
       margin: 20px 0;
-      text-align: center;
       cursor: pointer;
-      transition: all 0.4s ease;
-      animation: fadeIn 0.6s;
-      background: rgba(0,0,0,0.5);
-      border-left: 5px solid;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }
     .quote-card:hover {
       transform: scale(1.01);
-      box-shadow: 0 0 25px currentColor;
+      box-shadow: 0 0 30px rgba(255,80,120,0.6);
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    /* Text overlay */
+    .quote-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.4));
+      backdrop-filter: blur(4px);
+      padding: 20px 16px;
+      text-align: center;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.2rem;
+      line-height: 1.4;
+      transition: all 0.3s;
+      border-top: 2px solid transparent;
+    }
+    .quote-card:hover .quote-overlay {
+      border-top: 2px solid #ff66cc;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.6));
+      box-shadow: 0 -5px 15px rgba(255,102,204,0.3);
+    }
+    .quote-text {
+      white-space: pre-line;
+      color: white;
+      text-shadow: 0 0 5px black;
+      font-weight: 600;
+    }
+    .tap-hint {
+      font-size: 0.7rem;
+      opacity: 0.8;
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+    @media (max-width: 650px) {
+      .quote-overlay { font-size: 1rem; padding: 12px; }
+    }
+    
+    .lang-selector {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 15px 0;
+    }
+    .lang-btn {
+      background: #222;
+      padding: 8px 20px;
+      border-radius: 60px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .lang-btn.active { background: #ff4d6d; }
+    footer { font-size: 0.7rem; text-align: center; margin-top: 20px; opacity: 0.5; }
     .popup-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -149,21 +203,6 @@
       line-height: 1.5;
       transition: 0.3s;
     }
-    .lang-selector {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 15px 0;
-    }
-    .lang-btn {
-      background: #222;
-      padding: 8px 20px;
-      border-radius: 60px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .lang-btn.active { background: #ff4d6d; }
-    footer { font-size: 0.7rem; text-align: center; margin-top: 20px; opacity: 0.5; }
     @media (max-width: 650px) { .count-number { font-size: 2rem; } .glass-card { padding: 1.2rem; } .popup-quote { font-size: 1rem; } }
   </style>
 </head>
@@ -174,9 +213,9 @@
 <!-- GENERATOR SECTION -->
 <div id="generatorSection" class="glass-card" style="max-width: 700px; margin: 20px auto;">
   <div style="text-align:center;">
-    <i class="fas fa-heart heart-beat" style="font-size: 2.2rem; color: #ff66cc;"></i>
+    <i class="fas fa-heart" style="font-size: 2.2rem; color: #ff66cc;"></i>
     <h1 style="font-size: 1.8rem;">✨ ETERNAL VOWS ✨</h1>
-    <p>Create your multi‑language love page</p>
+    <p>Create your visual love story</p>
   </div>
   <div id="genError" style="color:#ffaaaa; background:#ff000033; border-radius: 30px; padding: 8px; margin: 10px 0; display:none;"></div>
   
@@ -190,11 +229,11 @@
   
   <div class="dual-image">
     <div class="img-preview"><label>📸 Your Photo</label><input type="file" id="myPhoto" accept="image/*"><div id="myPreview"></div></div>
-    <div class="img-preview"><label>📸 Partner's Photo</label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
+    <div class="img-preview"><label>📸 Partner's </label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
   </div>
   
   <label>💕 Your Name</label><input id="yourName" placeholder="e.g., Mahi">
-  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Priya">
+  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Nancy">
   
   <label>✍️ Font Style for Names</label>
   <div class="font-selector">
@@ -204,14 +243,14 @@
     <span class="font-btn" data-font="'Poppins', sans-serif">Soft</span>
   </div>
   
-  <label>📅 Anniversary / Start Date (larger picker)</label>
-  <input id="startDate" type="date" style="font-size: 1.2rem; padding: 14px;">
+  <label>📅 Anniversary / Start Date</label>
+  <input id="startDate" type="date" style="font-size: 1.2rem; padding: 12px;">
   
   <label>💬 Custom Romantic Message</label><input id="customMsg" placeholder="You are my everything...">
-  <label>📝 Emotional Note</label><textarea id="emotionalNote" rows="2" placeholder="A personal letter to my love..."></textarea>
+  <label>📝 Emotional Note</label><textarea id="emotionalNote" rows="2" placeholder="A personal letter..."></textarea>
   
-  <!-- Optional Quote Image -->
-  <label>🖼️ Optional Quote Image (will appear in popup)</label>
+  <!-- Optional Quote Image (user uploaded) -->
+  <label>🖼️ Optional Quote Image (appears in popup)</label>
   <input type="file" id="quoteImage" accept="image/*">
   <div id="quoteImagePreview"></div>
   
@@ -229,105 +268,52 @@
     <button id="musicBtn" class="neon-btn"><i class="fas fa-music"></i> Ambience</button>
     <button id="newStoryBtn" class="neon-btn"><i class="fas fa-heart-broken"></i> New Story</button>
   </div>
-  <footer>✨ Tap the quote → new shayari, new theme, new magic ✨</footer>
+  <footer>✨ Tap the quote → new shayari + new background image + theme ✨</footer>
 </div>
 
 <script>
-  // ================== MULTI-LANGUAGE QUOTES DATABASE (5 per type/language) ==================
+  // ================== MULTI-LANGUAGE QUOTES (5 per category/language) ==================
   const quotesDB = {
     Wife: {
-      English: [
-        "You are my queen, my home, my peace.\nEvery morning I wake up grateful for you.\nIn your arms, I have found forever.",
-        "The moment I saw you, I knew.\nYou are not just my wife, but my destiny.\nThank you for choosing me every day.",
-        "Through every storm and every sunshine,\nYou stood by me like a rock.\nMy love for you only grows deeper.",
-        "I promise to hold your hand till the end of time.\nTo laugh with you, cry with you, grow old with you.\nYou are my greatest blessing.",
-        "No words can capture what you mean to me.\nYou are the poetry I never knew I could write.\nI love you, my eternal wife."
-      ],
-      Hindi: [
-        "तुम मेरी रानी हो, मेरा घर, मेरी शांति।\nहर सुबह तुम्हारे लिए शुक्रगुज़ार हूँ।\nतुम्हारी बाहों में मुझे हमेशा मिल गया।",
-        "जिस दिन तुमसे मिला, लगा मंज़िल मिल गई।\nतुम सिर्फ पत्नी नहीं, मेरी किस्मत हो।\nहर दिन चुनने के लिए शुक्रिया।",
-        "हर तूफान और हर धूप में,\nतुम मेरे साथ खड़ी रही।\nतुम्हारे लिए मेरा प्यार और गहरा होता जाता है।",
-        "वादा है तेरा हाथ थामे रखूंगा,\nतेरे संग हंसूं, रोऊं, बूढ़ा हो जाऊं।\nतू मेरी सबसे बड़ी दौलत है।",
-        "शब्द कम हैं तुझे बयां करने को,\nतू वो कविता है जो मैंने कभी लिखी नहीं थी।\nतुझसे प्यार है, मेरी हमसफर।"
-      ],
-      Marathi: [
-        "तू माझी राणी आहेस, माझं घर, माझी शांती.\nप्रत्येक सकाळी तुझ्यासाठी कृतज्ञ असतो.\nतुझ्या बाहूत मला सदैव सापडलं.",
-        "ज्या दिवशी तुला भेटलो, वाटलं गंतव्य सापडलं.\nतू फक्त बायको नाहीस, तर माझं नशीब आहेस.\nरोज निवडण्याबद्दल धन्यवाद.",
-        "प्रत्येक वादळात आणि प्रत्येक ऊन्हात,\nतू माझ्यासोबत उभी राहिलीस.\nतुझ्यावरील प्रेम दिवसेंदिवस वाढतं.",
-        "वचन आहे तुझा हात धरून ठेवेन,\nतुझ्यासोबत हसेल, रडेन, म्हातारा होईल.\nतू माझी सर्वात मोठी संपत्ती आहेस.",
-        "शब्द कमी आहेत तुला व्यक्त करायला,\nतू ती कविता आहेस जी मी कधी लिहिली नव्हती.\nतुझ्यावर प्रेम आहे, माझ्या सोबतीणी."
-      ]
+      English: ["You are my queen, my home, my peace.\nEvery morning I wake up grateful for you.\nIn your arms, I have found forever.","The moment I saw you, I knew.\nYou are not just my wife, but my destiny.\nThank you for choosing me every day.","Through every storm and every sunshine,\nYou stood by me like a rock.\nMy love for you only grows deeper.","I promise to hold your hand till the end of time.\nTo laugh with you, cry with you, grow old with you.\nYou are my greatest blessing.","No words can capture what you mean to me.\nYou are the poetry I never knew I could write.\nI love you, my eternal wife."],
+      Hindi: ["तुम मेरी रानी हो, मेरा घर, मेरी शांति।\nहर सुबह तुम्हारे लिए शुक्रगुज़ार हूँ।\nतुम्हारी बाहों में मुझे हमेशा मिल गया।","जिस दिन तुमसे मिला, लगा मंज़िल मिल गई।\nतुम सिर्फ पत्नी नहीं, मेरी किस्मत हो।\nहर दिन चुनने के लिए शुक्रिया।","हर तूफान और हर धूप में,\nतुम मेरे साथ खड़ी रही।\nतुम्हारे लिए मेरा प्यार और गहरा होता जाता है।","वादा है तेरा हाथ थामे रखूंगा,\nतेरे संग हंसूं, रोऊं, बूढ़ा हो जाऊं।\nतू मेरी सबसे बड़ी दौलत है।","शब्द कम हैं तुझे बयां करने को,\nतू वो कविता है जो मैंने कभी लिखी नहीं थी।\nतुझसे प्यार है, मेरी हमसफर।"],
+      Marathi: ["तू माझी राणी आहेस, माझं घर, माझी शांती.\nप्रत्येक सकाळी तुझ्यासाठी कृतज्ञ असतो.\nतुझ्या बाहूत मला सदैव सापडलं.","ज्या दिवशी तुला भेटलो, वाटलं गंतव्य सापडलं.\nतू फक्त बायको नाहीस, तर माझं नशीब आहेस.\nरोज निवडण्याबद्दल धन्यवाद.","प्रत्येक वादळात आणि प्रत्येक ऊन्हात,\nतू माझ्यासोबत उभी राहिलीस.\nतुझ्यावरील प्रेम दिवसेंदिवस वाढतं.","वचन आहे तुझा हात धरून ठेवेन,\nतुझ्यासोबत हसेल, रडेन, म्हातारा होईल.\nतू माझी सर्वात मोठी संपत्ती आहेस.","शब्द कमी आहेत तुला व्यक्त करायला,\nतू ती कविता आहेस जी मी कधी लिहिली नव्हती.\nतुझ्यावर प्रेम आहे, माझ्या सोबतीणी."]
     },
     Girlfriend: {
-      English: [
-        "Every text from you makes me smile like crazy.\nYou’ve turned my ordinary days into magic.\nI fall for you more each sunrise.",
-        "You are the melody I never want to stop hearing.\nWith you, life feels like a romantic movie.\nLet’s never say goodbye.",
-        "I love the way you laugh, the way you dream.\nYou make me believe in soulmates.\nThank you for being my girlfriend.",
-        "When I’m with you, I forget the world exists.\nYou are my favorite hello and hardest goodbye.\nStay with me forever.",
-        "Your smile is my favorite artwork.\nYour voice is my lullaby.\nI am so lucky to call you mine."
-      ],
-      Hindi: [
-        "तेरा हर मैसेज मुझे पागलों की तरह हँसाता है।\nतूने मेरे साधारण दिनों को जादू बना दिया।\nहर सुबह तुझसे प्यार और बढ़ जाता है।",
-        "तू वो धुन है जो मैं हमेशा सुनना चाहता हूँ।\nतेरे संग जिंदगी रोमांटिक फिल्म लगती है।\nकभी अलविदा मत कहना।",
-        "मुझे तेरी हंसी पसंद है, तेरे सपने पसंद हैं।\nतूने मुझे यकीन दिलाया कि साउलमेट होते हैं।\nमेरी गर्लफ्रेंड होने के लिए शुक्रिया।",
-        "जब तेरे संग होता हूँ, दुनिया भूल जाता हूँ।\nतू मेरा पसंदीदा हैलो और सख्त गुडबाय है।\nहमेशा मेरे साथ रहना।",
-        "तेरी मुस्कान मेरी पसंदीदा कलाकृति है।\nतेरी आवाज मेरी लोरी है।\nतुझे अपना कहना बड़ी किस्मत वाली बात है।"
-      ],
-      Marathi: [
-        "तुझा प्रत्येक मॅसेज मला वेड्यासारखं हसवतो.\nतू माझे सामान्य दिवस जादूत बदललेस.\nप्रत्येक सूर्योदयाला तुझ्यावर प्रेम वाढतं.",
-        "तू ती सुर आहेस जी मी सतत ऐकू इच्छितो.\nतुझ्यासोबत आयुष्य रोमँटिक चित्रपटासारखं वाटतं.\nकधीही निरोप देऊ नको.",
-        "मला तुझं हसणं आवडतं, तुझे स्वप्न आवडतात.\nतू मला सोलमेट्सवर विश्वास दिलास.\nमाझी गर्लफ्रेंड असल्याबद्दल धन्यवाद.",
-        "जेव्हा तुझ्यासोबत असतो, जग विसरतो.\nतू माझा आवडता हॅलो आणि कठीण गुडबाय आहेस.\nनेहमी माझ्यासोबत रहा.",
-        "तुझं स्मित माझी आवडती कलाकृती आहे.\nतुझा आवाज माझी लोरी आहे.\nतुला माझं म्हणणं मोठं भाग्याचं."
-      ]
+      English: ["Every text from you makes me smile like crazy.\nYou’ve turned my ordinary days into magic.\nI fall for you more each sunrise.","You are the melody I never want to stop hearing.\nWith you, life feels like a romantic movie.\nLet’s never say goodbye.","I love the way you laugh, the way you dream.\nYou make me believe in soulmates.\nThank you for being my girlfriend.","When I’m with you, I forget the world exists.\nYou are my favorite hello and hardest goodbye.\nStay with me forever.","Your smile is my favorite artwork.\nYour voice is my lullaby.\nI am so lucky to call you mine."],
+      Hindi: ["तेरा हर मैसेज मुझे पागलों की तरह हँसाता है।\nतूने मेरे साधारण दिनों को जादू बना दिया।\nहर सुबह तुझसे प्यार और बढ़ जाता है।","तू वो धुन है जो मैं हमेशा सुनना चाहता हूँ।\nतेरे संग जिंदगी रोमांटिक फिल्म लगती है।\nकभी अलविदा मत कहना।","मुझे तेरी हंसी पसंद है, तेरे सपने पसंद हैं।\nतूने मुझे यकीन दिलाया कि साउलमेट होते हैं।\nमेरी गर्लफ्रेंड होने के लिए शुक्रिया।","जब तेरे संग होता हूँ, दुनिया भूल जाता हूँ।\nतू मेरा पसंदीदा हैलो और सख्त गुडबाय है।\nहमेशा मेरे साथ रहना।","तेरी मुस्कान मेरी पसंदीदा कलाकृति है।\nतेरी आवाज मेरी लोरी है।\nतुझे अपना कहना बड़ी किस्मत वाली बात है।"],
+      Marathi: ["तुझा प्रत्येक मॅसेज मला वेड्यासारखं हसवतो.\nतू माझे सामान्य दिवस जादूत बदललेस.\nप्रत्येक सूर्योदयाला तुझ्यावर प्रेम वाढतं.","तू ती सुर आहेस जी मी सतत ऐकू इच्छितो.\nतुझ्यासोबत आयुष्य रोमँटिक चित्रपटासारखं वाटतं.\nकधीही निरोप देऊ नको.","मला तुझं हसणं आवडतं, तुझे स्वप्न आवडतात.\nतू मला सोलमेट्सवर विश्वास दिलास.\nमाझी गर्लफ्रेंड असल्याबद्दल धन्यवाद.","जेव्हा तुझ्यासोबत असतो, जग विसरतो.\nतू माझा आवडता हॅलो आणि कठीण गुडबाय आहेस.\nनेहमी माझ्यासोबत रहा.","तुझं स्मित माझी आवडती कलाकृती आहे.\nतुझा आवाज माझी लोरी आहे.\nतुला माझं म्हणणं मोठं भाग्याचं."]
     },
     "Best Friend": {
-      English: [
-        "You are my crazy partner in crime.\nLife’s best memories are painted with you.\nThank you for being my best friend forever.",
-        "No judgment, just pure love and laughter.\nYou’ve seen my worst and still stayed.\nI cherish you deeply.",
-        "We don’t need a reason to celebrate.\nJust your presence makes everything better.\nStay goofy, stay mine.",
-        "You are the sibling I chose for myself.\nThrough heartbreaks and victories, you held my hand.\nI love you, my bestie.",
-        "Miles apart or sitting next to me,\nYou always feel like home.\nOur friendship is my greatest treasure."
-      ],
-      Hindi: [
-        "तू मेरा पागल साथी है अपराधों में।\nजिंदगी की बेहतरीन यादें तेरे संग बनीं।\nबेस्ट फ्रेंड होने के लिए शुक्रिया।",
-        "कोई जजमेंट नहीं, बस प्यार और हँसी।\nतूने मेरा बुरा भी देखा फिर भी रुकी।\nमैं तुझे बहुत संजोकर रखता हूँ।",
-        "किसी वजह की जरूरत नहीं खुश होने के लिए।\nतेरा साथ सब कुछ बेहतर बना देता है।\nपागल बनी रह, मेरी बनी रह।",
-        "तू वो भाई/बहन है जो मैंने खुद चुना।\nदिल टूटने और जीत में, तूने हाथ थामा।\nमुझे तुझसे प्यार है, मेरे बेस्टी।",
-        "मीलों दूर या बगल में बैठे,\nतू हमेशा घर जैसा लगता है।\nहमारी दोस्ती मेरा सबसे बड़ा खजाना है।"
-      ],
-      Marathi: [
-        "तू माझा वेडा गुन्हेगारी सोबती आहेस.\nआयुष्यातील सर्वोत्तम आठवणी तुझ्यासोबत रंगल्या.\nबेस्ट फ्रेंड असल्याबद्दल धन्यवाद.",
-        "निवाडा नाही, फक्त प्रेम आणि हशा.\nतू माझं वाईट पाहिलं तरी थांबलीस.\nमी तुला खूप जपतो.",
-        "खुश राहण्यासाठी कारण हवं असं नाही.\nतुझी साथ सगळं चांगलं करते.\nवेडी राहा, माझी राहा.",
-        "तू ती बहीण/भाऊ आहेस जी मी स्वतः निवडला.\nहृदयभंगात आणि विजयात, तू हात धरला.\nमी तुझ्यावर प्रेम करतो, माझ्या बेस्टी.",
-        "मैलो दूर किंवा शेजारी बसला,\nतू नेहमी घरासारखा वाटतोस.\nआमची मैत्री ही माझी सर्वात मोठी संपत्ती आहे."
-      ]
+      English: ["You are my crazy partner in crime.\nLife’s best memories are painted with you.\nThank you for being my best friend forever.","No judgment, just pure love and laughter.\nYou’ve seen my worst and still stayed.\nI cherish you deeply.","We don’t need a reason to celebrate.\nJust your presence makes everything better.\nStay goofy, stay mine.","You are the sibling I chose for myself.\nThrough heartbreaks and victories, you held my hand.\nI love you, my bestie.","Miles apart or sitting next to me,\nYou always feel like home.\nOur friendship is my greatest treasure."],
+      Hindi: ["तू मेरा पागल साथी है अपराधों में।\nजिंदगी की बेहतरीन यादें तेरे संग बनीं।\nबेस्ट फ्रेंड होने के लिए शुक्रिया।","कोई जजमेंट नहीं, बस प्यार और हँसी।\nतूने मेरा बुरा भी देखा फिर भी रुकी।\nमैं तुझे बहुत संजोकर रखता हूँ।","किसी वजह की जरूरत नहीं खुश होने के लिए।\nतेरा साथ सब कुछ बेहतर बना देता है।\nपागल बनी रह, मेरी बनी रह।","तू वो भाई/बहन है जो मैंने खुद चुना।\nदिल टूटने और जीत में, तूने हाथ थामा।\nमुझे तुझसे प्यार है, मेरे बेस्टी।","मीलों दूर या बगल में बैठे,\nतू हमेशा घर जैसा लगता है।\nहमारी दोस्ती मेरा सबसे बड़ा खजाना है।"],
+      Marathi: ["तू माझा वेडा गुन्हेगारी सोबती आहेस.\nआयुष्यातील सर्वोत्तम आठवणी तुझ्यासोबत रंगल्या.\nबेस्ट फ्रेंड असल्याबद्दल धन्यवाद.","निवाडा नाही, फक्त प्रेम आणि हशा.\nतू माझं वाईट पाहिलं तरी थांबलीस.\nमी तुला खूप जपतो.","खुश राहण्यासाठी कारण हवं असं नाही.\nतुझी साथ सगळं चांगलं करते.\nवेडी राहा, माझी राहा.","तू ती बहीण/भाऊ आहेस जी मी स्वतः निवडला.\nहृदयभंगात आणि विजयात, तू हात धरला.\nमी तुझ्यावर प्रेम करतो, माझ्या बेस्टी.","मैलो दूर किंवा शेजारी बसला,\nतू नेहमी घरासारखा वाटतोस.\nआमची मैत्री ही माझी सर्वात मोठी संपत्ती आहे."]
     },
     Soulmate: {
-      English: [
-        "We met as strangers, stayed as soulmates.\nOur souls recognized each other instantly.\nI will find you in every lifetime.",
-        "You complete me in ways I never knew.\nWith you, silence speaks volumes.\nYou are my cosmic twin.",
-        "No distance can break what destiny wrote.\nYou are my yesterday, today, and tomorrow.\nI love you beyond words.",
-        "Your heart beats the same rhythm as mine.\nWe are two bodies, one soul.\nThank you for being my forever.",
-        "Every love story is beautiful, but ours is my favorite.\nYou are the answer to every prayer I never said.\nEternity is not enough with you."
-      ],
-      Hindi: [
-        "हम अजनबी मिले, साउलमेट बनके रहे।\nहमारी आत्माओं ने एक दूसरे को तुरंत पहचान लिया।\nहर जन्म में तुझे ढूंढूंगा।",
-        "तूने मुझे उन तरीकों से पूरा किया जो मैं नहीं जानता था।\nतेरे संग चुप्पी भी बोलती है।\nतू मेरा ब्रह्मांडीय जुड़वां है।",
-        "कोई दूरी तोड़ नहीं सकती जो किस्मत ने लिखा।\nतू मेरा कल, आज और कल है।\nमैं तुझसे शब्दों से परे प्यार करता हूँ।",
-        "तेरा दिल उसी लय में धड़कता है जैसे मेरा।\nहम दो शरीर, एक आत्मा हैं।\nहमेशा के लिए मेरी होने का शुक्रिया।",
-        "हर प्रेम कहानी सुंदर है, पर हमारी सबसे प्यारी।\nतू हर उस दुआ का जवाब है जो मैंने कभी नहीं मांगी।\nतेरे साथ अनंत कम है।"
-      ],
-      Marathi: [
-        "आम्ही अनोळखी भेटलो, सोलमेट बनून राहिलो.\nआमच्या आत्म्यांनी एकमेकांना ओळखलं.\nप्रत्येक जन्मात तुला शोधेन.",
-        "तू मला अशा प्रकारे पूर्ण केलंस जे मला माहित नव्हतं.\nतुझ्यासोबत शांतता देखील बोलते.\nतू माझा विश्व जुळवा आहेस.",
-        "कोणतेही अंतर तोडू शकत नाही जे नशीबाने लिहिलं.\nतू माझा काल, आज आणि उद्या आहेस.\nमी तुझ्यावर शब्दांच्या पलीकडे प्रेम करतो.",
-        "तुझं हृदय त्याच तालात धडधडतं जसे माझं.\nआम्ही दोन शरीरे, एक आत्मा आहोत.\nसदैव माझी असल्याबद्दल धन्यवाद.",
-        "प्रत्येक प्रेमकथा सुंदर आहे, पण आमची सर्वात प्रिय.\nतू त्या प्रत्येक प्रार्थनेचं उत्तर आहेस जी मी कधी विचारली नाही.\nतुझ्यासोबत अनंत कमी आहे."
-      ]
+      English: ["We met as strangers, stayed as soulmates.\nOur souls recognized each other instantly.\nI will find you in every lifetime.","You complete me in ways I never knew.\nWith you, silence speaks volumes.\nYou are my cosmic twin.","No distance can break what destiny wrote.\nYou are my yesterday, today, and tomorrow.\nI love you beyond words.","Your heart beats the same rhythm as mine.\nWe are two bodies, one soul.\nThank you for being my forever.","Every love story is beautiful, but ours is my favorite.\nYou are the answer to every prayer I never said.\nEternity is not enough with you."],
+      Hindi: ["हम अजनबी मिले, साउलमेट बनके रहे।\nहमारी आत्माओं ने एक दूसरे को तुरंत पहचान लिया।\nहर जन्म में तुझे ढूंढूंगा।","तूने मुझे उन तरीकों से पूरा किया जो मैं नहीं जानता था।\nतेरे संग चुप्पी भी बोलती है।\nतू मेरा ब्रह्मांडीय जुड़वां है।","कोई दूरी तोड़ नहीं सकती जो किस्मत ने लिखा।\nतू मेरा कल, आज और कल है।\nमैं तुझसे शब्दों से परे प्यार करता हूँ।","तेरा दिल उसी लय में धड़कता है जैसे मेरा।\nहम दो शरीर, एक आत्मा हैं।\nहमेशा के लिए मेरी होने का शुक्रिया।","हर प्रेम कहानी सुंदर है, पर हमारी सबसे प्यारी।\nतू हर उस दुआ का जवाब है जो मैंने कभी नहीं मांगी।\nतेरे साथ अनंत कम है।"],
+      Marathi: ["आम्ही अनोळखी भेटलो, सोलमेट बनून राहिलो.\nआमच्या आत्म्यांनी एकमेकांना ओळखलं.\nप्रत्येक जन्मात तुला शोधेन.","तू मला अशा प्रकारे पूर्ण केलंस जे मला माहित नव्हतं.\nतुझ्यासोबत शांतता देखील बोलते.\nतू माझा विश्व जुळवा आहेस.","कोणतेही अंतर तोडू शकत नाही जे नशीबाने लिहिलं.\nतू माझा काल, आज आणि उद्या आहेस.\nमी तुझ्यावर शब्दांच्या पलीकडे प्रेम करतो.","तुझं हृदय त्याच तालात धडधडतं जसे माझं.\nआम्ही दोन शरीरे, एक आत्मा आहोत.\nसदैव माझी असल्याबद्दल धन्यवाद.","प्रत्येक प्रेमकथा सुंदर आहे, पण आमची सर्वात प्रिय.\nतू त्या प्रत्येक प्रार्थनेचं उत्तर आहेस जी मी कधी विचारली नाही.\nतुझ्यासोबत अनंत कमी आहे."]
     }
   };
+
+  // ================== RANDOM BACKGROUND IMAGE FROM /assets/bg-img/ ==================
+  // You must place 7-10 images in that folder. We'll try to load them dynamically.
+  // Predefine a list of image filenames (adjust according to your actual files)
+  const bgImageList = [];
+  // We'll attempt to generate up to 10 images from "romantic1.jpg" to "romantic10.jpg"
+  for (let i = 1; i <= 10; i++) {
+    bgImageList.push(`assets/bg-img/romantic${i}.jpg`);
+    // also try .png as fallback? We'll just use .jpg by default. User can rename.
+  }
+  // Alternatively, you can manually list them if different naming:
+  // const bgImageList = ["assets/bg-img/romantic1.jpg", "assets/bg-img/romantic2.jpg", ...];
+  
+  function getRandomBgImage() {
+    const validImages = bgImageList.filter(img => img);
+    if (validImages.length === 0) return null;
+    const randomIndex = Math.floor(Math.random() * validImages.length);
+    return validImages[randomIndex];
+  }
 
   // Helper functions
   function encodeData(obj) { return btoa(encodeURIComponent(JSON.stringify(obj))); }
@@ -376,25 +362,16 @@
     if (!quoteIndices[key]) quoteIndices[key] = 0;
     const idx = quoteIndices[key];
     const quote = arr[idx];
-    // update index cyclically
     quoteIndices[key] = (idx + 1) % arr.length;
     return quote;
   }
   
   function getRandomThemeColor() {
-    // returns a vibrant color and matching background gradient
     const hues = [320, 340, 360, 20, 280, 300];
     const hue = hues[Math.floor(Math.random() * hues.length)];
     const sat = 75 + Math.random() * 20;
     const light = 65 + Math.random() * 15;
     return `hsl(${hue}, ${sat}%, ${light}%)`;
-  }
-  
-  function applyQuoteTheme(quoteCard, textColor, bgGradient) {
-    quoteCard.style.color = textColor;
-    quoteCard.style.background = bgGradient;
-    quoteCard.style.borderLeftColor = textColor;
-    quoteCard.style.boxShadow = `0 0 20px ${textColor}`;
   }
   
   function showQuotePopup(quote, imageBase64, textColor, bgGradient) {
@@ -410,7 +387,6 @@
       </div>
     `;
     document.body.appendChild(overlay);
-    // floating particles
     for (let i=0;i<60;i++) {
       const particle = document.createElement('div');
       particle.innerHTML = ['❤️','💖','✨','💫','🌸','💕','🌟'][Math.floor(Math.random()*7)];
@@ -461,7 +437,6 @@
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.onclick = () => {
         currentLanguage = btn.getAttribute('data-lang');
-        // Reset quote index for this language to get fresh cycle
         const key = `${relType}_${currentLanguage}`;
         quoteIndices[key] = 0;
         updateQuote(relType, quoteImage);
@@ -475,32 +450,33 @@
   function updateQuote(relType, quoteImageBase64) {
     const quote = getNextQuote(relType, currentLanguage);
     const textColor = getRandomThemeColor();
-    const bgGradient = `linear-gradient(135deg, rgba(0,0,0,0.7), ${textColor}20)`;
+    const bgImage = getRandomBgImage();
+    const bgStyle = bgImage ? `url('${bgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
     const container = document.getElementById('quoteContainer');
     if (container) {
       container.innerHTML = `
-        <div class="quote-card" id="dynamicQuoteCard" style="border-left-color: ${textColor}; color:${textColor}; background:${bgGradient}; box-shadow:0 0 15px ${textColor};">
-          <i class="fas fa-quote-left"></i> ${escapeHtml(quote)} <i class="fas fa-quote-right"></i>
-          <div><small style="opacity:0.7;">✨ tap for next ✨</small></div>
+        <div class="quote-card" id="dynamicQuoteCard" style="background-image: ${bgStyle}; background-size: cover; background-position: center;">
+          <div class="quote-overlay" style="border-top-color: ${textColor};">
+            <div class="quote-text">${escapeHtml(quote)}</div>
+            <div class="tap-hint">✨ tap for next ✨</div>
+          </div>
         </div>
       `;
       const quoteDiv = document.getElementById('dynamicQuoteCard');
       if (quoteDiv) {
         quoteDiv.onclick = () => {
-          // Get next quote in sequence
           const newQuote = getNextQuote(relType, currentLanguage);
           const newColor = getRandomThemeColor();
-          const newBg = `linear-gradient(135deg, rgba(0,0,0,0.7), ${newColor}20)`;
-          quoteDiv.style.color = newColor;
-          quoteDiv.style.borderLeftColor = newColor;
-          quoteDiv.style.background = newBg;
-          quoteDiv.style.boxShadow = `0 0 20px ${newColor}`;
-          quoteDiv.innerHTML = `<i class="fas fa-quote-left"></i> ${escapeHtml(newQuote)} <i class="fas fa-quote-right"></i>
-                                 <div><small style="opacity:0.7;">✨ tap for next ✨</small></div>`;
-          // Re-attach click event
-          quoteDiv.onclick = arguments.callee;
-          // Also show popup with new quote and theme
-          showQuotePopup(newQuote, quoteImageBase64, newColor, newBg);
+          const newBgImage = getRandomBgImage();
+          const newBgStyle = newBgImage ? `url('${newBgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
+          quoteDiv.style.backgroundImage = newBgStyle;
+          const overlayDiv = quoteDiv.querySelector('.quote-overlay');
+          if (overlayDiv) {
+            overlayDiv.style.borderTopColor = newColor;
+            overlayDiv.querySelector('.quote-text').innerHTML = escapeHtml(newQuote);
+          }
+          // Also show popup with the new quote and user uploaded image (if any)
+          showQuotePopup(newQuote, quoteImageBase64, newColor, `linear-gradient(135deg, rgba(0,0,0,0.8), ${newColor}40)`);
         };
       }
     }
@@ -636,7 +612,7 @@
   }
   drawHearts();
   
-  // Ambient music
+  // Ambient music (simple)
   let audioCtx = null, musicOn = false, gainNode = null;
   async function startMusic() {
     if (audioCtx) return;
