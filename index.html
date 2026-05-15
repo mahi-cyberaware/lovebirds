@@ -3,185 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>NeoCountdown · Eternal Bond</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Love Countdown · Shareable</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background: radial-gradient(circle at 20% 30%, #030318, #000000);
-      min-height: 100vh;
       color: white;
-      position: relative;
+      padding: 16px;
+      margin: 0;
     }
-    .dynamic-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 50% 50%, rgba(76,0,255,0.2), rgba(0,0,0,0.8));
-      z-index: -2;
-      animation: pulse 8s infinite alternate;
-    }
-    @keyframes pulse { 0% { opacity: 0.3; } 100% { opacity: 0.7; } }
-    #particles-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-    }
-    .glass-card {
-      background: rgba(15,25,45,0.55);
-      backdrop-filter: blur(15px);
-      border-radius: 2rem;
-      border: 1px solid rgba(0,255,255,0.35);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0,255,255,0.3);
-      transition: 0.3s;
-    }
-    .neon-btn {
-      background: linear-gradient(90deg, #8a2be2, #00c6ff);
-      border: none;
-      padding: 14px 28px;
-      font-weight: bold;
-      font-size: 1rem;
-      border-radius: 60px;
-      color: white;
-      cursor: pointer;
-      box-shadow: 0 0 12px #00a6ff;
-      transition: 0.2s;
-    }
-    .neon-btn:hover { transform: scale(1.02); box-shadow: 0 0 24px #00a6ff; }
-    input, textarea, input[type="date"] {
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(8px);
-      border: 1px solid cyan;
-      border-radius: 60px;
-      padding: 12px 20px;
-      color: white;
-      width: 100%;
-      outline: none;
-    }
-    input:focus { border-color: #ff44f0; box-shadow: 0 0 12px #ff44f0; }
-    label { font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.85rem; color: #ccd6ff; }
-    .image-preview { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 2px solid cyan; margin-top: 8px; }
-    .loader-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.85);
+    .card {
+      background: rgba(15, 25, 45, 0.7);
       backdrop-filter: blur(12px);
-      z-index: 1000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
+      border-radius: 32px;
+      border: 1px solid cyan;
+      padding: 24px;
+      max-width: 500px;
+      margin: 20px auto;
+      box-shadow: 0 0 20px rgba(0,255,255,0.3);
     }
-    .neon-loader { width: 80px; height: 80px; border: 5px solid rgba(0,255,255,0.2); border-top: 5px solid cyan; border-radius: 50%; animation: spin 1s infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .countdown-digits { font-size: 3rem; font-weight: 900; background: linear-gradient(135deg,#fff,#00ffff); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px cyan; }
-    .heart-beat { animation: beat 1.2s infinite; }
-    @keyframes beat { 50% { transform: scale(1.1); text-shadow: 0 0 20px #ff3366; } }
-    @media (max-width: 760px) { .countdown-digits { font-size: 2rem; } .glass-card { margin: 1rem; padding: 1.5rem; } }
-    .glow-text { text-shadow: 0 0 6px cyan, 0 0 12px #aa44ff; }
-    .error-msg { background: rgba(255,0,0,0.3); border-left: 4px solid red; padding: 10px; margin: 10px 0; border-radius: 12px; }
+    input, textarea, button {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      border-radius: 60px;
+      border: 1px solid cyan;
+      background: #000000aa;
+      color: white;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      background: linear-gradient(90deg, #8a2be2, #00c6ff);
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .error-msg {
+      background: #ff3366aa;
+      padding: 12px;
+      border-radius: 24px;
+      margin: 12px 0;
+      display: none;
+      font-size: 14px;
+    }
+    .countdown-number {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, cyan);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin: 10px 0;
+    }
+    img {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border: 2px solid cyan;
+      margin: 10px auto;
+    }
+    .flex-center { text-align: center; }
+    hr { border-color: cyan; margin: 20px 0; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<div class="dynamic-bg"></div>
-<canvas id="particles-canvas"></canvas>
 
-<div id="app" style="padding: 20px; max-width: 1300px; margin: 0 auto;">
-  <!-- GENERATOR -->
-  <div id="generatorSection" class="glass-card" style="padding: 2rem; margin: 2rem auto; max-width: 700px;">
-    <div style="text-align: center; margin-bottom: 1.5rem;">
-      <i class="fas fa-heart" style="font-size: 2.5rem; color: #ff44f0;"></i>
-      <h1 class="glow-text">✦ RELATIONSHIP COUNTDOWN ✦</h1>
-      <p>Create & share an eternal cosmic link ❤️</p>
-    </div>
-    <div id="globalError" class="error-msg" style="display:none;"></div>
-    <form id="relationshipForm">
-      <div style="display: grid; gap: 1.2rem;">
-        <div><label>Your Name</label><input type="text" id="yourName" placeholder="e.g., Mahi" required></div>
-        <div><label>Partner's Name</label><input type="text" id="partnerName" placeholder="e.g., Aanya" required></div>
-        <div><label>Anniversary / Start Date</label><input type="date" id="startDate" required></div>
-        <div><label>Custom Message</label><input type="text" id="customMsg" placeholder="Every moment with you..."></div>
-        <div><label>Emotional Note</label><textarea rows="2" id="emotionalNote" placeholder="Write something that touches the soul..."></textarea></div>
-        <div><label>Upload Couple Image (optional)</label><input type="file" id="imageUpload" accept="image/*"><div id="imagePreviewContainer"></div></div>
-        <button type="submit" class="neon-btn"><i class="fas fa-meteor"></i> GENERATE & SAVE TO CLOUD</button>
-      </div>
-    </form>
-  </div>
+<div id="generatorCard" class="card">
+  <h2 style="text-align:center;">✨ RELATIONSHIP COUNTDOWN ✨</h2>
+  <p style="text-align:center; opacity:0.8;">Create & share your eternal link</p>
+  <div id="genError" class="error-msg"></div>
+  <input type="text" id="yourName" placeholder="Your name" required>
+  <input type="text" id="partnerName" placeholder="Partner's name" required>
+  <input type="date" id="startDate" required>
+  <input type="text" id="customMsg" placeholder="Custom message (optional)">
+  <textarea id="emotionalNote" placeholder="Emotional note (optional)" rows="2"></textarea>
+  <input type="file" id="imageUpload" accept="image/*">
+  <button id="generateBtn">💾 GENERATE & SAVE</button>
+</div>
 
-  <!-- COUNTDOWN VIEW -->
-  <div id="countdownSection" style="display: none;">
-    <div id="countdownCard" class="glass-card" style="padding: 2rem; margin: 1rem auto; max-width: 1000px;">
-      <div id="countdownDynamicContent"></div>
-      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
-        <button id="copyLinkBtn" class="neon-btn"><i class="fas fa-link"></i> Copy Link</button>
-        <button id="shareBtn" class="neon-btn"><i class="fas fa-share-alt"></i> Share</button>
-        <button id="screenshotBtn" class="neon-btn"><i class="fas fa-camera"></i> Screenshot</button>
-        <button id="musicToggleBtn" class="neon-btn"><i class="fas fa-music"></i> Ambient ✦</button>
-        <button id="createNewBtn" class="neon-btn"><i class="fas fa-plus-circle"></i> New Story</button>
-      </div>
-    </div>
-  </div>
+<div id="viewerCard" class="card" style="display:none;">
+  <div id="viewerContent" class="flex-center"></div>
+  <button id="copyLinkBtn">🔗 Copy Shareable Link</button>
+  <button id="createNewBtn">✨ Create New Story</button>
 </div>
 
 <script>
-  // ========== YOUR SUPABASE CREDENTIALS ==========
+  // ================= YOUR SUPABASE CREDENTIALS (already set) =================
   const SUPABASE_URL = "https://jxmzkepwatmsljistezr.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4bXprZXB3YXRtc2xqaXN0ZXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3ODY5NjQsImV4cCI6MjA5NDM2Mjk2NH0.iswg7bbXgV8DaFmZwhzZEVeGD8XChuCBxUhj5NaeV8U";
 
-  let supabase;
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   let currentId = null;
-  let liveTimer = null;
-  let musicActive = false, audioCtx = null, musicGain = null;
 
-  // Initialize Supabase client
-  function initSupabase() {
-    try {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      console.log("✅ Supabase client initialized");
-      return true;
-    } catch(e) {
-      console.error("❌ Supabase init error:", e);
-      showError("Failed to connect to database. Check your Supabase URL/key.");
-      return false;
-    }
-  }
-
-  function showError(msg) {
-    const errDiv = document.getElementById('globalError');
+  function showError(msg, isGen = true) {
+    const errDiv = isGen ? document.getElementById('genError') : document.getElementById('viewerError');
     if (errDiv) {
       errDiv.innerText = msg;
       errDiv.style.display = 'block';
-      setTimeout(() => { errDiv.style.display = 'none'; }, 5000);
+      setTimeout(() => errDiv.style.display = 'none', 6000);
     } else {
       alert(msg);
     }
   }
 
-  function showLoader(show) {
-    let loader = document.getElementById('globalLoader');
-    if (show && !loader) {
-      const div = document.createElement('div');
-      div.id = 'globalLoader';
-      div.className = 'loader-overlay';
-      div.innerHTML = `<div class="neon-loader"></div><p style="margin-top:20px; color:cyan;">Saving to the stars...</p>`;
-      document.body.appendChild(div);
-    } else if (!show && loader) loader.remove();
+  function generateId() {
+    return 'rel_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
   }
-
-  function generateId() { return 'rel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8); }
 
   function fileToBase64(file) {
     return new Promise((resolve, reject) => {
@@ -192,68 +123,15 @@
     });
   }
 
-  function computeTimeTogether(startDateStr) {
+  function computeDaysTogether(startDateStr) {
     const start = new Date(startDateStr);
     const now = new Date();
-    if (isNaN(start)) return { years:0, months:0, days:0, totalDays:0, nextAnniversaryDays:0 };
-    let totalDays = Math.floor((now - start) / (1000*60*60*24));
-    if (totalDays < 0) totalDays = 0;
-    let years = Math.floor(totalDays / 365.25);
-    let months = Math.floor((totalDays % 365.25) / 30.44);
-    let days = Math.floor((totalDays % 365.25) % 30.44);
-    let currentYear = now.getFullYear();
-    let anniversaryThis = new Date(currentYear, start.getMonth(), start.getDate());
-    let nextAnn = anniversaryThis > now ? anniversaryThis : new Date(currentYear+1, start.getMonth(), start.getDate());
-    let daysUntil = Math.ceil((nextAnn - now) / (1000*60*60*24));
-    return { years, months, days, totalDays, nextAnniversaryDays: daysUntil >=0 ? daysUntil : 0 };
+    const diffTime = now - start;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays >= 0 ? diffDays : 0;
   }
 
-  function renderCountdownPage(data, id) {
-    const container = document.getElementById('countdownDynamicContent');
-    if (!container) return;
-    const together = computeTimeTogether(data.start_date);
-    const formattedStart = new Date(data.start_date).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-    const imageHtml = data.image_base64 ? `<div style="display:flex; justify-content:center;"><img src="${data.image_base64}" style="width:130px; height:130px; border-radius:50%; object-fit:cover; border:3px solid cyan; box-shadow:0 0 20px magenta;"></div>` : `<div style="font-size:3rem;">💞✨</div>`;
-    
-    container.innerHTML = `
-      <div style="text-align:center;">
-        ${imageHtml}
-        <h2 class="glow-text" style="font-size:2rem;"><span class="heart-beat">❤️</span> ${escapeHtml(data.your_name)} & ${escapeHtml(data.partner_name)} <span class="heart-beat">❤️</span></h2>
-        <p><i class="fas fa-calendar-star"></i> Together since ${formattedStart}</p>
-        <div class="glass-card" style="padding:1rem; margin:1.5rem 0; display:inline-block; width:90%;">
-          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem;">
-            <div><span class="countdown-digits" id="yearsCount">${together.years}</span><br>Years</div>
-            <div><span class="countdown-digits" id="monthsCount">${together.months}</span><br>Months</div>
-            <div><span class="countdown-digits" id="daysCount">${together.days}</span><br>Days</div>
-            <div><span class="countdown-digits" id="totalDaysSpan">${together.totalDays}</span><br>Total Days</div>
-          </div>
-        </div>
-        <div class="glass-card" style="padding:1rem; margin-top:1rem;">
-          <i class="fas fa-hourglass-half"></i> <strong>NEXT ANNIVERSARY</strong><br>
-          <span class="countdown-digits" id="nextAnniversaryDays">${together.nextAnniversaryDays}</span> days left ✨
-        </div>
-        ${data.custom_message ? `<div style="margin-top:1rem; background:rgba(0,0,0,0.5); border-radius:60px; padding:10px;">“${escapeHtml(data.custom_message)}”</div>` : ''}
-        ${data.emotional_note ? `<div style="margin-top:1rem; font-style:italic; border-left:3px solid cyan; padding-left:1rem;"><i class="fas fa-feather"></i> ${escapeHtml(data.emotional_note)}</div>` : ''}
-        <div style="margin-top:20px; font-size:12px; color:#aaccff;"><i class="fas fa-cloud-upload-alt"></i> preserved in the cloud · ID: ${id.slice(-8)}</div>
-      </div>
-    `;
-    if (liveTimer) clearInterval(liveTimer);
-    liveTimer = setInterval(() => {
-      const fresh = computeTimeTogether(data.start_date);
-      const y = document.getElementById('yearsCount');
-      if (y) y.innerText = fresh.years;
-      if (document.getElementById('monthsCount')) document.getElementById('monthsCount').innerText = fresh.months;
-      if (document.getElementById('daysCount')) document.getElementById('daysCount').innerText = fresh.days;
-      if (document.getElementById('totalDaysSpan')) document.getElementById('totalDaysSpan').innerText = fresh.totalDays;
-      if (document.getElementById('nextAnniversaryDays')) document.getElementById('nextAnniversaryDays').innerText = fresh.nextAnniversaryDays;
-    }, 1000);
-  }
-
-  function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-
-  // Handle form submit
-  async function handleGenerate(e) {
-    e.preventDefault();
+  document.getElementById('generateBtn').onclick = async () => {
     const yourName = document.getElementById('yourName').value.trim();
     const partnerName = document.getElementById('partnerName').value.trim();
     const startDate = document.getElementById('startDate').value;
@@ -262,176 +140,108 @@
     const imageFile = document.getElementById('imageUpload').files[0];
 
     if (!yourName || !partnerName || !startDate) {
-      showError("Please fill in both names and anniversary date.");
+      showError("Please fill in both names and the anniversary date.");
       return;
     }
-    if (!supabase) { showError("Supabase not ready. Reload page."); return; }
 
-    showLoader(true);
-    let imageBase64 = null;
-    if (imageFile) {
-      try { imageBase64 = await fileToBase64(imageFile); } catch(e) { console.warn("image error"); }
-    }
-    const newId = generateId();
-    const payload = {
-      id: newId,
-      your_name: yourName,
-      partner_name: partnerName,
-      start_date: startDate,
-      custom_message: customMsg,
-      emotional_note: emotionalNote,
-      image_base64: imageBase64
-    };
+    // Show loading on button
+    const btn = document.getElementById('generateBtn');
+    const originalText = btn.innerText;
+    btn.innerText = "⏳ Saving...";
+    btn.disabled = true;
 
-    const { error } = await supabase.from('relationships').insert([payload]);
-    showLoader(false);
-    if (error) {
-      console.error("Supabase insert error:", error);
-      showError("Database error: " + error.message + ". Make sure table 'relationships' exists and RLS is OFF.");
-      return;
+    try {
+      let imageBase64 = null;
+      if (imageFile) {
+        imageBase64 = await fileToBase64(imageFile);
+      }
+
+      const newId = generateId();
+      const payload = {
+        id: newId,
+        your_name: yourName,
+        partner_name: partnerName,
+        start_date: startDate,
+        custom_message: customMsg,
+        emotional_note: emotionalNote,
+        image_base64: imageBase64
+      };
+
+      const { error } = await supabase.from('relationships').insert([payload]);
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // Success: redirect to ?id=...
+      const url = new URL(window.location.href);
+      url.searchParams.set('id', newId);
+      window.history.pushState({}, '', url);
+      await loadFromURL();
+    } catch (err) {
+      showError("❌ Database error: " + err.message + " — Make sure the table 'relationships' has columns: id, your_name, partner_name, start_date, custom_message, emotional_note, image_base64");
+      btn.innerText = originalText;
+      btn.disabled = false;
     }
-    // success: redirect to ?id=...
-    const url = new URL(window.location.href);
-    url.searchParams.set('id', newId);
-    window.history.pushState({}, '', url);
-    await loadFromURL();
-  }
+  };
 
   async function loadFromURL() {
-    if (!supabase) if (!initSupabase()) return;
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     if (id) {
       const { data, error } = await supabase.from('relationships').select('*').eq('id', id).single();
       if (error || !data) {
-        document.getElementById('generatorSection').style.display = 'block';
-        document.getElementById('countdownSection').style.display = 'none';
-        showError("This love link doesn't exist. Create a new one ✨");
+        document.getElementById('generatorCard').style.display = 'block';
+        document.getElementById('viewerCard').style.display = 'none';
+        showError("❌ Link not found. Please create a new one.", true);
         return;
       }
       currentId = id;
-      document.getElementById('generatorSection').style.display = 'none';
-      document.getElementById('countdownSection').style.display = 'block';
-      renderCountdownPage(data, id);
+      document.getElementById('generatorCard').style.display = 'none';
+      document.getElementById('viewerCard').style.display = 'block';
+
+      const days = computeDaysTogether(data.start_date);
+      const imageHtml = data.image_base64 ? `<img src="${data.image_base64}" alt="couple">` : '<div style="font-size:3rem;">💞</div>';
+      const startFormatted = new Date(data.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      document.getElementById('viewerContent').innerHTML = `
+        ${imageHtml}
+        <h2>❤️ ${escapeHtml(data.your_name)} & ${escapeHtml(data.partner_name)} ❤️</h2>
+        <p>Together since ${startFormatted}</p>
+        <div class="countdown-number">${days} days together</div>
+        ${data.custom_message ? `<p><i>“${escapeHtml(data.custom_message)}”</i></p>` : ''}
+        ${data.emotional_note ? `<p>✨ ${escapeHtml(data.emotional_note)} ✨</p>` : ''}
+        <hr>
+        <small>🔗 Share this link — it works anywhere</small>
+      `;
     } else {
-      document.getElementById('generatorSection').style.display = 'block';
-      document.getElementById('countdownSection').style.display = 'none';
-      if (liveTimer) clearInterval(liveTimer);
+      document.getElementById('generatorCard').style.display = 'block';
+      document.getElementById('viewerCard').style.display = 'none';
     }
   }
 
-  function copyLink() {
-    if (!currentId) { showError("Generate a page first"); return; }
-    const url = window.location.origin + window.location.pathname + '?id=' + encodeURIComponent(currentId);
-    navigator.clipboard.writeText(url);
-    alert("✅ Link copied! Share it with anyone.");
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
   }
 
-  async function sharePage() {
+  document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
     if (!currentId) return;
-    const url = window.location.origin + window.location.pathname + '?id=' + encodeURIComponent(currentId);
-    if (navigator.share) await navigator.share({ title: 'Our Cosmic Countdown', url });
-    else copyLink();
-  }
-
-  function takeScreenshot() {
-    const el = document.getElementById('countdownCard');
-    if (!el) return;
-    html2canvas(el, { scale: 2 }).then(canvas => {
-      const link = document.createElement('a');
-      link.download = 'relationship_countdown.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    });
-  }
-
-  async function initMusic() {
-    if (audioCtx) return;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    musicGain = audioCtx.createGain();
-    musicGain.gain.value = 0.2;
-    musicGain.connect(audioCtx.destination);
-    const osc1 = audioCtx.createOscillator();
-    const osc2 = audioCtx.createOscillator();
-    osc1.type = 'sine'; osc2.type = 'triangle';
-    osc1.frequency.value = 261.63; osc2.frequency.value = 329.63;
-    osc1.connect(musicGain); osc2.connect(musicGain);
-    osc1.start(); osc2.start();
-    const lfo = audioCtx.createOscillator();
-    const lfoGain = audioCtx.createGain();
-    lfo.frequency.value = 0.2;
-    lfoGain.gain.value = 5;
-    lfo.connect(lfoGain);
-    lfoGain.connect(osc1.frequency);
-    lfoGain.connect(osc2.frequency);
-    lfo.start();
-  }
-
-  async function toggleMusic() {
-    if (!musicActive) {
-      if (!audioCtx) await initMusic();
-      await audioCtx.resume();
-      if (musicGain) musicGain.gain.value = 0.2;
-      musicActive = true;
-    } else {
-      if (musicGain) musicGain.gain.value = 0;
-      musicActive = false;
-    }
-  }
-
-  // Particles
-  let canvas, ctx, particles = [];
-  function initParticles() {
-    canvas = document.getElementById('particles-canvas');
-    if (!canvas) return;
-    ctx = canvas.getContext('2d');
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    window.addEventListener('resize', resize);
-    resize();
-    for (let i=0;i<80;i++) {
-      particles.push({
-        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-        radius: Math.random() * 3 + 1.5, speedX: (Math.random()-0.5)*0.5, speedY: Math.random()*0.8+0.3,
-        color: `hsl(${Math.random()*60+280}, 100%, 65%)`
-      });
-    }
-    function draw() {
-      if (!ctx) return;
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      for (let p of particles) {
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
-        ctx.fillStyle = p.color; ctx.shadowBlur = 8; ctx.shadowColor = '#ff66ff'; ctx.fill();
-        p.x += p.speedX; p.y += p.speedY;
-        if (p.y > canvas.height) p.y = -5;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.x < 0) p.x = canvas.width;
-      }
-      requestAnimationFrame(draw);
-    }
-    draw();
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    initSupabase();
-    initParticles();
-    document.getElementById('relationshipForm')?.addEventListener('submit', handleGenerate);
-    document.getElementById('copyLinkBtn')?.addEventListener('click', copyLink);
-    document.getElementById('shareBtn')?.addEventListener('click', sharePage);
-    document.getElementById('screenshotBtn')?.addEventListener('click', takeScreenshot);
-    document.getElementById('musicToggleBtn')?.addEventListener('click', toggleMusic);
-    document.getElementById('createNewBtn')?.addEventListener('click', () => {
-      window.location.href = window.location.pathname;
-    });
-    document.getElementById('imageUpload')?.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if(file) {
-        const reader = new FileReader();
-        reader.onload = ev => document.getElementById('imagePreviewContainer').innerHTML = `<img src="${ev.target.result}" class="image-preview">`;
-        reader.readAsDataURL(file);
-      }
-    });
-    loadFromURL();
+    const url = window.location.origin + window.location.pathname + '?id=' + currentId;
+    navigator.clipboard.writeText(url);
+    alert("✅ Link copied! Send it to anyone.");
   });
+
+  document.getElementById('createNewBtn')?.addEventListener('click', () => {
+    window.location.href = window.location.pathname;
+  });
+
+  // Load the page based on URL
+  loadFromURL();
 </script>
 </body>
 </html>
