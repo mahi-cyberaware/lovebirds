@@ -106,15 +106,20 @@
     .font-btn.active { background: #ff4d6d; border-color: white; }
     .count-number { font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg,#fff,#ff99cc); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .quote-card {
-      background: rgba(0,0,0,0.5);
       border-radius: 50px;
       padding: 18px;
       margin: 20px 0;
       text-align: center;
       cursor: pointer;
-      transition: 0.2s;
-      border-left: 5px solid #ff66cc;
+      transition: all 0.4s ease;
       animation: fadeIn 0.6s;
+      background: rgba(0,0,0,0.5);
+      border-left: 5px solid;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+    .quote-card:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0 25px currentColor;
     }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     .popup-overlay {
@@ -139,9 +144,10 @@
       padding: 30px;
       border-radius: 60px;
       font-family: 'Dancing Script', cursive;
-      border: 2px solid white;
+      border: 2px solid;
       white-space: pre-line;
       line-height: 1.5;
+      transition: 0.3s;
     }
     .lang-selector {
       display: flex;
@@ -188,7 +194,7 @@
   </div>
   
   <label>💕 Your Name</label><input id="yourName" placeholder="e.g., Mahi">
-  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Nancy">
+  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Priya">
   
   <label>✍️ Font Style for Names</label>
   <div class="font-selector">
@@ -223,11 +229,11 @@
     <button id="musicBtn" class="neon-btn"><i class="fas fa-music"></i> Ambience</button>
     <button id="newStoryBtn" class="neon-btn"><i class="fas fa-heart-broken"></i> New Story</button>
   </div>
-  <footer>✨ Tap any quote → magical popup with image & shayari ✨</footer>
+  <footer>✨ Tap the quote → new shayari, new theme, new magic ✨</footer>
 </div>
 
 <script>
-  // ================== MULTI-LANGUAGE QUOTES DATABASE (3-5 lines each, 5 per type per language) ==================
+  // ================== MULTI-LANGUAGE QUOTES DATABASE (5 per type/language) ==================
   const quotesDB = {
     Wife: {
       English: [
@@ -284,10 +290,10 @@
         "Miles apart or sitting next to me,\nYou always feel like home.\nOur friendship is my greatest treasure."
       ],
       Hindi: [
-        "तू मेरा पागल साथी है अपराधों में।\nजिंदगी की बेहतरीन यादें तेरे संग बनीं।\बेस्ट फ्रेंड होने के लिए शुक्रिया।",
+        "तू मेरा पागल साथी है अपराधों में।\nजिंदगी की बेहतरीन यादें तेरे संग बनीं।\nबेस्ट फ्रेंड होने के लिए शुक्रिया।",
         "कोई जजमेंट नहीं, बस प्यार और हँसी।\nतूने मेरा बुरा भी देखा फिर भी रुकी।\nमैं तुझे बहुत संजोकर रखता हूँ।",
         "किसी वजह की जरूरत नहीं खुश होने के लिए।\nतेरा साथ सब कुछ बेहतर बना देता है।\nपागल बनी रह, मेरी बनी रह।",
-        "तू वो भाई/बहन है जो मैंने खुद चुना।\nदिल टूटने और जीत में, तूने हाथ थामा।\मुझे तुझसे प्यार है, मेरे बेस्टी।",
+        "तू वो भाई/बहन है जो मैंने खुद चुना।\nदिल टूटने और जीत में, तूने हाथ थामा।\nमुझे तुझसे प्यार है, मेरे बेस्टी।",
         "मीलों दूर या बगल में बैठे,\nतू हमेशा घर जैसा लगता है।\nहमारी दोस्ती मेरा सबसे बड़ा खजाना है।"
       ],
       Marathi: [
@@ -362,20 +368,43 @@
   
   let currentData = null;
   let currentLanguage = "English";
+  let quoteIndices = {}; // track last shown index per (relType, lang)
   
-  function getRandomQuote(relType, lang) {
+  function getNextQuote(relType, lang) {
     const arr = quotesDB[relType]?.[lang] || quotesDB.Wife.English;
-    return arr[Math.floor(Math.random() * arr.length)];
+    const key = `${relType}_${lang}`;
+    if (!quoteIndices[key]) quoteIndices[key] = 0;
+    const idx = quoteIndices[key];
+    const quote = arr[idx];
+    // update index cyclically
+    quoteIndices[key] = (idx + 1) % arr.length;
+    return quote;
   }
   
-  function showQuotePopup(quote, imageBase64, color) {
+  function getRandomThemeColor() {
+    // returns a vibrant color and matching background gradient
+    const hues = [320, 340, 360, 20, 280, 300];
+    const hue = hues[Math.floor(Math.random() * hues.length)];
+    const sat = 75 + Math.random() * 20;
+    const light = 65 + Math.random() * 15;
+    return `hsl(${hue}, ${sat}%, ${light}%)`;
+  }
+  
+  function applyQuoteTheme(quoteCard, textColor, bgGradient) {
+    quoteCard.style.color = textColor;
+    quoteCard.style.background = bgGradient;
+    quoteCard.style.borderLeftColor = textColor;
+    quoteCard.style.boxShadow = `0 0 20px ${textColor}`;
+  }
+  
+  function showQuotePopup(quote, imageBase64, textColor, bgGradient) {
     const overlay = document.createElement('div');
     overlay.className = 'popup-overlay';
-    overlay.style.background = `radial-gradient(circle, ${color}30, #000000dd)`;
+    overlay.style.background = `radial-gradient(circle, ${textColor}30, #000000dd)`;
     let imgHtml = '';
-    if (imageBase64) imgHtml = `<img src="${imageBase64}" style="max-width:80%; max-height:200px; border-radius:30px; margin-bottom:20px; border:2px solid white;">`;
+    if (imageBase64) imgHtml = `<img src="${imageBase64}" style="max-width:80%; max-height:200px; border-radius:30px; margin-bottom:20px; border:2px solid ${textColor};">`;
     overlay.innerHTML = `
-      <div class="popup-quote" style="color:${color}; text-shadow:0 0 10px ${color};">
+      <div class="popup-quote" style="color:${textColor}; border-color:${textColor}; background:${bgGradient}; text-shadow:0 0 10px ${textColor};">
         ${imgHtml}
         <div style="white-space:pre-line;">${escapeHtml(quote)}</div>
       </div>
@@ -432,6 +461,9 @@
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.onclick = () => {
         currentLanguage = btn.getAttribute('data-lang');
+        // Reset quote index for this language to get fresh cycle
+        const key = `${relType}_${currentLanguage}`;
+        quoteIndices[key] = 0;
         updateQuote(relType, quoteImage);
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -441,23 +473,34 @@
   }
   
   function updateQuote(relType, quoteImageBase64) {
-    const quote = getRandomQuote(relType, currentLanguage);
-    const randomColor = `hsl(${Math.random()*60 + 300}, 80%, 65%)`;
+    const quote = getNextQuote(relType, currentLanguage);
+    const textColor = getRandomThemeColor();
+    const bgGradient = `linear-gradient(135deg, rgba(0,0,0,0.7), ${textColor}20)`;
     const container = document.getElementById('quoteContainer');
     if (container) {
       container.innerHTML = `
-        <div class="quote-card" id="dynamicQuoteCard" style="border-left-color: ${randomColor}; color:${randomColor};">
+        <div class="quote-card" id="dynamicQuoteCard" style="border-left-color: ${textColor}; color:${textColor}; background:${bgGradient}; box-shadow:0 0 15px ${textColor};">
           <i class="fas fa-quote-left"></i> ${escapeHtml(quote)} <i class="fas fa-quote-right"></i>
-          <div><small style="opacity:0.7;">✨ click for magic ✨</small></div>
+          <div><small style="opacity:0.7;">✨ tap for next ✨</small></div>
         </div>
       `;
       const quoteDiv = document.getElementById('dynamicQuoteCard');
       if (quoteDiv) {
         quoteDiv.onclick = () => {
-          const newColor = `hsl(${Math.random()*360}, 80%, 65%)`;
-          quoteDiv.style.borderLeftColor = newColor;
+          // Get next quote in sequence
+          const newQuote = getNextQuote(relType, currentLanguage);
+          const newColor = getRandomThemeColor();
+          const newBg = `linear-gradient(135deg, rgba(0,0,0,0.7), ${newColor}20)`;
           quoteDiv.style.color = newColor;
-          showQuotePopup(quote, quoteImageBase64, newColor);
+          quoteDiv.style.borderLeftColor = newColor;
+          quoteDiv.style.background = newBg;
+          quoteDiv.style.boxShadow = `0 0 20px ${newColor}`;
+          quoteDiv.innerHTML = `<i class="fas fa-quote-left"></i> ${escapeHtml(newQuote)} <i class="fas fa-quote-right"></i>
+                                 <div><small style="opacity:0.7;">✨ tap for next ✨</small></div>`;
+          // Re-attach click event
+          quoteDiv.onclick = arguments.callee;
+          // Also show popup with new quote and theme
+          showQuotePopup(newQuote, quoteImageBase64, newColor, newBg);
         };
       }
     }
