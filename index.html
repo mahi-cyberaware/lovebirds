@@ -1,74 +1,396 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Love Countdown · Instant Share</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>✨ Eternal Countdown · Love Story ✨</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    body { background: #0a0a2a; color: white; font-family: system-ui; padding: 20px; }
-    .card { background: rgba(15,25,45,0.8); border-radius: 32px; padding: 24px; max-width: 500px; margin: auto; border: 1px solid cyan; }
-    input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 60px; border: none; }
-    button { background: linear-gradient(90deg,#8a2be2,#00c6ff); font-weight: bold; color: white; }
-    .count { font-size: 3rem; font-weight: bold; color: cyan; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 20% 30%, #0a0a2a, #000000);
+      min-height: 100vh;
+      color: white;
+      position: relative;
+      padding: 16px;
+    }
+    .dynamic-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 50%, rgba(255,0,128,0.15), rgba(0,0,0,0.9));
+      z-index: -2;
+      animation: pulseGlow 6s infinite alternate;
+    }
+    @keyframes pulseGlow {
+      0% { opacity: 0.4; }
+      100% { opacity: 0.8; }
+    }
+    canvas#heartCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .glass-card {
+      background: rgba(15, 25, 45, 0.6);
+      backdrop-filter: blur(16px);
+      border-radius: 2rem;
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(0,255,255,0.2);
+      transition: 0.3s;
+    }
+    .neon-btn {
+      background: linear-gradient(90deg, #ff2e7e, #7a2eff);
+      border: none;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 60px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 12px #ff2e7e;
+      transition: 0.2s;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .neon-btn:hover { transform: scale(1.02); box-shadow: 0 0 24px #ff2e7e; }
+    input, textarea, input[type="date"] {
+      width: 100%;
+      padding: 12px 16px;
+      margin: 6px 0;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid cyan;
+      border-radius: 60px;
+      color: white;
+      font-size: 1rem;
+    }
+    label { font-weight: 600; font-size: 0.85rem; color: #ffb3ff; }
+    .preview-img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid cyan;
+      margin-top: 8px;
+    }
+    .count-number {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, cyan);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .quote-box {
+      background: rgba(0,0,0,0.4);
+      border-radius: 40px;
+      padding: 16px;
+      margin: 16px 0;
+      font-style: italic;
+      border-left: 4px solid #ff66cc;
+    }
+    .heart-beat { animation: heartBeat 1.2s infinite; display: inline-block; }
+    @keyframes heartBeat { 50% { transform: scale(1.2); text-shadow: 0 0 20px red; } }
+    footer { font-size: 0.7rem; text-align: center; margin-top: 20px; opacity: 0.6; }
+    @media (max-width: 600px) { .count-number { font-size: 2rem; } .glass-card { padding: 1.5rem; } }
   </style>
 </head>
 <body>
-<div id="gen" class="card">
-  <h2>✨ RELATIONSHIP COUNTDOWN ✨</h2>
-  <input id="yourName" placeholder="Your name">
-  <input id="partnerName" placeholder="Partner's name">
-  <input id="startDate" type="date">
-  <input id="msg" placeholder="Custom message (optional)">
-  <button id="generateBtn">💾 GENERATE & GET LINK</button>
+<div class="dynamic-bg"></div>
+<canvas id="heartCanvas"></canvas>
+
+<div id="generatorSection" class="glass-card" style="max-width: 550px; margin: 20px auto; padding: 24px;">
+  <div style="text-align:center;">
+    <i class="fas fa-heart heart-beat" style="font-size: 2rem; color: #ff66cc;"></i>
+    <h1 class="glow-text" style="font-size: 1.8rem;">✦ ETERNAL COUNTDOWN ✦</h1>
+    <p>Create your romantic time capsule</p>
+  </div>
+  <div id="genError" style="color:#ff8888; background:#ff000022; border-radius: 20px; padding: 8px; margin: 10px 0; display:none;"></div>
+  <label>💑 Your Name</label><input id="yourName" placeholder="e.g., Mahi">
+  <label>💖 Partner's Name</label><input id="partnerName" placeholder="e.g., Priya">
+  <label>📅 Anniversary / Start Date</label><input id="startDate" type="date">
+  <label>💬 Custom Romantic Message</label><input id="customMsg" placeholder="Every day with you is a dream...">
+  <label>📝 Emotional Note</label><textarea id="emotionalNote" rows="2" placeholder="A letter to my love..."></textarea>
+  <label>📸 Upload Your Photo (optional)</label>
+  <input type="file" id="imageUpload" accept="image/*">
+  <div id="imagePreview"></div>
+  <button id="generateBtn" class="neon-btn"><i class="fas fa-meteor"></i> CREATE & SHARE LINK</button>
 </div>
-<div id="view" class="card" style="display:none">
-  <div id="viewContent"></div>
-  <button id="copyLink">🔗 Copy Shareable Link</button>
-  <button id="newBtn">✨ Create New</button>
+
+<div id="countdownSection" class="glass-card" style="max-width: 650px; margin: 20px auto; padding: 24px; display: none;">
+  <div id="countdownContent" style="text-align:center;"></div>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 24px;">
+    <button id="copyLinkBtn" class="neon-btn" style="background: linear-gradient(90deg,#2b6f8a,#00b4d8);"><i class="fas fa-link"></i> Copy Link</button>
+    <button id="shareBtn" class="neon-btn"><i class="fas fa-share-alt"></i> Share</button>
+    <button id="screenshotBtn" class="neon-btn" style="background: linear-gradient(90deg,#3a1c71,#d76d77);"><i class="fas fa-camera"></i> Screenshot</button>
+    <button id="musicBtn" class="neon-btn" style="background: linear-gradient(90deg,#1f4037,#99f2c8);"><i class="fas fa-music"></i> Tune</button>
+    <button id="newStoryBtn" class="neon-btn" style="background: linear-gradient(90deg,#4b6cb7,#182848);"><i class="fas fa-heart-broken"></i> New Story</button>
+  </div>
+  <footer>✨ Share the link — they'll see the same magic ✨</footer>
 </div>
+
 <script>
-  document.getElementById('generateBtn').onclick = () => {
+  // ================== LOVE QUOTES DATABASE ==================
+  const loveQuotes = [
+    "You are my today and all of my tomorrows. 💕",
+    "In a sea of people, my eyes will always search only for you. 🌊",
+    "Every love story is beautiful, but ours is my favorite. 📖",
+    "I still fall for you every single day. 🌙",
+    "You make my world brighter just by existing. ☀️",
+    "Together is my favorite place to be. 🏠",
+    "I love you more than all the stars in the sky. ✨",
+    "You had me at hello. 💫",
+    "My heart beats your name. ❤️",
+    "Forever is not long enough with you. ♾️"
+  ];
+  function getRandomQuote() { return loveQuotes[Math.floor(Math.random() * loveQuotes.length)]; }
+
+  // Helper: generate unique link data (all in URL)
+  function encodeData(data) {
+    return btoa(encodeURIComponent(JSON.stringify(data)));
+  }
+  function decodeData(encoded) {
+    try {
+      return JSON.parse(decodeURIComponent(atob(encoded)));
+    } catch(e) { return null; }
+  }
+
+  // Compress image to base64 with max width 400px
+  function compressImage(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxWidth = 400;
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+        img.onerror = () => resolve(null);
+      };
+      reader.onerror = () => resolve(null);
+    });
+  }
+
+  // compute days together & next anniversary
+  function computeDays(startStr) {
+    const start = new Date(startStr);
+    const now = new Date();
+    const diffDays = Math.floor((now - start) / (1000*60*60*24));
+    // next anniversary
+    let nextAnniv = new Date(now.getFullYear(), start.getMonth(), start.getDate());
+    if (nextAnniv < now) nextAnniv.setFullYear(now.getFullYear()+1);
+    const daysUntil = Math.ceil((nextAnniv - now) / (1000*60*60*24));
+    return { daysTogether: diffDays >=0 ? diffDays : 0, daysUntilAnniv: daysUntil };
+  }
+
+  // display countdown with romantic quotes
+  function renderCountdown(data) {
+    const { yourName, partnerName, startDate, customMsg, emotionalNote, imageBase64 } = data;
+    const { daysTogether, daysUntilAnniv } = computeDays(startDate);
+    const startObj = new Date(startDate);
+    const formattedStart = startObj.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    const imageHtml = imageBase64 ? `<img src="${imageBase64}" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:3px solid #ff66cc; margin:10px auto;">` : `<div style="font-size:3rem;">💑✨</div>`;
+    const randomLove = getRandomQuote();
+    document.getElementById('countdownContent').innerHTML = `
+      ${imageHtml}
+      <h2 class="glow-text" style="font-size:1.9rem;"><span class="heart-beat">❤️</span> ${escapeHtml(yourName)} & ${escapeHtml(partnerName)} <span class="heart-beat">❤️</span></h2>
+      <p><i class="fas fa-calendar-alt"></i> Together since ${formattedStart}</p>
+      <div style="background: rgba(0,0,0,0.4); border-radius: 50px; padding: 16px; margin: 20px 0;">
+        <div class="count-number">${daysTogether} days together</div>
+        <div style="margin-top: 8px;">✨ Next anniversary in <strong>${daysUntilAnniv}</strong> days ✨</div>
+      </div>
+      <div class="quote-box">
+        <i class="fas fa-quote-left"></i> ${randomLove} <i class="fas fa-quote-right"></i>
+        <button id="newQuoteBtn" style="background:none; border:none; color:cyan; margin-left:8px;"><i class="fas fa-sync-alt"></i> new quote</button>
+      </div>
+      ${customMsg ? `<div style="background:#ff66cc20; border-radius: 30px; padding:12px; margin:12px 0;">✨ “${escapeHtml(customMsg)}” ✨</div>` : ''}
+      ${emotionalNote ? `<div style="border-left: 3px solid #ff66cc; padding-left: 16px; margin:12px 0;"><i class="fas fa-feather"></i> ${escapeHtml(emotionalNote)}</div>` : ''}
+    `;
+    // new quote button listener
+    const newQuoteBtn = document.getElementById('newQuoteBtn');
+    if (newQuoteBtn) {
+      newQuoteBtn.onclick = () => {
+        const newQuote = getRandomQuote();
+        const quoteDiv = document.querySelector('.quote-box');
+        if (quoteDiv) {
+          quoteDiv.innerHTML = `<i class="fas fa-quote-left"></i> ${newQuote} <i class="fas fa-quote-right"></i>
+            <button id="newQuoteBtn" style="background:none; border:none; color:cyan; margin-left:8px;"><i class="fas fa-sync-alt"></i> new quote</button>`;
+          document.getElementById('newQuoteBtn').onclick = arguments.callee;
+        }
+      };
+    }
+  }
+
+  function escapeHtml(str) { return String(str).replace(/[&<>]/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
+
+  // main workflow
+  document.getElementById('generateBtn').onclick = async () => {
     const yourName = document.getElementById('yourName').value.trim();
     const partnerName = document.getElementById('partnerName').value.trim();
     const startDate = document.getElementById('startDate').value;
-    const msg = document.getElementById('msg').value;
-    if (!yourName || !partnerName || !startDate) { alert("Please fill names and date"); return; }
-    const data = { yourName, partnerName, startDate, msg };
-    const json = JSON.stringify(data);
-    const encoded = btoa(encodeURIComponent(json));
-    const url = window.location.origin + window.location.pathname + '?data=' + encoded;
-    window.history.pushState({}, '', url);
-    loadFromURL();
-  };
-  function loadFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const enc = params.get('data');
-    if (enc) {
-      const json = decodeURIComponent(atob(enc));
-      const data = JSON.parse(json);
-      const days = Math.floor((new Date() - new Date(data.startDate)) / (1000*60*60*24));
-      document.getElementById('gen').style.display = 'none';
-      document.getElementById('view').style.display = 'block';
-      document.getElementById('viewContent').innerHTML = `
-        <h2>❤️ ${escapeHtml(data.yourName)} & ${escapeHtml(data.partnerName)}</h2>
-        <p>Together since ${data.startDate}</p>
-        <div class="count">${days >= 0 ? days : 0} days together</div>
-        <p>${escapeHtml(data.msg) || ''}</p>
-      `;
-    } else {
-      document.getElementById('gen').style.display = 'block';
-      document.getElementById('view').style.display = 'none';
+    const customMsg = document.getElementById('customMsg').value;
+    const emotionalNote = document.getElementById('emotionalNote').value;
+    const imageFile = document.getElementById('imageUpload').files[0];
+
+    if (!yourName || !partnerName || !startDate) {
+      const errDiv = document.getElementById('genError');
+      errDiv.innerText = "💔 Please fill both names and the anniversary date.";
+      errDiv.style.display = 'block';
+      setTimeout(() => errDiv.style.display = 'none', 3000);
+      return;
     }
+    let imageBase64 = null;
+    if (imageFile) {
+      const compressed = await compressImage(imageFile);
+      if (compressed) imageBase64 = compressed;
+    }
+    const loveData = { yourName, partnerName, startDate, customMsg, emotionalNote, imageBase64 };
+    const encoded = encodeData(loveData);
+    const newUrl = window.location.origin + window.location.pathname + '?love=' + encoded;
+    window.history.pushState({}, '', newUrl);
+    loadFromUrl();
+  };
+
+  function loadFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const encoded = params.get('love');
+    if (encoded) {
+      const data = decodeData(encoded);
+      if (data && data.yourName && data.partnerName && data.startDate) {
+        document.getElementById('generatorSection').style.display = 'none';
+        document.getElementById('countdownSection').style.display = 'block';
+        renderCountdown(data);
+        currentData = data;
+        return;
+      }
+    }
+    document.getElementById('generatorSection').style.display = 'block';
+    document.getElementById('countdownSection').style.display = 'none';
   }
-  function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-  document.getElementById('copyLink')?.addEventListener('click', () => {
+
+  let currentData = null;
+  function getCurrentLoveUrl() { return window.location.href; }
+
+  document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
     navigator.clipboard.writeText(window.location.href);
-    alert("✅ Link copied! Share with anyone.");
+    alert("✅ Love link copied! Share with your partner.");
   });
-  document.getElementById('newBtn')?.addEventListener('click', () => {
+  document.getElementById('shareBtn')?.addEventListener('click', () => {
+    if (navigator.share) navigator.share({ title: 'Our Eternal Countdown', url: window.location.href });
+    else alert("Tap copy link instead");
+  });
+  document.getElementById('screenshotBtn')?.addEventListener('click', () => {
+    const element = document.getElementById('countdownSection');
+    html2canvas(element, { scale: 2, backgroundColor: null }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'romantic_countdown.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  });
+  document.getElementById('newStoryBtn')?.addEventListener('click', () => {
     window.location.href = window.location.pathname;
   });
-  loadFromURL();
+
+  // preview image
+  document.getElementById('imageUpload').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        document.getElementById('imagePreview').innerHTML = `<img src="${ev.target.result}" class="preview-img">`;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      document.getElementById('imagePreview').innerHTML = '';
+    }
+  });
+
+  // floating hearts animation
+  const canvas = document.getElementById('heartCanvas');
+  let ctx = canvas.getContext('2d');
+  let hearts = [];
+  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+  for (let i=0;i<35;i++) {
+    hearts.push({
+      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+      size: Math.random() * 20 + 10, speedY: Math.random() * 1 + 0.5, opacity: Math.random() * 0.5 + 0.3
+    });
+  }
+  function drawHearts() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let h of hearts) {
+      ctx.font = `${h.size}px "Font Awesome 6 Free"`;
+      ctx.fillStyle = `rgba(255, 80, 150, ${h.opacity})`;
+      ctx.fillText("❤️", h.x, h.y);
+      h.y -= h.speedY;
+      if (h.y < -30) { h.y = canvas.height + 30; h.x = Math.random() * canvas.width; }
+    }
+    requestAnimationFrame(drawHearts);
+  }
+  drawHearts();
+
+  // simple ambient music (web audio)
+  let audioCtx = null, musicOn = false, gainNode = null, osc1, osc2;
+  async function startMusic() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    gainNode = audioCtx.createGain();
+    gainNode.gain.value = 0.15;
+    gainNode.connect(audioCtx.destination);
+    osc1 = audioCtx.createOscillator();
+    osc2 = audioCtx.createOscillator();
+    osc1.type = 'sine'; osc2.type = 'triangle';
+    osc1.frequency.value = 261.63; osc2.frequency.value = 329.63;
+    osc1.connect(gainNode); osc2.connect(gainNode);
+    osc1.start(); osc2.start();
+    const lfo = audioCtx.createOscillator();
+    const lfoGain = audioCtx.createGain();
+    lfo.frequency.value = 0.15;
+    lfoGain.gain.value = 6;
+    lfo.connect(lfoGain);
+    lfoGain.connect(osc1.frequency);
+    lfoGain.connect(osc2.frequency);
+    lfo.start();
+  }
+  document.getElementById('musicBtn')?.addEventListener('click', async () => {
+    if (!musicOn) {
+      await startMusic();
+      if (audioCtx) await audioCtx.resume();
+      if (gainNode) gainNode.gain.value = 0.15;
+      musicOn = true;
+      document.getElementById('musicBtn').innerHTML = '<i class="fas fa-music"></i> On';
+    } else {
+      if (gainNode) gainNode.gain.value = 0;
+      musicOn = false;
+      document.getElementById('musicBtn').innerHTML = '<i class="fas fa-music"></i> Off';
+    }
+  });
+
+  loadFromUrl();
 </script>
 </body>
 </html>
