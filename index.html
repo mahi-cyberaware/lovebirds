@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>💞 Eternal Bond · Romantic Countdown 💞</title>
+  <title>💞 Eternal Vows · Multi‑Language Love Countdown 💞</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -103,6 +103,7 @@
       font-size: 0.8rem;
       border: 1px solid cyan;
     }
+    .font-btn.active { background: #ff4d6d; border-color: white; }
     .count-number { font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg,#fff,#ff99cc); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .quote-card {
       background: rgba(0,0,0,0.5);
@@ -120,7 +121,7 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
       backdrop-filter: blur(20px);
       z-index: 2000;
       display: flex;
@@ -131,7 +132,7 @@
     }
     @keyframes zoomPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .popup-quote {
-      font-size: 2rem;
+      font-size: 1.4rem;
       text-align: center;
       max-width: 85%;
       background: rgba(0,0,0,0.7);
@@ -139,9 +140,25 @@
       border-radius: 60px;
       font-family: 'Dancing Script', cursive;
       border: 2px solid white;
+      white-space: pre-line;
+      line-height: 1.5;
     }
+    .lang-selector {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 15px 0;
+    }
+    .lang-btn {
+      background: #222;
+      padding: 8px 20px;
+      border-radius: 60px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .lang-btn.active { background: #ff4d6d; }
     footer { font-size: 0.7rem; text-align: center; margin-top: 20px; opacity: 0.5; }
-    @media (max-width: 650px) { .count-number { font-size: 2rem; } .glass-card { padding: 1.2rem; } }
+    @media (max-width: 650px) { .count-number { font-size: 2rem; } .glass-card { padding: 1.2rem; } .popup-quote { font-size: 1rem; } }
   </style>
 </head>
 <body>
@@ -149,18 +166,18 @@
 <canvas id="floating-hearts"></canvas>
 
 <!-- GENERATOR SECTION -->
-<div id="generatorSection" class="glass-card" style="max-width: 650px; margin: 20px auto;">
+<div id="generatorSection" class="glass-card" style="max-width: 700px; margin: 20px auto;">
   <div style="text-align:center;">
     <i class="fas fa-heart heart-beat" style="font-size: 2.2rem; color: #ff66cc;"></i>
-    <h1 style="font-size: 1.8rem;">✨ RELATIONSHIP COUNTDOWN ✨</h1>
-    <p>Create your magical, shareable love page</p>
+    <h1 style="font-size: 1.8rem;">✨ ETERNAL VOWS ✨</h1>
+    <p>Create your multi‑language love page</p>
   </div>
   <div id="genError" style="color:#ffaaaa; background:#ff000033; border-radius: 30px; padding: 8px; margin: 10px 0; display:none;"></div>
   
   <label>💑 Relationship Type</label>
   <select id="relType">
-    <option value="Girlfriend">💖 Girlfriend</option>
     <option value="Wife">💍 Wife</option>
+    <option value="Girlfriend">💖 Girlfriend</option>
     <option value="Best Friend">🌟 Best Friend</option>
     <option value="Soulmate">🌌 Soulmate</option>
   </select>
@@ -171,7 +188,7 @@
   </div>
   
   <label>💕 Your Name</label><input id="yourName" placeholder="e.g., Mahi">
-  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Priya">
+  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Nancy">
   
   <label>✍️ Font Style for Names</label>
   <div class="font-selector">
@@ -187,12 +204,18 @@
   <label>💬 Custom Romantic Message</label><input id="customMsg" placeholder="You are my everything...">
   <label>📝 Emotional Note</label><textarea id="emotionalNote" rows="2" placeholder="A personal letter to my love..."></textarea>
   
+  <!-- Optional Quote Image -->
+  <label>🖼️ Optional Quote Image (will appear in popup)</label>
+  <input type="file" id="quoteImage" accept="image/*">
+  <div id="quoteImagePreview"></div>
+  
   <button id="generateBtn" class="neon-btn"><i class="fas fa-meteor"></i> GENERATE & GET SHAREABLE LINK</button>
 </div>
 
 <!-- COUNTDOWN VIEWER -->
-<div id="countdownSection" class="glass-card" style="max-width: 750px; margin: 20px auto; display: none;">
+<div id="countdownSection" class="glass-card" style="max-width: 800px; margin: 20px auto; display: none;">
   <div id="countdownContent"></div>
+  <div class="lang-selector" id="langSelector"></div>
   <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 24px;">
     <button id="copyLinkBtn" class="neon-btn" style="background: linear-gradient(90deg,#2b6f8a,#00b4d8);"><i class="fas fa-link"></i> Copy Link</button>
     <button id="shareBtn" class="neon-btn"><i class="fas fa-share-alt"></i> Share</button>
@@ -200,29 +223,111 @@
     <button id="musicBtn" class="neon-btn"><i class="fas fa-music"></i> Ambience</button>
     <button id="newStoryBtn" class="neon-btn"><i class="fas fa-heart-broken"></i> New Story</button>
   </div>
-  <footer>✨ Click any quote to see a magical animation ✨</footer>
+  <footer>✨ Tap any quote → magical popup with image & shayari ✨</footer>
 </div>
 
 <script>
-  // ================== RELATIONSHIP BASED QUOTES ==================
-  const quoteDB = {
-    Girlfriend: ["Every day with you feels like a fairytale. 💖", "You make my heart skip a beat, girlfriend. 💓", "Falling for you more each sunrise. 🌅", "Your smile is my favorite view. 😊", "Being yours is the best thing that happened to me. 🥰"],
-    Wife: ["My wife, my queen, my forever. 👑", "Every moment with you is a blessing. 💍", "You are my home, my everything. 🏡", "I'd choose you again in every lifetime. ♾️", "Your love makes life complete. ❤️"],
-    "Best Friend": ["You are my rock, my best friend for life. 🤝", "Life is better with you by my side. 🌟", "Through thick and thin, you're my person. 💕", "Laughing with you is my therapy. 😂", "Best friends who are soulmates. ✨"],
-    Soulmate: ["We found each other in a chaotic world. 🌍", "Soulmates are not found, they recognize. 🔥", "Our souls dance together. 💃🕺", "You complete me in ways words cannot. 🌙", "From the first hello, I knew. 💫"]
+  // ================== MULTI-LANGUAGE QUOTES DATABASE (3-5 lines each, 5 per type per language) ==================
+  const quotesDB = {
+    Wife: {
+      English: [
+        "You are my queen, my home, my peace.\nEvery morning I wake up grateful for you.\nIn your arms, I have found forever.",
+        "The moment I saw you, I knew.\nYou are not just my wife, but my destiny.\nThank you for choosing me every day.",
+        "Through every storm and every sunshine,\nYou stood by me like a rock.\nMy love for you only grows deeper.",
+        "I promise to hold your hand till the end of time.\nTo laugh with you, cry with you, grow old with you.\nYou are my greatest blessing.",
+        "No words can capture what you mean to me.\nYou are the poetry I never knew I could write.\nI love you, my eternal wife."
+      ],
+      Hindi: [
+        "तुम मेरी रानी हो, मेरा घर, मेरी शांति।\nहर सुबह तुम्हारे लिए शुक्रगुज़ार हूँ।\nतुम्हारी बाहों में मुझे हमेशा मिल गया।",
+        "जिस दिन तुमसे मिला, लगा मंज़िल मिल गई।\nतुम सिर्फ पत्नी नहीं, मेरी किस्मत हो।\nहर दिन चुनने के लिए शुक्रिया।",
+        "हर तूफान और हर धूप में,\nतुम मेरे साथ खड़ी रही।\nतुम्हारे लिए मेरा प्यार और गहरा होता जाता है।",
+        "वादा है तेरा हाथ थामे रखूंगा,\nतेरे संग हंसूं, रोऊं, बूढ़ा हो जाऊं।\nतू मेरी सबसे बड़ी दौलत है।",
+        "शब्द कम हैं तुझे बयां करने को,\nतू वो कविता है जो मैंने कभी लिखी नहीं थी।\nतुझसे प्यार है, मेरी हमसफर।"
+      ],
+      Marathi: [
+        "तू माझी राणी आहेस, माझं घर, माझी शांती.\nप्रत्येक सकाळी तुझ्यासाठी कृतज्ञ असतो.\nतुझ्या बाहूत मला सदैव सापडलं.",
+        "ज्या दिवशी तुला भेटलो, वाटलं गंतव्य सापडलं.\nतू फक्त बायको नाहीस, तर माझं नशीब आहेस.\nरोज निवडण्याबद्दल धन्यवाद.",
+        "प्रत्येक वादळात आणि प्रत्येक ऊन्हात,\nतू माझ्यासोबत उभी राहिलीस.\nतुझ्यावरील प्रेम दिवसेंदिवस वाढतं.",
+        "वचन आहे तुझा हात धरून ठेवेन,\nतुझ्यासोबत हसेल, रडेन, म्हातारा होईल.\nतू माझी सर्वात मोठी संपत्ती आहेस.",
+        "शब्द कमी आहेत तुला व्यक्त करायला,\nतू ती कविता आहेस जी मी कधी लिहिली नव्हती.\nतुझ्यावर प्रेम आहे, माझ्या सोबतीणी."
+      ]
+    },
+    Girlfriend: {
+      English: [
+        "Every text from you makes me smile like crazy.\nYou’ve turned my ordinary days into magic.\nI fall for you more each sunrise.",
+        "You are the melody I never want to stop hearing.\nWith you, life feels like a romantic movie.\nLet’s never say goodbye.",
+        "I love the way you laugh, the way you dream.\nYou make me believe in soulmates.\nThank you for being my girlfriend.",
+        "When I’m with you, I forget the world exists.\nYou are my favorite hello and hardest goodbye.\nStay with me forever.",
+        "Your smile is my favorite artwork.\nYour voice is my lullaby.\nI am so lucky to call you mine."
+      ],
+      Hindi: [
+        "तेरा हर मैसेज मुझे पागलों की तरह हँसाता है।\nतूने मेरे साधारण दिनों को जादू बना दिया।\nहर सुबह तुझसे प्यार और बढ़ जाता है।",
+        "तू वो धुन है जो मैं हमेशा सुनना चाहता हूँ।\nतेरे संग जिंदगी रोमांटिक फिल्म लगती है।\nकभी अलविदा मत कहना।",
+        "मुझे तेरी हंसी पसंद है, तेरे सपने पसंद हैं।\nतूने मुझे यकीन दिलाया कि साउलमेट होते हैं।\nमेरी गर्लफ्रेंड होने के लिए शुक्रिया।",
+        "जब तेरे संग होता हूँ, दुनिया भूल जाता हूँ।\nतू मेरा पसंदीदा हैलो और सख्त गुडबाय है।\nहमेशा मेरे साथ रहना।",
+        "तेरी मुस्कान मेरी पसंदीदा कलाकृति है।\nतेरी आवाज मेरी लोरी है।\nतुझे अपना कहना बड़ी किस्मत वाली बात है।"
+      ],
+      Marathi: [
+        "तुझा प्रत्येक मॅसेज मला वेड्यासारखं हसवतो.\nतू माझे सामान्य दिवस जादूत बदललेस.\nप्रत्येक सूर्योदयाला तुझ्यावर प्रेम वाढतं.",
+        "तू ती सुर आहेस जी मी सतत ऐकू इच्छितो.\nतुझ्यासोबत आयुष्य रोमँटिक चित्रपटासारखं वाटतं.\nकधीही निरोप देऊ नको.",
+        "मला तुझं हसणं आवडतं, तुझे स्वप्न आवडतात.\nतू मला सोलमेट्सवर विश्वास दिलास.\nमाझी गर्लफ्रेंड असल्याबद्दल धन्यवाद.",
+        "जेव्हा तुझ्यासोबत असतो, जग विसरतो.\nतू माझा आवडता हॅलो आणि कठीण गुडबाय आहेस.\nनेहमी माझ्यासोबत रहा.",
+        "तुझं स्मित माझी आवडती कलाकृती आहे.\nतुझा आवाज माझी लोरी आहे.\nतुला माझं म्हणणं मोठं भाग्याचं."
+      ]
+    },
+    "Best Friend": {
+      English: [
+        "You are my crazy partner in crime.\nLife’s best memories are painted with you.\nThank you for being my best friend forever.",
+        "No judgment, just pure love and laughter.\nYou’ve seen my worst and still stayed.\nI cherish you deeply.",
+        "We don’t need a reason to celebrate.\nJust your presence makes everything better.\nStay goofy, stay mine.",
+        "You are the sibling I chose for myself.\nThrough heartbreaks and victories, you held my hand.\nI love you, my bestie.",
+        "Miles apart or sitting next to me,\nYou always feel like home.\nOur friendship is my greatest treasure."
+      ],
+      Hindi: [
+        "तू मेरा पागल साथी है अपराधों में।\nजिंदगी की बेहतरीन यादें तेरे संग बनीं।\बेस्ट फ्रेंड होने के लिए शुक्रिया।",
+        "कोई जजमेंट नहीं, बस प्यार और हँसी।\nतूने मेरा बुरा भी देखा फिर भी रुकी।\nमैं तुझे बहुत संजोकर रखता हूँ।",
+        "किसी वजह की जरूरत नहीं खुश होने के लिए।\nतेरा साथ सब कुछ बेहतर बना देता है।\nपागल बनी रह, मेरी बनी रह।",
+        "तू वो भाई/बहन है जो मैंने खुद चुना।\nदिल टूटने और जीत में, तूने हाथ थामा।\मुझे तुझसे प्यार है, मेरे बेस्टी।",
+        "मीलों दूर या बगल में बैठे,\nतू हमेशा घर जैसा लगता है।\nहमारी दोस्ती मेरा सबसे बड़ा खजाना है।"
+      ],
+      Marathi: [
+        "तू माझा वेडा गुन्हेगारी सोबती आहेस.\nआयुष्यातील सर्वोत्तम आठवणी तुझ्यासोबत रंगल्या.\nबेस्ट फ्रेंड असल्याबद्दल धन्यवाद.",
+        "निवाडा नाही, फक्त प्रेम आणि हशा.\nतू माझं वाईट पाहिलं तरी थांबलीस.\nमी तुला खूप जपतो.",
+        "खुश राहण्यासाठी कारण हवं असं नाही.\nतुझी साथ सगळं चांगलं करते.\nवेडी राहा, माझी राहा.",
+        "तू ती बहीण/भाऊ आहेस जी मी स्वतः निवडला.\nहृदयभंगात आणि विजयात, तू हात धरला.\nमी तुझ्यावर प्रेम करतो, माझ्या बेस्टी.",
+        "मैलो दूर किंवा शेजारी बसला,\nतू नेहमी घरासारखा वाटतोस.\nआमची मैत्री ही माझी सर्वात मोठी संपत्ती आहे."
+      ]
+    },
+    Soulmate: {
+      English: [
+        "We met as strangers, stayed as soulmates.\nOur souls recognized each other instantly.\nI will find you in every lifetime.",
+        "You complete me in ways I never knew.\nWith you, silence speaks volumes.\nYou are my cosmic twin.",
+        "No distance can break what destiny wrote.\nYou are my yesterday, today, and tomorrow.\nI love you beyond words.",
+        "Your heart beats the same rhythm as mine.\nWe are two bodies, one soul.\nThank you for being my forever.",
+        "Every love story is beautiful, but ours is my favorite.\nYou are the answer to every prayer I never said.\nEternity is not enough with you."
+      ],
+      Hindi: [
+        "हम अजनबी मिले, साउलमेट बनके रहे।\nहमारी आत्माओं ने एक दूसरे को तुरंत पहचान लिया।\nहर जन्म में तुझे ढूंढूंगा।",
+        "तूने मुझे उन तरीकों से पूरा किया जो मैं नहीं जानता था।\nतेरे संग चुप्पी भी बोलती है।\nतू मेरा ब्रह्मांडीय जुड़वां है।",
+        "कोई दूरी तोड़ नहीं सकती जो किस्मत ने लिखा।\nतू मेरा कल, आज और कल है।\nमैं तुझसे शब्दों से परे प्यार करता हूँ।",
+        "तेरा दिल उसी लय में धड़कता है जैसे मेरा।\nहम दो शरीर, एक आत्मा हैं।\nहमेशा के लिए मेरी होने का शुक्रिया।",
+        "हर प्रेम कहानी सुंदर है, पर हमारी सबसे प्यारी।\nतू हर उस दुआ का जवाब है जो मैंने कभी नहीं मांगी।\nतेरे साथ अनंत कम है।"
+      ],
+      Marathi: [
+        "आम्ही अनोळखी भेटलो, सोलमेट बनून राहिलो.\nआमच्या आत्म्यांनी एकमेकांना ओळखलं.\nप्रत्येक जन्मात तुला शोधेन.",
+        "तू मला अशा प्रकारे पूर्ण केलंस जे मला माहित नव्हतं.\nतुझ्यासोबत शांतता देखील बोलते.\nतू माझा विश्व जुळवा आहेस.",
+        "कोणतेही अंतर तोडू शकत नाही जे नशीबाने लिहिलं.\nतू माझा काल, आज आणि उद्या आहेस.\nमी तुझ्यावर शब्दांच्या पलीकडे प्रेम करतो.",
+        "तुझं हृदय त्याच तालात धडधडतं जसे माझं.\nआम्ही दोन शरीरे, एक आत्मा आहोत.\nसदैव माझी असल्याबद्दल धन्यवाद.",
+        "प्रत्येक प्रेमकथा सुंदर आहे, पण आमची सर्वात प्रिय.\nतू त्या प्रत्येक प्रार्थनेचं उत्तर आहेस जी मी कधी विचारली नाही.\nतुझ्यासोबत अनंत कमी आहे."
+      ]
+    }
   };
-  
-  function getRandomQuote(relType) {
-    const arr = quoteDB[relType] || quoteDB.Girlfriend;
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-  
-  // Helper: encode data to URL
+
+  // Helper functions
   function encodeData(obj) { return btoa(encodeURIComponent(JSON.stringify(obj))); }
   function decodeData(str) { try { return JSON.parse(decodeURIComponent(atob(str))); } catch(e) { return null; } }
   
-  // Compress image to base64 (max width 300)
-  function compressImage(file) {
+  function compressImage(file, maxW=300) {
     return new Promise((resolve) => {
       if (!file) return resolve(null);
       const reader = new FileReader();
@@ -233,7 +338,6 @@
         img.onload = () => {
           const canvas = document.createElement('canvas');
           let w = img.width, h = img.height;
-          const maxW = 300;
           if (w > maxW) { h = (h * maxW) / w; w = maxW; }
           canvas.width = w; canvas.height = h;
           const ctx = canvas.getContext('2d');
@@ -246,7 +350,6 @@
     });
   }
   
-  // days calculation
   function computeDays(startStr) {
     const start = new Date(startStr);
     const now = new Date();
@@ -257,17 +360,31 @@
     return { daysTogether: diffDays >=0 ? diffDays : 0, daysUntilAnniv: daysUntil };
   }
   
-  // Show quote popup with animation & color burst
-  function showQuotePopup(quote, color) {
+  let currentData = null;
+  let currentLanguage = "English";
+  
+  function getRandomQuote(relType, lang) {
+    const arr = quotesDB[relType]?.[lang] || quotesDB.Wife.English;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+  
+  function showQuotePopup(quote, imageBase64, color) {
     const overlay = document.createElement('div');
     overlay.className = 'popup-overlay';
-    overlay.style.background = `radial-gradient(circle, ${color}20, #000000dd)`;
-    overlay.innerHTML = `<div class="popup-quote" style="color:${color}; text-shadow: 0 0 15px ${color};">✨ ${quote} ✨</div>`;
+    overlay.style.background = `radial-gradient(circle, ${color}30, #000000dd)`;
+    let imgHtml = '';
+    if (imageBase64) imgHtml = `<img src="${imageBase64}" style="max-width:80%; max-height:200px; border-radius:30px; margin-bottom:20px; border:2px solid white;">`;
+    overlay.innerHTML = `
+      <div class="popup-quote" style="color:${color}; text-shadow:0 0 10px ${color};">
+        ${imgHtml}
+        <div style="white-space:pre-line;">${escapeHtml(quote)}</div>
+      </div>
+    `;
     document.body.appendChild(overlay);
-    // floating particles inside popup
-    for (let i=0;i<50;i++) {
+    // floating particles
+    for (let i=0;i<60;i++) {
       const particle = document.createElement('div');
-      particle.innerHTML = ['❤️','💖','✨','💫','🌸','💕'][Math.floor(Math.random()*6)];
+      particle.innerHTML = ['❤️','💖','✨','💫','🌸','💕','🌟'][Math.floor(Math.random()*7)];
       particle.style.position = 'absolute';
       particle.style.left = Math.random()*100 + '%';
       particle.style.top = '50%';
@@ -278,24 +395,21 @@
     }
     overlay.onclick = () => overlay.remove();
     const style = document.createElement('style');
-    style.textContent = `@keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity:1; } 100% { transform: translateY(-200px) rotate(360deg); opacity:0; } }`;
+    style.textContent = `@keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity:1; } 100% { transform: translateY(-250px) rotate(360deg); opacity:0; } }`;
     document.head.appendChild(style);
   }
   
-  // Render countdown page (viewer)
   function renderCountdown(data) {
-    const { yourName, partnerName, startDate, customMsg, emotionalNote, myPhoto, partnerPhoto, relType, nameFont } = data;
+    const { yourName, partnerName, startDate, customMsg, emotionalNote, myPhoto, partnerPhoto, relType, nameFont, quoteImage } = data;
     const { daysTogether, daysUntilAnniv } = computeDays(startDate);
     const formattedStart = new Date(startDate).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-    const randomQuote = getRandomQuote(relType);
-    const randomColor = `hsl(${Math.random()*60 + 300}, 80%, 65%)`;
+    const fontFamily = nameFont || "'Inter', sans-serif";
     const imageHtml = `
       <div class="dual-image">
         ${myPhoto ? `<div class="img-preview"><img src="${myPhoto}"><br>❤️ ${escapeHtml(yourName)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(yourName)}</div>`}
         ${partnerPhoto ? `<div class="img-preview"><img src="${partnerPhoto}"><br>💖 ${escapeHtml(partnerName)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(partnerName)}</div>`}
       </div>
     `;
-    const fontFamily = nameFont || "'Inter', sans-serif";
     document.getElementById('countdownContent').innerHTML = `
       ${imageHtml}
       <h2 style="font-family:${fontFamily}; font-size:2rem; text-align:center;"><span class="heart-beat">❤️</span> ${escapeHtml(yourName)} & ${escapeHtml(partnerName)} <span class="heart-beat">❤️</span></h2>
@@ -304,23 +418,48 @@
         <div class="count-number">${daysTogether} days together</div>
         <div>✨ Next anniversary in ${daysUntilAnniv} days ✨</div>
       </div>
-      <div class="quote-card" id="dynamicQuoteCard" style="border-left-color: ${randomColor}; color:${randomColor};">
-        <i class="fas fa-quote-left"></i> ${randomQuote} <i class="fas fa-quote-right"></i>
-        <div><small style="opacity:0.7;">✨ click me for magic ✨</small></div>
-      </div>
+      <div id="quoteContainer"></div>
       ${customMsg ? `<div style="background:#ff66cc20; border-radius: 30px; padding:12px; margin:12px 0;">✨ “${escapeHtml(customMsg)}” ✨</div>` : ''}
       ${emotionalNote ? `<div style="border-left: 3px solid #ff66cc; padding-left: 16px; margin:12px 0;"><i class="fas fa-feather"></i> ${escapeHtml(emotionalNote)}</div>` : ''}
     `;
-    // Attach quote click event with random color & popup
-    const quoteDiv = document.getElementById('dynamicQuoteCard');
-    if (quoteDiv) {
-      const currentQuote = randomQuote;
-      quoteDiv.onclick = () => {
-        const newColor = `hsl(${Math.random()*360}, 80%, 65%)`;
-        quoteDiv.style.borderLeftColor = newColor;
-        quoteDiv.style.color = newColor;
-        showQuotePopup(currentQuote, newColor);
+    // Language selector
+    const langSelector = document.getElementById('langSelector');
+    langSelector.innerHTML = `
+      <div class="lang-btn ${currentLanguage==='English'?'active':''}" data-lang="English">🇬🇧 English</div>
+      <div class="lang-btn ${currentLanguage==='Hindi'?'active':''}" data-lang="Hindi">🇮🇳 हिंदी</div>
+      <div class="lang-btn ${currentLanguage==='Marathi'?'active':''}" data-lang="Marathi">🇮🇳 मराठी</div>
+    `;
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.onclick = () => {
+        currentLanguage = btn.getAttribute('data-lang');
+        updateQuote(relType, quoteImage);
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
       };
+    });
+    updateQuote(relType, quoteImage);
+  }
+  
+  function updateQuote(relType, quoteImageBase64) {
+    const quote = getRandomQuote(relType, currentLanguage);
+    const randomColor = `hsl(${Math.random()*60 + 300}, 80%, 65%)`;
+    const container = document.getElementById('quoteContainer');
+    if (container) {
+      container.innerHTML = `
+        <div class="quote-card" id="dynamicQuoteCard" style="border-left-color: ${randomColor}; color:${randomColor};">
+          <i class="fas fa-quote-left"></i> ${escapeHtml(quote)} <i class="fas fa-quote-right"></i>
+          <div><small style="opacity:0.7;">✨ click for magic ✨</small></div>
+        </div>
+      `;
+      const quoteDiv = document.getElementById('dynamicQuoteCard');
+      if (quoteDiv) {
+        quoteDiv.onclick = () => {
+          const newColor = `hsl(${Math.random()*360}, 80%, 65%)`;
+          quoteDiv.style.borderLeftColor = newColor;
+          quoteDiv.style.color = newColor;
+          showQuotePopup(quote, quoteImageBase64, newColor);
+        };
+      }
     }
   }
   
@@ -336,6 +475,7 @@
     const relType = document.getElementById('relType').value;
     const myPhotoFile = document.getElementById('myPhoto').files[0];
     const partnerPhotoFile = document.getElementById('partnerPhoto').files[0];
+    const quoteImageFile = document.getElementById('quoteImage').files[0];
     const nameFont = document.querySelector('.font-btn.active')?.getAttribute('data-font') || "'Inter', sans-serif";
     
     if (!yourName || !partnerName || !startDate) {
@@ -345,11 +485,11 @@
       setTimeout(() => err.style.display = 'none', 3000);
       return;
     }
-    let myPhotoB64 = null, partnerPhotoB64 = null;
-    if (myPhotoFile) myPhotoB64 = await compressImage(myPhotoFile);
-    if (partnerPhotoFile) partnerPhotoB64 = await compressImage(partnerPhotoFile);
+    let myPhotoB64 = await compressImage(myPhotoFile);
+    let partnerPhotoB64 = await compressImage(partnerPhotoFile);
+    let quoteImageB64 = await compressImage(quoteImageFile, 400);
     
-    const loveData = { yourName, partnerName, startDate, customMsg, emotionalNote, relType, myPhoto: myPhotoB64, partnerPhoto: partnerPhotoB64, nameFont };
+    const loveData = { yourName, partnerName, startDate, customMsg, emotionalNote, relType, myPhoto: myPhotoB64, partnerPhoto: partnerPhotoB64, nameFont, quoteImage: quoteImageB64 };
     const encoded = encodeData(loveData);
     const newUrl = window.location.origin + window.location.pathname + '?love=' + encoded;
     window.history.pushState({}, '', newUrl);
@@ -373,13 +513,13 @@
     document.getElementById('countdownSection').style.display = 'none';
   }
   
-  let currentData = null;
+  // Event listeners
   document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
     navigator.clipboard.writeText(window.location.href);
     alert("✅ Love link copied! Share it anywhere.");
   });
   document.getElementById('shareBtn')?.addEventListener('click', () => {
-    if (navigator.share) navigator.share({ title: 'Our Eternal Bond', url: window.location.href });
+    if (navigator.share) navigator.share({ title: 'Eternal Vows', url: window.location.href });
     else alert("Use copy link button");
   });
   document.getElementById('screenshotBtn')?.addEventListener('click', () => {
@@ -395,15 +535,13 @@
     window.location.href = window.location.pathname;
   });
   
-  // Font selector active
-  const fontBtns = document.querySelectorAll('.font-btn');
-  fontBtns.forEach(btn => {
+  // Font selector
+  document.querySelectorAll('.font-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      fontBtns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     });
   });
-  // Set default active font
   document.querySelector('.font-btn')?.classList.add('active');
   
   // Image previews
@@ -411,7 +549,7 @@
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = ev => document.getElementById('myPreview').innerHTML = `<img src="${ev.target.result}" style="width:80px; height:80px; border-radius:50%; border:2px solid cyan;">`;
+      reader.onload = ev => document.getElementById('myPreview').innerHTML = `<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:50%;border:2px solid cyan;">`;
       reader.readAsDataURL(file);
     } else document.getElementById('myPreview').innerHTML = '';
   });
@@ -419,9 +557,17 @@
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = ev => document.getElementById('partnerPreview').innerHTML = `<img src="${ev.target.result}" style="width:80px; height:80px; border-radius:50%; border:2px solid magenta;">`;
+      reader.onload = ev => document.getElementById('partnerPreview').innerHTML = `<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:50%;border:2px solid magenta;">`;
       reader.readAsDataURL(file);
     } else document.getElementById('partnerPreview').innerHTML = '';
+  });
+  document.getElementById('quoteImage').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = ev => document.getElementById('quoteImagePreview').innerHTML = `<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:20px;border:1px solid cyan;">`;
+      reader.readAsDataURL(file);
+    } else document.getElementById('quoteImagePreview').innerHTML = '';
   });
   
   // Floating hearts animation
@@ -447,7 +593,7 @@
   }
   drawHearts();
   
-  // Ambient music (simple)
+  // Ambient music
   let audioCtx = null, musicOn = false, gainNode = null;
   async function startMusic() {
     if (audioCtx) return;
@@ -487,4 +633,4 @@
   loadFromUrl();
 </script>
 </body>
-</html>html>
+</html>
