@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>💞 Eternal Vows · Love Countdown with Visual Quotes 💞</title>
+  <title>💞 Eternal Vows · Ultimate Love Experience 💞</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -106,7 +107,7 @@
     .font-btn.active { background: #ff4d6d; border-color: white; }
     .count-number { font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg,#fff,#ff99cc); -webkit-background-clip: text; background-clip: text; color: transparent; }
     
-    /* QUOTE CARD WITH BACKGROUND IMAGE (4:5 ratio) */
+    /* QUOTE CARD */
     .quote-card {
       position: relative;
       width: 100%;
@@ -120,11 +121,7 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }
-    .quote-card:hover {
-      transform: scale(1.01);
-      box-shadow: 0 0 30px rgba(255,80,120,0.6);
-    }
-    /* Text overlay */
+    .quote-card:hover { transform: scale(1.01); box-shadow: 0 0 30px rgba(255,80,120,0.6); }
     .quote-overlay {
       position: absolute;
       bottom: 0;
@@ -140,40 +137,40 @@
       transition: all 0.3s;
       border-top: 2px solid transparent;
     }
-    .quote-card:hover .quote-overlay {
-      border-top: 2px solid #ff66cc;
-      background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.6));
-      box-shadow: 0 -5px 15px rgba(255,102,204,0.3);
+    .quote-card:hover .quote-overlay { border-top: 2px solid #ff66cc; background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.6)); }
+    .quote-text { white-space: pre-line; color: white; text-shadow: 0 0 5px black; font-weight: 600; }
+    .tap-hint { font-size: 0.7rem; opacity: 0.8; margin-top: 6px; letter-spacing: 1px; }
+    
+    /* Love Meter */
+    .love-meter { margin: 20px 0; text-align: center; }
+    .love-slider { width: 100%; accent-color: #ff4d6d; }
+    .love-value { font-size: 2rem; font-weight: bold; color: #ff99cc; }
+    
+    /* Virtual Gift */
+    .gift-container { text-align: center; margin: 20px 0; }
+    .gift-box {
+      font-size: 4rem;
+      cursor: pointer;
+      transition: transform 0.3s, filter 0.3s;
+      display: inline-block;
     }
-    .quote-text {
-      white-space: pre-line;
-      color: white;
-      text-shadow: 0 0 5px black;
-      font-weight: 600;
-    }
-    .tap-hint {
-      font-size: 0.7rem;
-      opacity: 0.8;
-      margin-top: 6px;
-      letter-spacing: 1px;
-    }
-    @media (max-width: 650px) {
-      .quote-overlay { font-size: 1rem; padding: 12px; }
+    .gift-box:hover { transform: scale(1.1); filter: drop-shadow(0 0 15px gold); }
+    .gift-message {
+      margin-top: 10px;
+      background: #ff66cc30;
+      border-radius: 60px;
+      padding: 10px;
+      display: none;
     }
     
-    .lang-selector {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 15px 0;
+    /* Responsive */
+    @media (max-width: 650px) {
+      .count-number { font-size: 2rem; }
+      .glass-card { padding: 1.2rem; }
+      .quote-overlay { font-size: 1rem; padding: 12px; }
     }
-    .lang-btn {
-      background: #222;
-      padding: 8px 20px;
-      border-radius: 60px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+    .lang-selector { display: flex; justify-content: center; gap: 12px; margin: 15px 0; }
+    .lang-btn { background: #222; padding: 8px 20px; border-radius: 60px; cursor: pointer; font-weight: bold; }
     .lang-btn.active { background: #ff4d6d; }
     footer { font-size: 0.7rem; text-align: center; margin-top: 20px; opacity: 0.5; }
     .popup-overlay {
@@ -201,9 +198,9 @@
       border: 2px solid;
       white-space: pre-line;
       line-height: 1.5;
-      transition: 0.3s;
     }
-    @media (max-width: 650px) { .count-number { font-size: 2rem; } .glass-card { padding: 1.2rem; } .popup-quote { font-size: 1rem; } }
+    .embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0; }
+    .embed-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 30px; }
   </style>
 </head>
 <body>
@@ -211,11 +208,11 @@
 <canvas id="floating-hearts"></canvas>
 
 <!-- GENERATOR SECTION -->
-<div id="generatorSection" class="glass-card" style="max-width: 700px; margin: 20px auto;">
+<div id="generatorSection" class="glass-card" style="max-width: 800px; margin: 20px auto;">
   <div style="text-align:center;">
     <i class="fas fa-heart" style="font-size: 2.2rem; color: #ff66cc;"></i>
-    <h1 style="font-size: 1.8rem;">✨ ETERNAL VOWS ✨</h1>
-    <p>Create your visual love story</p>
+    <h1 style="font-size: 1.8rem;">✨ETERNAL VOWS✨</h1>
+    <p>Build your ultimate love page</p>
   </div>
   <div id="genError" style="color:#ffaaaa; background:#ff000033; border-radius: 30px; padding: 8px; margin: 10px 0; display:none;"></div>
   
@@ -244,12 +241,22 @@
   </div>
   
   <label>📅 Anniversary / Start Date</label>
-  <input id="startDate" type="date" style="font-size: 1.2rem; padding: 12px;">
+  <input id="startDate" type="date" style="font-size: 1.2rem; padding: 14px;">
+  
+  <label>🎂 Your Birthday (optional)</label>
+  <input id="yourBirthday" type="date">
+  <label>🎂 Partner's Birthday (optional)</label>
+  <input id="partnerBirthday" type="date">
+  
+  <label>🎵 Song / Video URL (Spotify or YouTube)</label>
+  <input id="mediaUrl" placeholder="https://open.spotify.com/track/... or https://youtu.be/...">
   
   <label>💬 Custom Romantic Message</label><input id="customMsg" placeholder="You are my everything...">
   <label>📝 Emotional Note</label><textarea id="emotionalNote" rows="2" placeholder="A personal letter..."></textarea>
   
-  <!-- Optional Quote Image (user uploaded) -->
+  <label>🎁 Virtual Gift Secret Message</label>
+  <input id="giftMessage" placeholder="Your secret surprise message...">
+  
   <label>🖼️ Optional Quote Image (appears in popup)</label>
   <input type="file" id="quoteImage" accept="image/*">
   <div id="quoteImagePreview"></div>
@@ -258,21 +265,23 @@
 </div>
 
 <!-- COUNTDOWN VIEWER -->
-<div id="countdownSection" class="glass-card" style="max-width: 800px; margin: 20px auto; display: none;">
+<div id="countdownSection" class="glass-card" style="max-width: 900px; margin: 20px auto; display: none;">
   <div id="countdownContent"></div>
+  <div id="additionalFeatures"></div>
   <div class="lang-selector" id="langSelector"></div>
   <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 24px;">
     <button id="copyLinkBtn" class="neon-btn" style="background: linear-gradient(90deg,#2b6f8a,#00b4d8);"><i class="fas fa-link"></i> Copy Link</button>
     <button id="shareBtn" class="neon-btn"><i class="fas fa-share-alt"></i> Share</button>
     <button id="screenshotBtn" class="neon-btn"><i class="fas fa-camera"></i> Screenshot</button>
+    <button id="downloadQuoteBtn" class="neon-btn"><i class="fas fa-download"></i> Save Quote</button>
     <button id="musicBtn" class="neon-btn"><i class="fas fa-music"></i> Ambience</button>
     <button id="newStoryBtn" class="neon-btn"><i class="fas fa-heart-broken"></i> New Story</button>
   </div>
-  <footer>✨ Tap the quote → new shayari + new background image + theme ✨</footer>
+  <footer>✨ Tap quote → new shayari + background + confetti on anniversary ✨</footer>
 </div>
 
 <script>
-  // ================== MULTI-LANGUAGE QUOTES (5 per category/language) ==================
+  // ================== QUOTES DATABASE (same as before) ==================
   const quotesDB = {
     Wife: {
       English: ["You are my queen, my home, my peace.\nEvery morning I wake up grateful for you.\nIn your arms, I have found forever.","The moment I saw you, I knew.\nYou are not just my wife, but my destiny.\nThank you for choosing me every day.","Through every storm and every sunshine,\nYou stood by me like a rock.\nMy love for you only grows deeper.","I promise to hold your hand till the end of time.\nTo laugh with you, cry with you, grow old with you.\nYou are my greatest blessing.","No words can capture what you mean to me.\nYou are the poetry I never knew I could write.\nI love you, my eternal wife."],
@@ -296,29 +305,14 @@
     }
   };
 
-  // ================== RANDOM BACKGROUND IMAGE FROM /assets/bg-img/ ==================
-  // You must place 7-10 images in that folder. We'll try to load them dynamically.
-  // Predefine a list of image filenames (adjust according to your actual files)
+  // Background images list (adjust filenames as needed)
   const bgImageList = [];
-  // We'll attempt to generate up to 10 images from "romantic1.jpg" to "romantic10.jpg"
-  for (let i = 1; i <= 10; i++) {
-    bgImageList.push(`assets/bg-img/romantic${i}.jpg`);
-    // also try .png as fallback? We'll just use .jpg by default. User can rename.
-  }
-  // Alternatively, you can manually list them if different naming:
-  // const bgImageList = ["assets/bg-img/romantic1.jpg", "assets/bg-img/romantic2.jpg", ...];
-  
-  function getRandomBgImage() {
-    const validImages = bgImageList.filter(img => img);
-    if (validImages.length === 0) return null;
-    const randomIndex = Math.floor(Math.random() * validImages.length);
-    return validImages[randomIndex];
-  }
+  for (let i = 1; i <= 10; i++) bgImageList.push(`assets/bg-img/romantic${i}.jpg`);
+  function getRandomBgImage() { return bgImageList[Math.floor(Math.random() * bgImageList.length)]; }
 
   // Helper functions
   function encodeData(obj) { return btoa(encodeURIComponent(JSON.stringify(obj))); }
   function decodeData(str) { try { return JSON.parse(decodeURIComponent(atob(str))); } catch(e) { return null; } }
-  
   function compressImage(file, maxW=300) {
     return new Promise((resolve) => {
       if (!file) return resolve(null);
@@ -341,21 +335,35 @@
       reader.onerror = () => resolve(null);
     });
   }
-  
   function computeDays(startStr) {
     const start = new Date(startStr);
     const now = new Date();
-    const diffDays = Math.floor((now - start) / (86400000));
+    const diffDays = Math.floor((now - start) / 86400000);
     let nextAnniv = new Date(now.getFullYear(), start.getMonth(), start.getDate());
     if (nextAnniv < now) nextAnniv.setFullYear(now.getFullYear()+1);
     const daysUntil = Math.ceil((nextAnniv - now) / 86400000);
     return { daysTogether: diffDays >=0 ? diffDays : 0, daysUntilAnniv: daysUntil };
   }
-  
+  function daysUntilBirthday(birthdayStr) {
+    if (!birthdayStr) return null;
+    const today = new Date();
+    const birth = new Date(birthdayStr);
+    let next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+    if (next < today) next.setFullYear(today.getFullYear()+1);
+    return Math.ceil((next - today) / 86400000);
+  }
+  function getYouTubeEmbed(url) {
+    if (!url) return null;
+    if (url.includes('youtu.be/')) return url.replace('youtu.be/', 'youtube.com/embed/');
+    if (url.includes('youtube.com/watch?v=')) return url.replace('watch?v=', 'embed/');
+    if (url.includes('spotify.com/track/')) return `https://open.spotify.com/embed/track/${url.split('track/')[1].split('?')[0]}`;
+    if (url.includes('spotify.com/playlist/')) return `https://open.spotify.com/embed/playlist/${url.split('playlist/')[1].split('?')[0]}`;
+    return null;
+  }
+
   let currentData = null;
   let currentLanguage = "English";
-  let quoteIndices = {}; // track last shown index per (relType, lang)
-  
+  let quoteIndices = {};
   function getNextQuote(relType, lang) {
     const arr = quotesDB[relType]?.[lang] || quotesDB.Wife.English;
     const key = `${relType}_${lang}`;
@@ -365,60 +373,44 @@
     quoteIndices[key] = (idx + 1) % arr.length;
     return quote;
   }
-  
-  function getRandomThemeColor() {
-    const hues = [320, 340, 360, 20, 280, 300];
-    const hue = hues[Math.floor(Math.random() * hues.length)];
-    const sat = 75 + Math.random() * 20;
-    const light = 65 + Math.random() * 15;
-    return `hsl(${hue}, ${sat}%, ${light}%)`;
-  }
+  function getRandomThemeColor() { return `hsl(${[320,340,360,20,280,300][Math.floor(Math.random()*6)]}, ${75+Math.random()*20}%, ${65+Math.random()*15}%)`; }
   
   function showQuotePopup(quote, imageBase64, textColor, bgGradient) {
     const overlay = document.createElement('div');
     overlay.className = 'popup-overlay';
     overlay.style.background = `radial-gradient(circle, ${textColor}30, #000000dd)`;
-    let imgHtml = '';
-    if (imageBase64) imgHtml = `<img src="${imageBase64}" style="max-width:80%; max-height:200px; border-radius:30px; margin-bottom:20px; border:2px solid ${textColor};">`;
-    overlay.innerHTML = `
-      <div class="popup-quote" style="color:${textColor}; border-color:${textColor}; background:${bgGradient}; text-shadow:0 0 10px ${textColor};">
-        ${imgHtml}
-        <div style="white-space:pre-line;">${escapeHtml(quote)}</div>
-      </div>
-    `;
+    let imgHtml = imageBase64 ? `<img src="${imageBase64}" style="max-width:80%; max-height:200px; border-radius:30px; margin-bottom:20px; border:2px solid ${textColor};">` : '';
+    overlay.innerHTML = `<div class="popup-quote" style="color:${textColor}; border-color:${textColor}; background:${bgGradient};"><div style="white-space:pre-line;">${escapeHtml(quote)}</div></div>`;
     document.body.appendChild(overlay);
     for (let i=0;i<60;i++) {
-      const particle = document.createElement('div');
-      particle.innerHTML = ['❤️','💖','✨','💫','🌸','💕','🌟'][Math.floor(Math.random()*7)];
-      particle.style.position = 'absolute';
-      particle.style.left = Math.random()*100 + '%';
-      particle.style.top = '50%';
-      particle.style.fontSize = (Math.random()*30+15)+'px';
-      particle.style.opacity = Math.random();
-      particle.style.animation = `floatUp ${Math.random()*2+1}s ease-out forwards`;
-      overlay.appendChild(particle);
+      const p = document.createElement('div');
+      p.innerHTML = ['❤️','💖','✨','💫','🌸','💕','🌟'][Math.floor(Math.random()*7)];
+      p.style.position = 'absolute';
+      p.style.left = Math.random()*100+'%';
+      p.style.top = '50%';
+      p.style.fontSize = (Math.random()*30+15)+'px';
+      p.style.animation = `floatUp ${Math.random()*2+1}s ease-out forwards`;
+      overlay.appendChild(p);
     }
     overlay.onclick = () => overlay.remove();
-    const style = document.createElement('style');
-    style.textContent = `@keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity:1; } 100% { transform: translateY(-250px) rotate(360deg); opacity:0; } }`;
-    document.head.appendChild(style);
+    if (!document.getElementById('popupStyle')) {
+      const style = document.createElement('style');
+      style.id = 'popupStyle';
+      style.textContent = '@keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity:1; } 100% { transform: translateY(-250px) rotate(360deg); opacity:0; } }';
+      document.head.appendChild(style);
+    }
   }
   
   function renderCountdown(data) {
-    const { yourName, partnerName, startDate, customMsg, emotionalNote, myPhoto, partnerPhoto, relType, nameFont, quoteImage } = data;
+    const { yourName, partnerName, startDate, customMsg, emotionalNote, myPhoto, partnerPhoto, relType, nameFont, quoteImage, mediaUrl, yourBirthday, partnerBirthday, giftMessage, loveMeter=50 } = data;
     const { daysTogether, daysUntilAnniv } = computeDays(startDate);
     const formattedStart = new Date(startDate).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
     const fontFamily = nameFont || "'Inter', sans-serif";
-    const imageHtml = `
-      <div class="dual-image">
-        ${myPhoto ? `<div class="img-preview"><img src="${myPhoto}"><br>❤️ ${escapeHtml(yourName)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(yourName)}</div>`}
-        ${partnerPhoto ? `<div class="img-preview"><img src="${partnerPhoto}"><br>💖 ${escapeHtml(partnerName)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(partnerName)}</div>`}
-      </div>
-    `;
+    const imageHtml = `<div class="dual-image">${myPhoto ? `<div class="img-preview"><img src="${myPhoto}"><br>❤️ ${escapeHtml(yourName)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(yourName)}</div>`}${partnerPhoto ? `<div class="img-preview"><img src="${partnerPhoto}"><br>💖 ${escapeHtml(partnerName)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(partnerName)}</div>`}</div>`;
     document.getElementById('countdownContent').innerHTML = `
       ${imageHtml}
-      <h2 style="font-family:${fontFamily}; font-size:2rem; text-align:center;"><span class="heart-beat">❤️</span> ${escapeHtml(yourName)} & ${escapeHtml(partnerName)} <span class="heart-beat">❤️</span></h2>
-      <p style="text-align:center;"><i class="fas fa-calendar-alt"></i> Together since ${formattedStart}  |  ${relType}</p>
+      <h2 style="font-family:${fontFamily}; font-size:2rem; text-align:center;">❤️ ${escapeHtml(yourName)} & ${escapeHtml(partnerName)} ❤️</h2>
+      <p style="text-align:center;"><i class="fas fa-calendar-alt"></i> Together since ${formattedStart} | ${relType}</p>
       <div style="background:#00000055; border-radius: 50px; padding: 18px; margin: 20px 0; text-align:center;">
         <div class="count-number">${daysTogether} days together</div>
         <div>✨ Next anniversary in ${daysUntilAnniv} days ✨</div>
@@ -427,18 +419,51 @@
       ${customMsg ? `<div style="background:#ff66cc20; border-radius: 30px; padding:12px; margin:12px 0;">✨ “${escapeHtml(customMsg)}” ✨</div>` : ''}
       ${emotionalNote ? `<div style="border-left: 3px solid #ff66cc; padding-left: 16px; margin:12px 0;"><i class="fas fa-feather"></i> ${escapeHtml(emotionalNote)}</div>` : ''}
     `;
+    // Additional features section
+    let addHtml = '';
+    // Birthday countdowns
+    const yourBD = daysUntilBirthday(yourBirthday);
+    const partnerBD = daysUntilBirthday(partnerBirthday);
+    if (yourBD !== null || partnerBD !== null) {
+      addHtml += `<div style="background:#00000055; border-radius: 50px; padding:12px; margin:12px 0; text-align:center;">`;
+      if (yourBD !== null) addHtml += `<i class="fas fa-birthday-cake"></i> ${escapeHtml(yourName)}'s birthday in ${yourBD} days &nbsp;&nbsp;`;
+      if (partnerBD !== null) addHtml += `<i class="fas fa-birthday-cake"></i> ${escapeHtml(partnerName)}'s birthday in ${partnerBD} days`;
+      addHtml += `</div>`;
+    }
+    // Love Meter
+    addHtml += `<div class="love-meter"><label>💕 Love Meter 💕</label><input type="range" id="loveSlider" class="love-slider" min="0" max="100" value="${loveMeter}"><div class="love-value" id="loveValue">${loveMeter}%</div></div>`;
+    // Media embed
+    const embedUrl = getYouTubeEmbed(mediaUrl);
+    if (embedUrl) addHtml += `<div class="embed-container"><iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+    // Virtual Gift
+    addHtml += `<div class="gift-container"><div class="gift-box" id="giftBox"><i class="fas fa-gift"></i></div><div id="giftMessageDisplay" class="gift-message">${giftMessage ? escapeHtml(giftMessage) : '💝 A special surprise from their heart 💝'}</div></div>`;
+    document.getElementById('additionalFeatures').innerHTML = addHtml;
+    // Love meter live update
+    const slider = document.getElementById('loveSlider');
+    const loveVal = document.getElementById('loveValue');
+    if (slider && loveVal) {
+      slider.oninput = () => { loveVal.innerText = slider.value + '%'; };
+    }
+    // Gift click
+    const giftBox = document.getElementById('giftBox');
+    const giftMsgDiv = document.getElementById('giftMessageDisplay');
+    if (giftBox && giftMsgDiv) {
+      giftBox.onclick = () => {
+        giftMsgDiv.style.display = 'block';
+        canvasConfetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff4d6d', '#ff99cc'] });
+        setTimeout(() => { giftMsgDiv.style.opacity = '1'; }, 50);
+      };
+    }
+    // Confetti on anniversary
+    const today = new Date().toISOString().split('T')[0];
+    if (startDate === today) canvasConfetti({ particleCount: 200, spread: 100, origin: { y: 0.5 }, colors: ['#ff4d6d', '#ff99cc', '#ffcc00'], startVelocity: 20 });
     // Language selector
     const langSelector = document.getElementById('langSelector');
-    langSelector.innerHTML = `
-      <div class="lang-btn ${currentLanguage==='English'?'active':''}" data-lang="English">🇬🇧 English</div>
-      <div class="lang-btn ${currentLanguage==='Hindi'?'active':''}" data-lang="Hindi">🇮🇳 हिंदी</div>
-      <div class="lang-btn ${currentLanguage==='Marathi'?'active':''}" data-lang="Marathi">🇮🇳 मराठी</div>
-    `;
+    langSelector.innerHTML = `<div class="lang-btn ${currentLanguage==='English'?'active':''}" data-lang="English">🇬🇧 English</div><div class="lang-btn ${currentLanguage==='Hindi'?'active':''}" data-lang="Hindi">🇮🇳 हिंदी</div><div class="lang-btn ${currentLanguage==='Marathi'?'active':''}" data-lang="Marathi">🇮🇳 मराठी</div>`;
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.onclick = () => {
         currentLanguage = btn.getAttribute('data-lang');
-        const key = `${relType}_${currentLanguage}`;
-        quoteIndices[key] = 0;
+        quoteIndices[`${relType}_${currentLanguage}`] = 0;
         updateQuote(relType, quoteImage);
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -454,14 +479,7 @@
     const bgStyle = bgImage ? `url('${bgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
     const container = document.getElementById('quoteContainer');
     if (container) {
-      container.innerHTML = `
-        <div class="quote-card" id="dynamicQuoteCard" style="background-image: ${bgStyle}; background-size: cover; background-position: center;">
-          <div class="quote-overlay" style="border-top-color: ${textColor};">
-            <div class="quote-text">${escapeHtml(quote)}</div>
-            <div class="tap-hint">✨ tap for next ✨</div>
-          </div>
-        </div>
-      `;
+      container.innerHTML = `<div class="quote-card" id="dynamicQuoteCard" style="background-image: ${bgStyle}; background-size: cover;"><div class="quote-overlay"><div class="quote-text">${escapeHtml(quote)}</div><div class="tap-hint">✨ tap for next ✨</div></div></div>`;
       const quoteDiv = document.getElementById('dynamicQuoteCard');
       if (quoteDiv) {
         quoteDiv.onclick = () => {
@@ -471,11 +489,7 @@
           const newBgStyle = newBgImage ? `url('${newBgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
           quoteDiv.style.backgroundImage = newBgStyle;
           const overlayDiv = quoteDiv.querySelector('.quote-overlay');
-          if (overlayDiv) {
-            overlayDiv.style.borderTopColor = newColor;
-            overlayDiv.querySelector('.quote-text').innerHTML = escapeHtml(newQuote);
-          }
-          // Also show popup with the new quote and user uploaded image (if any)
+          if (overlayDiv) overlayDiv.querySelector('.quote-text').innerHTML = escapeHtml(newQuote);
           showQuotePopup(newQuote, quoteImageBase64, newColor, `linear-gradient(135deg, rgba(0,0,0,0.8), ${newColor}40)`);
         };
       }
@@ -484,7 +498,6 @@
   
   function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
   
-  // Generate event
   document.getElementById('generateBtn').onclick = async () => {
     const yourName = document.getElementById('yourName').value.trim();
     const partnerName = document.getElementById('partnerName').value.trim();
@@ -496,19 +509,15 @@
     const partnerPhotoFile = document.getElementById('partnerPhoto').files[0];
     const quoteImageFile = document.getElementById('quoteImage').files[0];
     const nameFont = document.querySelector('.font-btn.active')?.getAttribute('data-font') || "'Inter', sans-serif";
-    
-    if (!yourName || !partnerName || !startDate) {
-      const err = document.getElementById('genError');
-      err.innerText = "💔 Please fill names and anniversary date.";
-      err.style.display = 'block';
-      setTimeout(() => err.style.display = 'none', 3000);
-      return;
-    }
+    const mediaUrl = document.getElementById('mediaUrl').value;
+    const yourBirthday = document.getElementById('yourBirthday').value;
+    const partnerBirthday = document.getElementById('partnerBirthday').value;
+    const giftMessage = document.getElementById('giftMessage').value;
+    if (!yourName || !partnerName || !startDate) { document.getElementById('genError').innerText = "💔 Please fill names and date."; document.getElementById('genError').style.display = 'block'; setTimeout(() => document.getElementById('genError').style.display = 'none', 3000); return; }
     let myPhotoB64 = await compressImage(myPhotoFile);
     let partnerPhotoB64 = await compressImage(partnerPhotoFile);
     let quoteImageB64 = await compressImage(quoteImageFile, 400);
-    
-    const loveData = { yourName, partnerName, startDate, customMsg, emotionalNote, relType, myPhoto: myPhotoB64, partnerPhoto: partnerPhotoB64, nameFont, quoteImage: quoteImageB64 };
+    const loveData = { yourName, partnerName, startDate, customMsg, emotionalNote, relType, myPhoto: myPhotoB64, partnerPhoto: partnerPhotoB64, nameFont, quoteImage: quoteImageB64, mediaUrl, yourBirthday, partnerBirthday, giftMessage, loveMeter: 50 };
     const encoded = encodeData(loveData);
     const newUrl = window.location.origin + window.location.pathname + '?love=' + encoded;
     window.history.pushState({}, '', newUrl);
@@ -532,122 +541,36 @@
     document.getElementById('countdownSection').style.display = 'none';
   }
   
-  // Event listeners
-  document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href);
-    alert("✅ Love link copied! Share it anywhere.");
-  });
-  document.getElementById('shareBtn')?.addEventListener('click', () => {
-    if (navigator.share) navigator.share({ title: 'Eternal Vows', url: window.location.href });
-    else alert("Use copy link button");
-  });
-  document.getElementById('screenshotBtn')?.addEventListener('click', () => {
-    const el = document.getElementById('countdownSection');
-    html2canvas(el, { scale: 2 }).then(canvas => {
-      const link = document.createElement('a');
-      link.download = 'romantic_countdown.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    });
-  });
-  document.getElementById('newStoryBtn')?.addEventListener('click', () => {
-    window.location.href = window.location.pathname;
-  });
+  // Button listeners
+  document.getElementById('copyLinkBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(window.location.href); alert("✅ Link copied!"); });
+  document.getElementById('shareBtn')?.addEventListener('click', () => { if (navigator.share) navigator.share({ title: 'Eternal Vows', url: window.location.href }); else alert("Use copy link"); });
+  document.getElementById('screenshotBtn')?.addEventListener('click', () => { html2canvas(document.getElementById('countdownSection'), { scale: 2 }).then(canvas => { let a = document.createElement('a'); a.download = 'love_page.png'; a.href = canvas.toDataURL(); a.click(); }); });
+  document.getElementById('downloadQuoteBtn')?.addEventListener('click', () => { const quoteCard = document.getElementById('dynamicQuoteCard'); if (quoteCard) html2canvas(quoteCard, { scale: 2 }).then(canvas => { let a = document.createElement('a'); a.download = 'love_quote.png'; a.href = canvas.toDataURL(); a.click(); }); else alert("No quote card yet"); });
+  document.getElementById('newStoryBtn')?.addEventListener('click', () => { window.location.href = window.location.pathname; });
   
   // Font selector
-  document.querySelectorAll('.font-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
+  document.querySelectorAll('.font-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }); });
   document.querySelector('.font-btn')?.classList.add('active');
   
   // Image previews
-  document.getElementById('myPhoto').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = ev => document.getElementById('myPreview').innerHTML = `<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:50%;border:2px solid cyan;">`;
-      reader.readAsDataURL(file);
-    } else document.getElementById('myPreview').innerHTML = '';
-  });
-  document.getElementById('partnerPhoto').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = ev => document.getElementById('partnerPreview').innerHTML = `<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:50%;border:2px solid magenta;">`;
-      reader.readAsDataURL(file);
-    } else document.getElementById('partnerPreview').innerHTML = '';
-  });
-  document.getElementById('quoteImage').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = ev => document.getElementById('quoteImagePreview').innerHTML = `<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:20px;border:1px solid cyan;">`;
-      reader.readAsDataURL(file);
-    } else document.getElementById('quoteImagePreview').innerHTML = '';
-  });
+  document.getElementById('myPhoto').addEventListener('change', e => { if(e.target.files[0]){ let r=new FileReader(); r.onload=ev=>document.getElementById('myPreview').innerHTML=`<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:50%;border:2px solid cyan;">`; r.readAsDataURL(e.target.files[0]); } });
+  document.getElementById('partnerPhoto').addEventListener('change', e => { if(e.target.files[0]){ let r=new FileReader(); r.onload=ev=>document.getElementById('partnerPreview').innerHTML=`<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:50%;border:2px solid magenta;">`; r.readAsDataURL(e.target.files[0]); } });
+  document.getElementById('quoteImage').addEventListener('change', e => { if(e.target.files[0]){ let r=new FileReader(); r.onload=ev=>document.getElementById('quoteImagePreview').innerHTML=`<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:20px;border:1px solid cyan;">`; r.readAsDataURL(e.target.files[0]); } });
   
-  // Floating hearts animation
+  // Floating hearts
   const canvas = document.getElementById('floating-hearts');
-  let ctx = canvas.getContext('2d');
-  let hearts = [];
+  let ctx = canvas.getContext('2d'), hearts = [];
   function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
-  for (let i=0;i<50;i++) {
-    hearts.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*18+10, speedY: Math.random()*0.8+0.4, opacity: Math.random()*0.6+0.2 });
-  }
-  function drawHearts() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for (let h of hearts) {
-      ctx.font = `${h.size}px "Font Awesome 6 Free"`;
-      ctx.fillStyle = `rgba(255, 100, 150, ${h.opacity})`;
-      ctx.fillText("❤️", h.x, h.y);
-      h.y -= h.speedY;
-      if (h.y < -30) { h.y = canvas.height+30; h.x = Math.random()*canvas.width; }
-    }
-    requestAnimationFrame(drawHearts);
-  }
+  for (let i=0;i<50;i++) hearts.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*18+10, speedY: Math.random()*0.8+0.4, opacity: Math.random()*0.6+0.2 });
+  function drawHearts() { ctx.clearRect(0,0,canvas.width,canvas.height); hearts.forEach(h => { ctx.font = `${h.size}px "Font Awesome 6 Free"`; ctx.fillStyle = `rgba(255, 100, 150, ${h.opacity})`; ctx.fillText("❤️", h.x, h.y); h.y -= h.speedY; if (h.y < -30) { h.y = canvas.height+30; h.x = Math.random()*canvas.width; } }); requestAnimationFrame(drawHearts); }
   drawHearts();
   
-  // Ambient music (simple)
+  // Ambient music
   let audioCtx = null, musicOn = false, gainNode = null;
-  async function startMusic() {
-    if (audioCtx) return;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    gainNode = audioCtx.createGain();
-    gainNode.gain.value = 0.12;
-    gainNode.connect(audioCtx.destination);
-    const osc1 = audioCtx.createOscillator();
-    const osc2 = audioCtx.createOscillator();
-    osc1.type = 'sine'; osc2.type = 'triangle';
-    osc1.frequency.value = 261.63; osc2.frequency.value = 329.63;
-    osc1.connect(gainNode); osc2.connect(gainNode);
-    osc1.start(); osc2.start();
-    const lfo = audioCtx.createOscillator();
-    const lfoGain = audioCtx.createGain();
-    lfo.frequency.value = 0.18;
-    lfoGain.gain.value = 6;
-    lfo.connect(lfoGain);
-    lfoGain.connect(osc1.frequency);
-    lfoGain.connect(osc2.frequency);
-    lfo.start();
-  }
-  document.getElementById('musicBtn')?.addEventListener('click', async () => {
-    if (!musicOn) {
-      await startMusic();
-      if (audioCtx) await audioCtx.resume();
-      if (gainNode) gainNode.gain.value = 0.12;
-      musicOn = true;
-      document.getElementById('musicBtn').innerHTML = '<i class="fas fa-music"></i> On';
-    } else {
-      if (gainNode) gainNode.gain.value = 0;
-      musicOn = false;
-      document.getElementById('musicBtn').innerHTML = '<i class="fas fa-music"></i> Ambience';
-    }
-  });
+  async function startMusic() { if (audioCtx) return; audioCtx = new (window.AudioContext||window.webkitAudioContext)(); gainNode = audioCtx.createGain(); gainNode.gain.value = 0.12; gainNode.connect(audioCtx.destination); const osc1=audioCtx.createOscillator(), osc2=audioCtx.createOscillator(); osc1.type='sine'; osc2.type='triangle'; osc1.frequency.value=261.63; osc2.frequency.value=329.63; osc1.connect(gainNode); osc2.connect(gainNode); osc1.start(); osc2.start(); const lfo=audioCtx.createOscillator(), lfoGain=audioCtx.createGain(); lfo.frequency.value=0.18; lfoGain.gain.value=6; lfo.connect(lfoGain); lfoGain.connect(osc1.frequency); lfoGain.connect(osc2.frequency); lfo.start(); }
+  document.getElementById('musicBtn')?.addEventListener('click', async () => { if (!musicOn) { await startMusic(); if (audioCtx) await audioCtx.resume(); if (gainNode) gainNode.gain.value = 0.12; musicOn = true; document.getElementById('musicBtn').innerHTML = '<i class="fas fa-music"></i> On'; } else { if (gainNode) gainNode.gain.value = 0; musicOn = false; document.getElementById('musicBtn').innerHTML = '<i class="fas fa-music"></i> Ambience'; } });
   
   loadFromUrl();
 </script>
