@@ -226,11 +226,11 @@
   
   <div class="dual-image">
     <div class="img-preview"><label>📸 Your Photo</label><input type="file" id="myPhoto" accept="image/*"><div id="myPreview"></div></div>
-    <div class="img-preview"><label>📸 Partner's </label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
+    <div class="img-preview"><label>📸 Partner's Photo</label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
   </div>
   
   <label>💕 Your Name</label><input id="yourName" placeholder="e.g., Mahi">
-  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Nancy">
+  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Priya">
   
   <label>✍️ Font Style for Names</label>
   <div class="font-selector">
@@ -305,10 +305,20 @@
     }
   };
 
-  // Background images list (adjust if needed)
+  // ================== BACKGROUND IMAGES (FIXED) ==================
+  // Try both .jpg and .png for romantic1 to romantic10
   const bgImageList = [];
-  for (let i = 1; i <= 10; i++) bgImageList.push(`assets/bg-img/romantic${i}.jpg`);
-  function getRandomBgImage() { return bgImageList.length ? bgImageList[Math.floor(Math.random() * bgImageList.length)] : null; }
+  for (let i = 1; i <= 10; i++) {
+    bgImageList.push(`assets/bg-img/romantic${i}.jpg`);
+    bgImageList.push(`assets/bg-img/romantic${i}.png`);
+  }
+  // You can add extra custom images below (uncomment and modify)
+  // bgImageList.push("assets/bg-img/my-special.jpg");
+
+  function getRandomBgImage() {
+    if (!bgImageList.length) return null;
+    return bgImageList[Math.floor(Math.random() * bgImageList.length)];
+  }
 
   // Helper functions
   function encodeData(obj) { return btoa(encodeURIComponent(JSON.stringify(obj))); }
@@ -407,10 +417,7 @@
     const bgImage = getRandomBgImage();
     const bgStyle = bgImage ? `url('${bgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
     const container = document.getElementById('quoteContainer');
-    if (!container) {
-      console.warn("quoteContainer not found");
-      return;
-    }
+    if (!container) return;
     container.innerHTML = `<div class="quote-card" id="dynamicQuoteCard" style="background-image: ${bgStyle}; background-size: cover;"><div class="quote-overlay"><div class="quote-text">${escapeHtml(quote)}</div><div class="tap-hint">✨ tap for next ✨</div></div></div>`;
     const quoteDiv = document.getElementById('dynamicQuoteCard');
     if (quoteDiv) {
