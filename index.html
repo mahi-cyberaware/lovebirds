@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>💞 Eternal Vows · Ultimate Love Experience 💞</title>
+  <title>💞 Eternal Vows · Short Shareable Link 💞</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -201,6 +201,14 @@
     }
     .embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0; }
     .embed-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 30px; }
+    .short-link-area {
+      background: #000000aa;
+      border-radius: 60px;
+      padding: 10px 16px;
+      margin: 16px 0;
+      text-align: center;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -226,11 +234,11 @@
   
   <div class="dual-image">
     <div class="img-preview"><label>📸 Your Photo</label><input type="file" id="myPhoto" accept="image/*"><div id="myPreview"></div></div>
-    <div class="img-preview"><label>📸 Partner's Photo</label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
+    <div class="img-preview"><label>📸 Partner's </label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
   </div>
   
   <label>💕 Your Name</label><input id="yourName" placeholder="e.g., Mahi">
-  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Priya">
+  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Nancy">
   
   <label>✍️ Font Style for Names</label>
   <div class="font-selector">
@@ -269,8 +277,12 @@
   <div id="countdownContent"></div>
   <div id="additionalFeatures"></div>
   <div class="lang-selector" id="langSelector"></div>
+  <div id="shortLinkBox" class="short-link-area" style="display: none;">
+    <i class="fas fa-link"></i> Short shareable link: <strong id="shortLinkDisplay">generating...</strong>
+    <button id="copyShortBtn" class="neon-btn" style="margin-top: 8px; background:#2b6f8a;"><i class="fas fa-copy"></i> Copy Short Link</button>
+  </div>
   <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 24px;">
-    <button id="copyLinkBtn" class="neon-btn" style="background: linear-gradient(90deg,#2b6f8a,#00b4d8);"><i class="fas fa-link"></i> Copy Link</button>
+    <button id="copyLinkBtn" class="neon-btn" style="background: linear-gradient(90deg,#2b6f8a,#00b4d8);"><i class="fas fa-link"></i> Copy Long Link</button>
     <button id="shareBtn" class="neon-btn"><i class="fas fa-share-alt"></i> Share</button>
     <button id="screenshotBtn" class="neon-btn"><i class="fas fa-camera"></i> Screenshot</button>
     <button id="downloadQuoteBtn" class="neon-btn"><i class="fas fa-download"></i> Save Quote</button>
@@ -305,20 +317,13 @@
     }
   };
 
-  // ================== BACKGROUND IMAGES (FIXED) ==================
-  // Try both .jpg and .png for romantic1 to romantic10
+  // ================== BACKGROUND IMAGES ==================
   const bgImageList = [];
   for (let i = 1; i <= 10; i++) {
     bgImageList.push(`assets/bg-img/romantic${i}.jpg`);
     bgImageList.push(`assets/bg-img/romantic${i}.png`);
   }
-  // You can add extra custom images below (uncomment and modify)
-  // bgImageList.push("assets/bg-img/my-special.jpg");
-
-  function getRandomBgImage() {
-    if (!bgImageList.length) return null;
-    return bgImageList[Math.floor(Math.random() * bgImageList.length)];
-  }
+  function getRandomBgImage() { return bgImageList[Math.floor(Math.random() * bgImageList.length)]; }
 
   // Helper functions
   function encodeData(obj) { return btoa(encodeURIComponent(JSON.stringify(obj))); }
@@ -434,6 +439,17 @@
     }
   }
   
+  async function shortenUrl(longUrl) {
+    try {
+      const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+      const shortUrl = await res.text();
+      return shortUrl.startsWith('http') ? shortUrl : longUrl;
+    } catch(e) {
+      console.warn("Shortening failed", e);
+      return longUrl;
+    }
+  }
+
   function renderCountdown(data) {
     const { yourName, partnerName, startDate, customMsg, emotionalNote, myPhoto, partnerPhoto, relType, nameFont, quoteImage, mediaUrl, yourBirthday, partnerBirthday, giftMessage, loveMeter=50 } = data;
     const { daysTogether, daysUntilAnniv } = computeDays(startDate);
@@ -521,8 +537,17 @@
     let quoteImageB64 = await compressImage(quoteImageFile, 400);
     const loveData = { yourName, partnerName, startDate, customMsg, emotionalNote, relType, myPhoto: myPhotoB64, partnerPhoto: partnerPhotoB64, nameFont, quoteImage: quoteImageB64, mediaUrl, yourBirthday, partnerBirthday, giftMessage, loveMeter: 50 };
     const encoded = encodeData(loveData);
-    const newUrl = window.location.origin + window.location.pathname + '?love=' + encoded;
-    window.history.pushState({}, '', newUrl);
+    const longUrl = window.location.origin + window.location.pathname + '?love=' + encoded;
+    window.history.pushState({}, '', longUrl);
+    
+    // Generate short link
+    const shortUrl = await shortenUrl(longUrl);
+    const shortLinkBox = document.getElementById('shortLinkBox');
+    const shortLinkDisplay = document.getElementById('shortLinkDisplay');
+    if (shortLinkBox && shortLinkDisplay) {
+      shortLinkDisplay.innerText = shortUrl;
+      shortLinkBox.style.display = 'block';
+    }
     loadFromUrl();
   };
   
@@ -541,10 +566,15 @@
     }
     document.getElementById('generatorSection').style.display = 'block';
     document.getElementById('countdownSection').style.display = 'none';
+    document.getElementById('shortLinkBox').style.display = 'none';
   }
   
   // Button listeners
-  document.getElementById('copyLinkBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(window.location.href); alert("✅ Link copied!"); });
+  document.getElementById('copyLinkBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(window.location.href); alert("✅ Long link copied!"); });
+  document.getElementById('copyShortBtn')?.addEventListener('click', () => { 
+    const shortLink = document.getElementById('shortLinkDisplay')?.innerText;
+    if (shortLink) { navigator.clipboard.writeText(shortLink); alert("✅ Short link copied!"); }
+  });
   document.getElementById('shareBtn')?.addEventListener('click', () => { if (navigator.share) navigator.share({ title: 'Eternal Vows', url: window.location.href }); else alert("Use copy link"); });
   document.getElementById('screenshotBtn')?.addEventListener('click', () => { html2canvas(document.getElementById('countdownSection'), { scale: 2 }).then(canvas => { let a = document.createElement('a'); a.download = 'love_page.png'; a.href = canvas.toDataURL(); a.click(); }); });
   document.getElementById('downloadQuoteBtn')?.addEventListener('click', () => { const quoteCard = document.getElementById('dynamicQuoteCard'); if (quoteCard) html2canvas(quoteCard, { scale: 2 }).then(canvas => { let a = document.createElement('a'); a.download = 'love_quote.png'; a.href = canvas.toDataURL(); a.click(); }); else alert("No quote card yet"); });
