@@ -211,7 +211,7 @@
 <div id="generatorSection" class="glass-card" style="max-width: 800px; margin: 20px auto;">
   <div style="text-align:center;">
     <i class="fas fa-heart" style="font-size: 2.2rem; color: #ff66cc;"></i>
-    <h1 style="font-size: 1.8rem;">✨ETERNAL VOWS✨</h1>
+    <h1 style="font-size: 1.8rem;">✨ ETERNAL VOWS ✨</h1>
     <p>Build your ultimate love page</p>
   </div>
   <div id="genError" style="color:#ffaaaa; background:#ff000033; border-radius: 30px; padding: 8px; margin: 10px 0; display:none;"></div>
@@ -281,7 +281,7 @@
 </div>
 
 <script>
-  // ================== QUOTES DATABASE (same as before) ==================
+  // ================== QUOTES DATABASE ==================
   const quotesDB = {
     Wife: {
       English: ["You are my queen, my home, my peace.\nEvery morning I wake up grateful for you.\nIn your arms, I have found forever.","The moment I saw you, I knew.\nYou are not just my wife, but my destiny.\nThank you for choosing me every day.","Through every storm and every sunshine,\nYou stood by me like a rock.\nMy love for you only grows deeper.","I promise to hold your hand till the end of time.\nTo laugh with you, cry with you, grow old with you.\nYou are my greatest blessing.","No words can capture what you mean to me.\nYou are the poetry I never knew I could write.\nI love you, my eternal wife."],
@@ -305,10 +305,10 @@
     }
   };
 
-  // Background images list (adjust filenames as needed)
+  // Background images list (adjust if needed)
   const bgImageList = [];
   for (let i = 1; i <= 10; i++) bgImageList.push(`assets/bg-img/romantic${i}.jpg`);
-  function getRandomBgImage() { return bgImageList[Math.floor(Math.random() * bgImageList.length)]; }
+  function getRandomBgImage() { return bgImageList.length ? bgImageList[Math.floor(Math.random() * bgImageList.length)] : null; }
 
   // Helper functions
   function encodeData(obj) { return btoa(encodeURIComponent(JSON.stringify(obj))); }
@@ -401,6 +401,32 @@
     }
   }
   
+  function updateQuote(relType, quoteImageBase64) {
+    const quote = getNextQuote(relType, currentLanguage);
+    const textColor = getRandomThemeColor();
+    const bgImage = getRandomBgImage();
+    const bgStyle = bgImage ? `url('${bgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
+    const container = document.getElementById('quoteContainer');
+    if (!container) {
+      console.warn("quoteContainer not found");
+      return;
+    }
+    container.innerHTML = `<div class="quote-card" id="dynamicQuoteCard" style="background-image: ${bgStyle}; background-size: cover;"><div class="quote-overlay"><div class="quote-text">${escapeHtml(quote)}</div><div class="tap-hint">✨ tap for next ✨</div></div></div>`;
+    const quoteDiv = document.getElementById('dynamicQuoteCard');
+    if (quoteDiv) {
+      quoteDiv.onclick = () => {
+        const newQuote = getNextQuote(relType, currentLanguage);
+        const newColor = getRandomThemeColor();
+        const newBgImage = getRandomBgImage();
+        const newBgStyle = newBgImage ? `url('${newBgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
+        quoteDiv.style.backgroundImage = newBgStyle;
+        const overlayDiv = quoteDiv.querySelector('.quote-overlay');
+        if (overlayDiv) overlayDiv.querySelector('.quote-text').innerHTML = escapeHtml(newQuote);
+        showQuotePopup(newQuote, quoteImageBase64, newColor, `linear-gradient(135deg, rgba(0,0,0,0.8), ${newColor}40)`);
+      };
+    }
+  }
+  
   function renderCountdown(data) {
     const { yourName, partnerName, startDate, customMsg, emotionalNote, myPhoto, partnerPhoto, relType, nameFont, quoteImage, mediaUrl, yourBirthday, partnerBirthday, giftMessage, loveMeter=50 } = data;
     const { daysTogether, daysUntilAnniv } = computeDays(startDate);
@@ -419,9 +445,8 @@
       ${customMsg ? `<div style="background:#ff66cc20; border-radius: 30px; padding:12px; margin:12px 0;">✨ “${escapeHtml(customMsg)}” ✨</div>` : ''}
       ${emotionalNote ? `<div style="border-left: 3px solid #ff66cc; padding-left: 16px; margin:12px 0;"><i class="fas fa-feather"></i> ${escapeHtml(emotionalNote)}</div>` : ''}
     `;
-    // Additional features section
+    // Additional features
     let addHtml = '';
-    // Birthday countdowns
     const yourBD = daysUntilBirthday(yourBirthday);
     const partnerBD = daysUntilBirthday(partnerBirthday);
     if (yourBD !== null || partnerBD !== null) {
@@ -430,33 +455,27 @@
       if (partnerBD !== null) addHtml += `<i class="fas fa-birthday-cake"></i> ${escapeHtml(partnerName)}'s birthday in ${partnerBD} days`;
       addHtml += `</div>`;
     }
-    // Love Meter
     addHtml += `<div class="love-meter"><label>💕 Love Meter 💕</label><input type="range" id="loveSlider" class="love-slider" min="0" max="100" value="${loveMeter}"><div class="love-value" id="loveValue">${loveMeter}%</div></div>`;
-    // Media embed
     const embedUrl = getYouTubeEmbed(mediaUrl);
     if (embedUrl) addHtml += `<div class="embed-container"><iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
-    // Virtual Gift
     addHtml += `<div class="gift-container"><div class="gift-box" id="giftBox"><i class="fas fa-gift"></i></div><div id="giftMessageDisplay" class="gift-message">${giftMessage ? escapeHtml(giftMessage) : '💝 A special surprise from their heart 💝'}</div></div>`;
     document.getElementById('additionalFeatures').innerHTML = addHtml;
-    // Love meter live update
+    
     const slider = document.getElementById('loveSlider');
     const loveVal = document.getElementById('loveValue');
-    if (slider && loveVal) {
-      slider.oninput = () => { loveVal.innerText = slider.value + '%'; };
-    }
-    // Gift click
+    if (slider && loveVal) slider.oninput = () => { loveVal.innerText = slider.value + '%'; };
     const giftBox = document.getElementById('giftBox');
     const giftMsgDiv = document.getElementById('giftMessageDisplay');
     if (giftBox && giftMsgDiv) {
       giftBox.onclick = () => {
         giftMsgDiv.style.display = 'block';
         canvasConfetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff4d6d', '#ff99cc'] });
-        setTimeout(() => { giftMsgDiv.style.opacity = '1'; }, 50);
       };
     }
     // Confetti on anniversary
     const today = new Date().toISOString().split('T')[0];
     if (startDate === today) canvasConfetti({ particleCount: 200, spread: 100, origin: { y: 0.5 }, colors: ['#ff4d6d', '#ff99cc', '#ffcc00'], startVelocity: 20 });
+    
     // Language selector
     const langSelector = document.getElementById('langSelector');
     langSelector.innerHTML = `<div class="lang-btn ${currentLanguage==='English'?'active':''}" data-lang="English">🇬🇧 English</div><div class="lang-btn ${currentLanguage==='Hindi'?'active':''}" data-lang="Hindi">🇮🇳 हिंदी</div><div class="lang-btn ${currentLanguage==='Marathi'?'active':''}" data-lang="Marathi">🇮🇳 मराठी</div>`;
@@ -470,30 +489,6 @@
       };
     });
     updateQuote(relType, quoteImage);
-  }
-  
-  function updateQuote(relType, quoteImageBase64) {
-    const quote = getNextQuote(relType, currentLanguage);
-    const textColor = getRandomThemeColor();
-    const bgImage = getRandomBgImage();
-    const bgStyle = bgImage ? `url('${bgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
-    const container = document.getElementById('quoteContainer');
-    if (container) {
-      container.innerHTML = `<div class="quote-card" id="dynamicQuoteCard" style="background-image: ${bgStyle}; background-size: cover;"><div class="quote-overlay"><div class="quote-text">${escapeHtml(quote)}</div><div class="tap-hint">✨ tap for next ✨</div></div></div>`;
-      const quoteDiv = document.getElementById('dynamicQuoteCard');
-      if (quoteDiv) {
-        quoteDiv.onclick = () => {
-          const newQuote = getNextQuote(relType, currentLanguage);
-          const newColor = getRandomThemeColor();
-          const newBgImage = getRandomBgImage();
-          const newBgStyle = newBgImage ? `url('${newBgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
-          quoteDiv.style.backgroundImage = newBgStyle;
-          const overlayDiv = quoteDiv.querySelector('.quote-overlay');
-          if (overlayDiv) overlayDiv.querySelector('.quote-text').innerHTML = escapeHtml(newQuote);
-          showQuotePopup(newQuote, quoteImageBase64, newColor, `linear-gradient(135deg, rgba(0,0,0,0.8), ${newColor}40)`);
-        };
-      }
-    }
   }
   
   function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
