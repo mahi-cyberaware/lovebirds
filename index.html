@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>NeoCountdown · Eternal Bond (Supabase)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>NeoCountdown · Eternal Bond</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,7 +14,7 @@
       font-family: 'Inter', sans-serif;
       background: radial-gradient(circle at 20% 30%, #030318, #000000);
       min-height: 100vh;
-      color: #fff;
+      color: white;
       position: relative;
     }
     .dynamic-bg {
@@ -23,14 +23,11 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at 50% 50%, rgba(76, 0, 255, 0.2), rgba(0, 0, 0, 0.8));
+      background: radial-gradient(circle at 50% 50%, rgba(76,0,255,0.2), rgba(0,0,0,0.8));
       z-index: -2;
-      animation: cosmicPulse 8s infinite alternate;
+      animation: pulse 8s infinite alternate;
     }
-    @keyframes cosmicPulse {
-      0% { opacity: 0.3; }
-      100% { opacity: 0.7; }
-    }
+    @keyframes pulse { 0% { opacity: 0.3; } 100% { opacity: 0.7; } }
     #particles-canvas {
       position: fixed;
       top: 0;
@@ -41,16 +38,12 @@
       z-index: -1;
     }
     .glass-card {
-      background: rgba(15, 25, 45, 0.55);
+      background: rgba(15,25,45,0.55);
       backdrop-filter: blur(15px);
       border-radius: 2rem;
-      border: 1px solid rgba(0, 255, 255, 0.35);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0, 255, 255, 0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .glass-card:hover {
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
-      transform: translateY(-5px);
+      border: 1px solid rgba(0,255,255,0.35);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0,255,255,0.3);
+      transition: 0.3s;
     }
     .neon-btn {
       background: linear-gradient(90deg, #8a2be2, #00c6ff);
@@ -61,12 +54,12 @@
       border-radius: 60px;
       color: white;
       cursor: pointer;
-      transition: 0.2s;
       box-shadow: 0 0 12px #00a6ff;
+      transition: 0.2s;
     }
     .neon-btn:hover { transform: scale(1.02); box-shadow: 0 0 24px #00a6ff; }
     input, textarea, input[type="date"] {
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(0,0,0,0.55);
       backdrop-filter: blur(8px);
       border: 1px solid cyan;
       border-radius: 60px;
@@ -77,7 +70,7 @@
     }
     input:focus { border-color: #ff44f0; box-shadow: 0 0 12px #ff44f0; }
     label { font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.85rem; color: #ccd6ff; }
-    .image-upload-preview { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 2px solid cyan; margin-top: 8px; }
+    .image-preview { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 2px solid cyan; margin-top: 8px; }
     .loader-overlay {
       position: fixed;
       top: 0;
@@ -92,13 +85,14 @@
       align-items: center;
       flex-direction: column;
     }
-    .neon-loader { width: 80px; height: 80px; border: 5px solid rgba(0,255,255,0.2); border-top: 5px solid cyan; border-radius: 50%; animation: spin 1s infinite; box-shadow: 0 0 20px cyan; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .countdown-digits { font-size: 3rem; font-weight: 900; background: linear-gradient(135deg, #fff, #00ffff); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px cyan; }
+    .neon-loader { width: 80px; height: 80px; border: 5px solid rgba(0,255,255,0.2); border-top: 5px solid cyan; border-radius: 50%; animation: spin 1s infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .countdown-digits { font-size: 3rem; font-weight: 900; background: linear-gradient(135deg,#fff,#00ffff); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px cyan; }
     .heart-beat { animation: beat 1.2s infinite; }
-    @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); text-shadow: 0 0 20px #ff3366; } }
+    @keyframes beat { 50% { transform: scale(1.1); text-shadow: 0 0 20px #ff3366; } }
     @media (max-width: 760px) { .countdown-digits { font-size: 2rem; } .glass-card { margin: 1rem; padding: 1.5rem; } }
     .glow-text { text-shadow: 0 0 6px cyan, 0 0 12px #aa44ff; }
+    .error-msg { background: rgba(255,0,0,0.3); border-left: 4px solid red; padding: 10px; margin: 10px 0; border-radius: 12px; }
   </style>
 </head>
 <body>
@@ -113,6 +107,7 @@
       <h1 class="glow-text">✦ RELATIONSHIP COUNTDOWN ✦</h1>
       <p>Create & share an eternal cosmic link ❤️</p>
     </div>
+    <div id="globalError" class="error-msg" style="display:none;"></div>
     <form id="relationshipForm">
       <div style="display: grid; gap: 1.2rem;">
         <div><label>Your Name</label><input type="text" id="yourName" placeholder="e.g., Mahi" required></div>
@@ -142,30 +137,52 @@
 </div>
 
 <script>
-  // ========== SUPABASE CONFIG ==========
-  const SUPABASE_URL = "https://jxmzkepwatmsljistezr.supabase.co";      // replace!
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4bXprZXB3YXRtc2xqaXN0ZXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3ODY5NjQsImV4cCI6MjA5NDM2Mjk2NH0.iswg7bbXgV8DaFmZwhzZEVeGD8XChuCBxUhj5NaeV8U"; // replace!
-  
+  // ========== YOUR SUPABASE CREDENTIALS ==========
+  const SUPABASE_URL = "https://jxmzkepwatmsljistezr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4bXprZXB3YXRtc2xqaXN0ZXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3ODY5NjQsImV4cCI6MjA5NDM2Mjk2NH0.iswg7bbXgV8DaFmZwhzZEVeGD8XChuCBxUhj5NaeV8U";
+
   let supabase;
   let currentId = null;
   let liveTimer = null;
-  let musicActive = false, audioCtx = null, musicGain = null, musicNodes = null;
+  let musicActive = false, audioCtx = null, musicGain = null;
 
   // Initialize Supabase client
   function initSupabase() {
-    if (!SUPABASE_URL.includes("supabase.co") || SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY_HERE") {
-      console.warn("⚠️ Please set your Supabase URL and anon key in the code.");
-      return null;
+    try {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      console.log("✅ Supabase client initialized");
+      return true;
+    } catch(e) {
+      console.error("❌ Supabase init error:", e);
+      showError("Failed to connect to database. Check your Supabase URL/key.");
+      return false;
     }
-    return supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 
-  // Helper: generate unique ID
-  function generateId() {
-    return 'rel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+  function showError(msg) {
+    const errDiv = document.getElementById('globalError');
+    if (errDiv) {
+      errDiv.innerText = msg;
+      errDiv.style.display = 'block';
+      setTimeout(() => { errDiv.style.display = 'none'; }, 5000);
+    } else {
+      alert(msg);
+    }
   }
 
-  // Convert file to base64
+  function showLoader(show) {
+    let loader = document.getElementById('globalLoader');
+    if (show && !loader) {
+      const div = document.createElement('div');
+      div.id = 'globalLoader';
+      div.className = 'loader-overlay';
+      div.innerHTML = `<div class="neon-loader"></div><p style="margin-top:20px; color:cyan;">Saving to the stars...</p>`;
+      document.body.appendChild(div);
+    } else if (!show && loader) loader.remove();
+  }
+
+  function generateId() { return 'rel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8); }
+
   function fileToBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -175,21 +192,6 @@
     });
   }
 
-  // Show/hide loader
-  function showLoader(show) {
-    let loader = document.getElementById('globalLoader');
-    if (show && !loader) {
-      const div = document.createElement('div');
-      div.id = 'globalLoader';
-      div.className = 'loader-overlay';
-      div.innerHTML = `<div class="neon-loader"></div><p style="margin-top:20px; color:cyan;">saving to the stars...</p>`;
-      document.body.appendChild(div);
-    } else if (!show && loader) {
-      loader.remove();
-    }
-  }
-
-  // Countdown logic
   function computeTimeTogether(startDateStr) {
     const start = new Date(startDateStr);
     const now = new Date();
@@ -199,7 +201,6 @@
     let years = Math.floor(totalDays / 365.25);
     let months = Math.floor((totalDays % 365.25) / 30.44);
     let days = Math.floor((totalDays % 365.25) % 30.44);
-    // next anniversary
     let currentYear = now.getFullYear();
     let anniversaryThis = new Date(currentYear, start.getMonth(), start.getDate());
     let nextAnn = anniversaryThis > now ? anniversaryThis : new Date(currentYear+1, start.getMonth(), start.getDate());
@@ -250,7 +251,7 @@
 
   function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-  // Generate new relationship in Supabase
+  // Handle form submit
   async function handleGenerate(e) {
     e.preventDefault();
     const yourName = document.getElementById('yourName').value.trim();
@@ -259,13 +260,17 @@
     const customMsg = document.getElementById('customMsg').value;
     const emotionalNote = document.getElementById('emotionalNote').value;
     const imageFile = document.getElementById('imageUpload').files[0];
-    if (!yourName || !partnerName || !startDate) { alert("Please fill names and anniversary date 💫"); return; }
-    if (!supabase) { alert("Supabase not configured. Check your URL and anon key."); return; }
-    
+
+    if (!yourName || !partnerName || !startDate) {
+      showError("Please fill in both names and anniversary date.");
+      return;
+    }
+    if (!supabase) { showError("Supabase not ready. Reload page."); return; }
+
     showLoader(true);
     let imageBase64 = null;
     if (imageFile) {
-      try { imageBase64 = await fileToBase64(imageFile); } catch(e) { console.warn(e); }
+      try { imageBase64 = await fileToBase64(imageFile); } catch(e) { console.warn("image error"); }
     }
     const newId = generateId();
     const payload = {
@@ -277,32 +282,31 @@
       emotional_note: emotionalNote,
       image_base64: imageBase64
     };
+
     const { error } = await supabase.from('relationships').insert([payload]);
     showLoader(false);
-    if (error) { console.error(error); alert("Error saving to Supabase: " + error.message); return; }
-    // redirect to the newly created page
+    if (error) {
+      console.error("Supabase insert error:", error);
+      showError("Database error: " + error.message + ". Make sure table 'relationships' exists and RLS is OFF.");
+      return;
+    }
+    // success: redirect to ?id=...
     const url = new URL(window.location.href);
     url.searchParams.set('id', newId);
     window.history.pushState({}, '', url);
     await loadFromURL();
   }
 
-  // Load from URL query param
   async function loadFromURL() {
+    if (!supabase) if (!initSupabase()) return;
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
-    if (!supabase) supabase = initSupabase();
-    if (!supabase) { 
-      document.getElementById('generatorSection').style.display = 'block';
-      document.getElementById('countdownSection').style.display = 'none';
-      return;
-    }
     if (id) {
       const { data, error } = await supabase.from('relationships').select('*').eq('id', id).single();
       if (error || !data) {
         document.getElementById('generatorSection').style.display = 'block';
         document.getElementById('countdownSection').style.display = 'none';
-        alert("This love link doesn't exist yet. Create one ✨");
+        showError("This love link doesn't exist. Create a new one ✨");
         return;
       }
       currentId = id;
@@ -316,12 +320,11 @@
     }
   }
 
-  // Copy shareable link
   function copyLink() {
-    if (!currentId) { alert("Generate a page first"); return; }
+    if (!currentId) { showError("Generate a page first"); return; }
     const url = window.location.origin + window.location.pathname + '?id=' + encodeURIComponent(currentId);
     navigator.clipboard.writeText(url);
-    alert("✅ Link copied! Anyone with this link will see your countdown (powered by Supabase).");
+    alert("✅ Link copied! Share it with anyone.");
   }
 
   async function sharePage() {
@@ -342,7 +345,6 @@
     });
   }
 
-  // Ambient music (simple synth)
   async function initMusic() {
     if (audioCtx) return;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -355,7 +357,6 @@
     osc1.frequency.value = 261.63; osc2.frequency.value = 329.63;
     osc1.connect(musicGain); osc2.connect(musicGain);
     osc1.start(); osc2.start();
-    musicNodes = { osc1, osc2 };
     const lfo = audioCtx.createOscillator();
     const lfoGain = audioCtx.createGain();
     lfo.frequency.value = 0.2;
@@ -364,7 +365,6 @@
     lfoGain.connect(osc1.frequency);
     lfoGain.connect(osc2.frequency);
     lfo.start();
-    musicNodes.lfo = lfo;
   }
 
   async function toggleMusic() {
@@ -379,7 +379,7 @@
     }
   }
 
-  // Particles (floating hearts/stars)
+  // Particles
   let canvas, ctx, particles = [];
   function initParticles() {
     canvas = document.getElementById('particles-canvas');
@@ -411,9 +411,8 @@
     draw();
   }
 
-  // Event listeners
-  window.addEventListener('DOMContentLoaded', async () => {
-    supabase = initSupabase();
+  window.addEventListener('DOMContentLoaded', () => {
+    initSupabase();
     initParticles();
     document.getElementById('relationshipForm')?.addEventListener('submit', handleGenerate);
     document.getElementById('copyLinkBtn')?.addEventListener('click', copyLink);
@@ -427,11 +426,11 @@
       const file = e.target.files[0];
       if(file) {
         const reader = new FileReader();
-        reader.onload = ev => document.getElementById('imagePreviewContainer').innerHTML = `<img src="${ev.target.result}" class="image-upload-preview">`;
+        reader.onload = ev => document.getElementById('imagePreviewContainer').innerHTML = `<img src="${ev.target.result}" class="image-preview">`;
         reader.readAsDataURL(file);
       }
     });
-    await loadFromURL();
+    loadFromURL();
   });
 </script>
 </body>
