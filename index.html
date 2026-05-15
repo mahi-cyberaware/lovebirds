@@ -187,10 +187,6 @@
       font-size: 0.85rem;
       text-align: center;
     }
-    .btn-loading {
-      opacity: 0.7;
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
@@ -260,9 +256,9 @@
   <div id="additionalFeatures"></div>
   <div class="lang-selector" id="langSelector"></div>
   
-  <!-- Only copy short link button – no link text displayed -->
+  <!-- Only copy short link button – no long link displayed -->
   <div style="text-align: center; margin: 20px 0;">
-    <button id="copyShortOnlyBtn" class="neon-btn" style="background: #2b6f8a;"><i class="fas fa-link"></i> Copy Shareable Love Link</button>
+    <button id="copyShortOnlyBtn" class="neon-btn" style="background: #2b6f8a;"><i class="fas fa-link"></i> Copy Short Love Link</button>
     <div class="safety-note">
       <i class="fas fa-shield-alt"></i> <strong>This link is 100% safe</strong> – it contains your love messages, photos, and quotes. No personal data is stored anywhere.
     </div>
@@ -279,7 +275,7 @@
 </div>
 
 <script>
-  // ================== QUOTES DATABASE ==================
+  // ================== QUOTES DATABASE (full) ==================
   const quotesDB = {
     Wife: {
       English: ["You are my queen, my home, my peace.\nEvery morning I wake up grateful for you.\nIn your arms, I have found forever.","The moment I saw you, I knew.\nYou are not just my wife, but my destiny.\nThank you for choosing me every day.","Through every storm and every sunshine,\nYou stood by me like a rock.\nMy love for you only grows deeper.","I promise to hold your hand till the end of time.\nTo laugh with you, cry with you, grow old with you.\nYou are my greatest blessing.","No words can capture what you mean to me.\nYou are the poetry I never knew I could write.\nI love you, my eternal wife."],
@@ -365,8 +361,35 @@
   let currentData = null;
   let currentLanguage = "English";
   let quoteIndices = {};
-  let cachedShortLink = null;
+  let currentShortLink = null; // stores the short link for the current love page
 
+  // ================== MULTIPLE SHORTENER APIs ==================
+  async function shortenUrlWithRetry(longUrl) {
+    const shorteners = [
+      { name: 'is.gd', url: `https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}` },
+      { name: 'v.gd', url: `https://v.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}` },
+      { name: 'tinyurl', url: `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}` }
+    ];
+    for (let service of shorteners) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const response = await fetch(service.url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (response.ok) {
+          const shortUrl = await response.text();
+          if (shortUrl && shortUrl.startsWith('http')) {
+            return shortUrl;
+          }
+        }
+      } catch (e) {
+        console.warn(`${service.name} failed:`, e);
+      }
+    }
+    throw new Error('All shorteners failed');
+  }
+
+  // ================== QUOTE & RENDER FUNCTIONS ==================
   function getNextQuote(relType, lang) {
     const arr = quotesDB[relType]?.[lang] || quotesDB.Wife.English;
     const key = `${relType}_${lang}`;
@@ -427,31 +450,6 @@
     }
   }
   
-  async function shortenUrl(longUrl) {
-    try {
-      // Try is.gd first
-      const response = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`);
-      const shortUrl = await response.text();
-      if (shortUrl.startsWith('http')) return shortUrl;
-      // Fallback to TinyURL
-      const tinyRes = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
-      const tinyUrl = await tinyRes.text();
-      if (tinyUrl.startsWith('http')) return tinyUrl;
-      return longUrl;
-    } catch(e) {
-      console.warn("Shortening failed", e);
-      return longUrl;
-    }
-  }
-
-  async function getShortLink() {
-    if (cachedShortLink) return cachedShortLink;
-    const longUrl = window.location.href;
-    const short = await shortenUrl(longUrl);
-    cachedShortLink = short;
-    return short;
-  }
-
   function renderCountdown(data) {
     const { yourName, partnerName, startDate, customMsg, emotionalNote, myPhoto, partnerPhoto, relType, nameFont, quoteImage, mediaUrl, yourBirthday, partnerBirthday, giftMessage, loveMeter=50 } = data;
     const { daysTogether, daysUntilAnniv } = computeDays(startDate);
@@ -515,6 +513,7 @@
   
   function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
   
+  // ================== GENERATE BUTTON ==================
   document.getElementById('generateBtn').onclick = async () => {
     const yourName = document.getElementById('yourName').value.trim();
     const partnerName = document.getElementById('partnerName').value.trim();
@@ -538,11 +537,18 @@
     const encoded = encodeData(loveData);
     const longUrl = window.location.origin + window.location.pathname + '?love=' + encoded;
     window.history.pushState({}, '', longUrl);
-    cachedShortLink = null; // clear cache for new URL
+    
+    // Generate short link in background (don't show long URL)
+    try {
+      currentShortLink = await shortenUrlWithRetry(longUrl);
+    } catch (err) {
+      console.error("Shortening failed", err);
+      currentShortLink = null;
+    }
     loadFromUrl();
   };
   
-  function loadFromUrl() {
+  async function loadFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const enc = params.get('love');
     if (enc) {
@@ -552,39 +558,59 @@
         document.getElementById('countdownSection').style.display = 'block';
         renderCountdown(data);
         currentData = data;
-        // Pre-fetch short link in background
-        getShortLink().then(short => { cachedShortLink = short; });
+        // If short link not already set (e.g., direct link load), generate it now
+        if (!currentShortLink) {
+          const longUrl = window.location.href;
+          try {
+            currentShortLink = await shortenUrlWithRetry(longUrl);
+          } catch (err) {
+            console.error("Shortening failed on load", err);
+            currentShortLink = null;
+          }
+        }
         return;
       }
     }
     document.getElementById('generatorSection').style.display = 'block';
     document.getElementById('countdownSection').style.display = 'none';
-    cachedShortLink = null;
+    currentShortLink = null;
   }
   
-  // Copy button – always gets a fresh short link (or cached)
+  // Copy short link button – never shows the long URL
   document.getElementById('copyShortOnlyBtn')?.addEventListener('click', async () => {
-    const btn = document.getElementById('copyShortOnlyBtn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Generating short link...';
-    btn.classList.add('btn-loading');
-    try {
-      const shortLink = await getShortLink();
-      await navigator.clipboard.writeText(shortLink);
-      alert("✅ Short love link copied! Share it with your partner.\n\nIt will open directly – no scary long URL.");
-    } catch (err) {
-      alert("Could not generate short link. Please try again.");
-    } finally {
-      btn.innerHTML = originalText;
-      btn.classList.remove('btn-loading');
+    if (currentShortLink) {
+      navigator.clipboard.writeText(currentShortLink);
+      alert("✅ Short love link copied! Share it with your partner.");
+    } else {
+      // If for some reason short link missing, generate it on the fly (still no long URL displayed)
+      const longUrl = window.location.href;
+      try {
+        const shortUrl = await shortenUrlWithRetry(longUrl);
+        currentShortLink = shortUrl;
+        navigator.clipboard.writeText(shortUrl);
+        alert("✅ Short love link copied! Share it with your partner.");
+      } catch (err) {
+        alert("⚠️ Could not shorten link. Please try again or check your internet.");
+      }
     }
   });
   
   document.getElementById('shareBtn')?.addEventListener('click', async () => {
-    const shortLink = await getShortLink();
-    if (navigator.share) navigator.share({ title: 'Eternal Vows', url: shortLink });
-    else alert("Use the 'Copy Shareable Love Link' button");
+    let linkToShare = currentShortLink;
+    if (!linkToShare) {
+      const longUrl = window.location.href;
+      try {
+        linkToShare = await shortenUrlWithRetry(longUrl);
+        currentShortLink = linkToShare;
+      } catch (err) {
+        alert("Unable to get short link. Use copy button instead.");
+        return;
+      }
+    }
+    if (navigator.share) navigator.share({ title: 'Eternal Vows', url: linkToShare });
+    else alert("Use the 'Copy Short Love Link' button");
   });
+  
   document.getElementById('screenshotBtn')?.addEventListener('click', () => { html2canvas(document.getElementById('countdownSection'), { scale: 2 }).then(canvas => { let a = document.createElement('a'); a.download = 'love_page.png'; a.href = canvas.toDataURL(); a.click(); }); });
   document.getElementById('downloadQuoteBtn')?.addEventListener('click', () => { const quoteCard = document.getElementById('dynamicQuoteCard'); if (quoteCard) html2canvas(quoteCard, { scale: 2 }).then(canvas => { let a = document.createElement('a'); a.download = 'love_quote.png'; a.href = canvas.toDataURL(); a.click(); }); else alert("No quote card yet"); });
   document.getElementById('newStoryBtn')?.addEventListener('click', () => { window.location.href = window.location.pathname; });
