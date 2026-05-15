@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>💞 Eternal Vows · Love Page 💞</title>
+  <title>💞 Eternal Vows · Short Love Link 💞</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -187,6 +187,10 @@
       font-size: 0.85rem;
       text-align: center;
     }
+    .btn-loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -212,11 +216,11 @@
   
   <div class="dual-image">
     <div class="img-preview"><label>📸 Your Photo</label><input type="file" id="myPhoto" accept="image/*"><div id="myPreview"></div></div>
-    <div class="img-preview"><label>📸 Partner's </label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
+    <div class="img-preview"><label>📸 Partner's Photo</label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
   </div>
   
   <label>💕 Your Name</label><input id="yourName" placeholder="e.g., Mahi">
-  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Nancy">
+  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Priya">
   
   <label>✍️ Font Style for Names</label>
   <div class="font-selector">
@@ -361,7 +365,7 @@
   let currentData = null;
   let currentLanguage = "English";
   let quoteIndices = {};
-  let currentShortLink = null;
+  let cachedShortLink = null;
 
   function getNextQuote(relType, lang) {
     const arr = quotesDB[relType]?.[lang] || quotesDB.Wife.English;
@@ -425,14 +429,27 @@
   
   async function shortenUrl(longUrl) {
     try {
+      // Try is.gd first
       const response = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`);
       const shortUrl = await response.text();
       if (shortUrl.startsWith('http')) return shortUrl;
-      else return longUrl;
+      // Fallback to TinyURL
+      const tinyRes = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+      const tinyUrl = await tinyRes.text();
+      if (tinyUrl.startsWith('http')) return tinyUrl;
+      return longUrl;
     } catch(e) {
-      console.warn("Shortening failed, using long URL", e);
+      console.warn("Shortening failed", e);
       return longUrl;
     }
+  }
+
+  async function getShortLink() {
+    if (cachedShortLink) return cachedShortLink;
+    const longUrl = window.location.href;
+    const short = await shortenUrl(longUrl);
+    cachedShortLink = short;
+    return short;
   }
 
   function renderCountdown(data) {
@@ -521,11 +538,7 @@
     const encoded = encodeData(loveData);
     const longUrl = window.location.origin + window.location.pathname + '?love=' + encoded;
     window.history.pushState({}, '', longUrl);
-    
-    // Generate short link in background (don't display it, just store)
-    const shortUrl = await shortenUrl(longUrl);
-    currentShortLink = shortUrl;
-    
+    cachedShortLink = null; // clear cache for new URL
     loadFromUrl();
   };
   
@@ -539,42 +552,37 @@
         document.getElementById('countdownSection').style.display = 'block';
         renderCountdown(data);
         currentData = data;
-        // Short link already generated in the background (stored in currentShortLink)
-        // If not yet generated (first load from link), generate it now
-        if (!currentShortLink) {
-          const longUrl = window.location.href;
-          shortenUrl(longUrl).then(shortUrl => { currentShortLink = shortUrl; });
-        }
+        // Pre-fetch short link in background
+        getShortLink().then(short => { cachedShortLink = short; });
         return;
       }
     }
     document.getElementById('generatorSection').style.display = 'block';
     document.getElementById('countdownSection').style.display = 'none';
-    currentShortLink = null;
+    cachedShortLink = null;
   }
   
-  // Button listeners – only copy short link
+  // Copy button – always gets a fresh short link (or cached)
   document.getElementById('copyShortOnlyBtn')?.addEventListener('click', async () => {
-    if (currentShortLink) {
-      navigator.clipboard.writeText(currentShortLink);
-      alert("✅ Short love link copied! Share it with your partner.");
-    } else {
-      // Fallback: generate short link from current URL
-      const longUrl = window.location.href;
-      const shortUrl = await shortenUrl(longUrl);
-      currentShortLink = shortUrl;
-      navigator.clipboard.writeText(shortUrl);
-      alert("✅ Short love link copied! Share it with your partner.");
+    const btn = document.getElementById('copyShortOnlyBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Generating short link...';
+    btn.classList.add('btn-loading');
+    try {
+      const shortLink = await getShortLink();
+      await navigator.clipboard.writeText(shortLink);
+      alert("✅ Short love link copied! Share it with your partner.\n\nIt will open directly – no scary long URL.");
+    } catch (err) {
+      alert("Could not generate short link. Please try again.");
+    } finally {
+      btn.innerHTML = originalText;
+      btn.classList.remove('btn-loading');
     }
   });
+  
   document.getElementById('shareBtn')?.addEventListener('click', async () => {
-    let linkToShare = currentShortLink;
-    if (!linkToShare) {
-      const longUrl = window.location.href;
-      linkToShare = await shortenUrl(longUrl);
-      currentShortLink = linkToShare;
-    }
-    if (navigator.share) navigator.share({ title: 'Eternal Vows', url: linkToShare });
+    const shortLink = await getShortLink();
+    if (navigator.share) navigator.share({ title: 'Eternal Vows', url: shortLink });
     else alert("Use the 'Copy Shareable Love Link' button");
   });
   document.getElementById('screenshotBtn')?.addEventListener('click', () => { html2canvas(document.getElementById('countdownSection'), { scale: 2 }).then(canvas => { let a = document.createElement('a'); a.download = 'love_page.png'; a.href = canvas.toDataURL(); a.click(); }); });
