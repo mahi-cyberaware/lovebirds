@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>💞 Eternal Vows · Short Love Link 💞</title>
+  <title>💞 Eternal Vows · Short Permanent Link 💞</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -187,6 +188,27 @@
       font-size: 0.85rem;
       text-align: center;
     }
+    .loader-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .neon-loader {
+      width: 80px;
+      height: 80px;
+      border: 5px solid rgba(0,255,255,0.2);
+      border-top: 5px solid cyan;
+      border-radius: 50%;
+      animation: spin 1s infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -198,7 +220,7 @@
   <div style="text-align:center;">
     <i class="fas fa-heart" style="font-size: 2.2rem; color: #ff66cc;"></i>
     <h1 style="font-size: 1.8rem;">✨ ETERNAL VOWS ✨</h1>
-    <p>Create your beautiful shareable love page</p>
+    <p>Create your beautiful love page – short permanent link</p>
   </div>
   <div id="genError" style="color:#ffaaaa; background:#ff000033; border-radius: 30px; padding: 8px; margin: 10px 0; display:none;"></div>
   
@@ -212,7 +234,7 @@
   
   <div class="dual-image">
     <div class="img-preview"><label>📸 Your Photo</label><input type="file" id="myPhoto" accept="image/*"><div id="myPreview"></div></div>
-    <div class="img-preview"><label>📸 Partner's </label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
+    <div class="img-preview"><label>📸 Partner's Photo</label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
   </div>
   
   <label>💕 Your Name</label><input id="yourName" placeholder="e.g., Mahi">
@@ -256,11 +278,11 @@
   <div id="additionalFeatures"></div>
   <div class="lang-selector" id="langSelector"></div>
   
-  <!-- Only copy short link button – no long link displayed -->
+  <!-- Only copy short link button -->
   <div style="text-align: center; margin: 20px 0;">
-    <button id="copyShortOnlyBtn" class="neon-btn" style="background: #2b6f8a;"><i class="fas fa-link"></i> Copy Short Love Link</button>
+    <button id="copyShortOnlyBtn" class="neon-btn" style="background: #2b6f8a;"><i class="fas fa-link"></i> Copy Shareable Love Link</button>
     <div class="safety-note">
-      <i class="fas fa-shield-alt"></i> <strong>This link is 100% safe</strong> – it contains your love messages, photos, and quotes. No personal data is stored anywhere.
+      <i class="fas fa-shield-alt"></i> <strong>This link is 100% safe</strong> – stored in cloud, short and permanent.
     </div>
   </div>
   
@@ -275,7 +297,12 @@
 </div>
 
 <script>
-  // ================== QUOTES DATABASE (FULL) ==================
+  // ================== SUPABASE CONFIGURATION ==================
+  const SUPABASE_URL = "https://jxmzkepwatmsljistezr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4bXprZXB3YXRtc2xqaXN0ZXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3ODY5NjQsImV4cCI6MjA5NDM2Mjk2NH0.iswg7bbXgV8DaFmZwhzZEVeGD8XChuCBxUhj5NaeV8U";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ================== QUOTES DATABASE ==================
   const quotesDB = {
     Wife: {
       English: ["You are my queen, my home, my peace.\nEvery morning I wake up grateful for you.\nIn your arms, I have found forever.","The moment I saw you, I knew.\nYou are not just my wife, but my destiny.\nThank you for choosing me every day.","Through every storm and every sunshine,\nYou stood by me like a rock.\nMy love for you only grows deeper.","I promise to hold your hand till the end of time.\nTo laugh with you, cry with you, grow old with you.\nYou are my greatest blessing.","No words can capture what you mean to me.\nYou are the poetry I never knew I could write.\nI love you, my eternal wife."],
@@ -308,8 +335,7 @@
   function getRandomBgImage() { return bgImageList.length ? bgImageList[Math.floor(Math.random() * bgImageList.length)] : null; }
 
   // Helper functions
-  function encodeData(obj) { return btoa(encodeURIComponent(JSON.stringify(obj))); }
-  function decodeData(str) { try { return JSON.parse(decodeURIComponent(atob(str))); } catch(e) { return null; } }
+  function generateId() { return 'rel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8); }
   function compressImage(file, maxW=300) {
     return new Promise((resolve) => {
       if (!file) return resolve(null);
@@ -361,35 +387,8 @@
   let currentData = null;
   let currentLanguage = "English";
   let quoteIndices = {};
-  let currentShortLink = null;
+  let currentId = null; // store the supabase ID
 
-  // Multiple shortener APIs
-  async function shortenUrlWithRetry(longUrl) {
-    const shorteners = [
-      { name: 'is.gd', url: `https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}` },
-      { name: 'v.gd', url: `https://v.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}` },
-      { name: 'tinyurl', url: `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}` }
-    ];
-    for (let service of shorteners) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-        const response = await fetch(service.url, { signal: controller.signal });
-        clearTimeout(timeoutId);
-        if (response.ok) {
-          const shortUrl = await response.text();
-          if (shortUrl && shortUrl.startsWith('http')) {
-            return shortUrl;
-          }
-        }
-      } catch (e) {
-        console.warn(`${service.name} failed:`, e);
-      }
-    }
-    throw new Error('All shorteners failed');
-  }
-
-  // Quote functions
   function getNextQuote(relType, lang) {
     const arr = quotesDB[relType]?.[lang] || quotesDB.Wife.English;
     const key = `${relType}_${lang}`;
@@ -434,7 +433,6 @@
     const bgStyle = bgImage ? `url('${bgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
     const container = document.getElementById('quoteContainer');
     if (!container) {
-      console.warn("quoteContainer not ready, retrying in 100ms");
       setTimeout(() => updateQuote(relType, quoteImageBase64), 100);
       return;
     }
@@ -455,36 +453,36 @@
   }
   
   function renderCountdown(data) {
-    const { yourName, partnerName, startDate, customMsg, emotionalNote, myPhoto, partnerPhoto, relType, nameFont, quoteImage, mediaUrl, yourBirthday, partnerBirthday, giftMessage, loveMeter=50 } = data;
-    const { daysTogether, daysUntilAnniv } = computeDays(startDate);
-    const formattedStart = new Date(startDate).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-    const fontFamily = nameFont || "'Inter', sans-serif";
-    const imageHtml = `<div class="dual-image">${myPhoto ? `<div class="img-preview"><img src="${myPhoto}"><br>❤️ ${escapeHtml(yourName)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(yourName)}</div>`}${partnerPhoto ? `<div class="img-preview"><img src="${partnerPhoto}"><br>💖 ${escapeHtml(partnerName)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(partnerName)}</div>`}</div>`;
+    const { your_name, partner_name, start_date, custom_message, emotional_note, my_photo, partner_photo, rel_type, name_font, quote_image, media_url, your_birthday, partner_birthday, gift_message, love_meter=50 } = data;
+    const { daysTogether, daysUntilAnniv } = computeDays(start_date);
+    const formattedStart = new Date(start_date).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    const fontFamily = name_font || "'Inter', sans-serif";
+    const imageHtml = `<div class="dual-image">${my_photo ? `<div class="img-preview"><img src="${my_photo}"><br>❤️ ${escapeHtml(your_name)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(your_name)}</div>`}${partner_photo ? `<div class="img-preview"><img src="${partner_photo}"><br>💖 ${escapeHtml(partner_name)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(partner_name)}</div>`}</div>`;
     document.getElementById('countdownContent').innerHTML = `
       ${imageHtml}
-      <h2 style="font-family:${fontFamily}; font-size:2rem; text-align:center;">❤️ ${escapeHtml(yourName)} & ${escapeHtml(partnerName)} ❤️</h2>
-      <p style="text-align:center;"><i class="fas fa-calendar-alt"></i> Together since ${formattedStart} | ${relType}</p>
+      <h2 style="font-family:${fontFamily}; font-size:2rem; text-align:center;">❤️ ${escapeHtml(your_name)} & ${escapeHtml(partner_name)} ❤️</h2>
+      <p style="text-align:center;"><i class="fas fa-calendar-alt"></i> Together since ${formattedStart} | ${rel_type}</p>
       <div style="background:#00000055; border-radius: 50px; padding: 18px; margin: 20px 0; text-align:center;">
         <div class="count-number">${daysTogether} days together</div>
         <div>✨ Next anniversary in ${daysUntilAnniv} days ✨</div>
       </div>
       <div id="quoteContainer"></div>
-      ${customMsg ? `<div style="background:#ff66cc20; border-radius: 30px; padding:12px; margin:12px 0;">✨ “${escapeHtml(customMsg)}” ✨</div>` : ''}
-      ${emotionalNote ? `<div style="border-left: 3px solid #ff66cc; padding-left: 16px; margin:12px 0;"><i class="fas fa-feather"></i> ${escapeHtml(emotionalNote)}</div>` : ''}
+      ${custom_message ? `<div style="background:#ff66cc20; border-radius: 30px; padding:12px; margin:12px 0;">✨ “${escapeHtml(custom_message)}” ✨</div>` : ''}
+      ${emotional_note ? `<div style="border-left: 3px solid #ff66cc; padding-left: 16px; margin:12px 0;"><i class="fas fa-feather"></i> ${escapeHtml(emotional_note)}</div>` : ''}
     `;
     let addHtml = '';
-    const yourBD = daysUntilBirthday(yourBirthday);
-    const partnerBD = daysUntilBirthday(partnerBirthday);
+    const yourBD = daysUntilBirthday(your_birthday);
+    const partnerBD = daysUntilBirthday(partner_birthday);
     if (yourBD !== null || partnerBD !== null) {
       addHtml += `<div style="background:#00000055; border-radius: 50px; padding:12px; margin:12px 0; text-align:center;">`;
-      if (yourBD !== null) addHtml += `<i class="fas fa-birthday-cake"></i> ${escapeHtml(yourName)}'s birthday in ${yourBD} days &nbsp;&nbsp;`;
-      if (partnerBD !== null) addHtml += `<i class="fas fa-birthday-cake"></i> ${escapeHtml(partnerName)}'s birthday in ${partnerBD} days`;
+      if (yourBD !== null) addHtml += `<i class="fas fa-birthday-cake"></i> ${escapeHtml(your_name)}'s birthday in ${yourBD} days &nbsp;&nbsp;`;
+      if (partnerBD !== null) addHtml += `<i class="fas fa-birthday-cake"></i> ${escapeHtml(partner_name)}'s birthday in ${partnerBD} days`;
       addHtml += `</div>`;
     }
-    addHtml += `<div class="love-meter"><label>💕 Love Meter 💕</label><input type="range" id="loveSlider" class="love-slider" min="0" max="100" value="${loveMeter}"><div class="love-value" id="loveValue">${loveMeter}%</div></div>`;
-    const embedUrl = getYouTubeEmbed(mediaUrl);
+    addHtml += `<div class="love-meter"><label>💕 Love Meter 💕</label><input type="range" id="loveSlider" class="love-slider" min="0" max="100" value="${love_meter}"><div class="love-value" id="loveValue">${love_meter}%</div></div>`;
+    const embedUrl = getYouTubeEmbed(media_url);
     if (embedUrl) addHtml += `<div class="embed-container"><iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
-    addHtml += `<div class="gift-container"><div class="gift-box" id="giftBox"><i class="fas fa-gift"></i></div><div id="giftMessageDisplay" class="gift-message">${giftMessage ? escapeHtml(giftMessage) : '💝 A special surprise from their heart 💝'}</div></div>`;
+    addHtml += `<div class="gift-container"><div class="gift-box" id="giftBox"><i class="fas fa-gift"></i></div><div id="giftMessageDisplay" class="gift-message">${gift_message ? escapeHtml(gift_message) : '💝 A special surprise from their heart 💝'}</div></div>`;
     document.getElementById('additionalFeatures').innerHTML = addHtml;
     
     const slider = document.getElementById('loveSlider');
@@ -499,25 +497,37 @@
       };
     }
     const today = new Date().toISOString().split('T')[0];
-    if (startDate === today) canvasConfetti({ particleCount: 200, spread: 100, origin: { y: 0.5 }, colors: ['#ff4d6d', '#ff99cc', '#ffcc00'], startVelocity: 20 });
+    if (start_date === today) canvasConfetti({ particleCount: 200, spread: 100, origin: { y: 0.5 }, colors: ['#ff4d6d', '#ff99cc', '#ffcc00'], startVelocity: 20 });
     
     const langSelector = document.getElementById('langSelector');
     langSelector.innerHTML = `<div class="lang-btn ${currentLanguage==='English'?'active':''}" data-lang="English">🇬🇧 English</div><div class="lang-btn ${currentLanguage==='Hindi'?'active':''}" data-lang="Hindi">🇮🇳 हिंदी</div><div class="lang-btn ${currentLanguage==='Marathi'?'active':''}" data-lang="Marathi">🇮🇳 मराठी</div>`;
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.onclick = () => {
         currentLanguage = btn.getAttribute('data-lang');
-        quoteIndices[`${relType}_${currentLanguage}`] = 0;
-        updateQuote(relType, quoteImage);
+        quoteIndices[`${rel_type}_${currentLanguage}`] = 0;
+        updateQuote(rel_type, quote_image);
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
       };
     });
-    updateQuote(relType, quoteImage);
+    updateQuote(rel_type, quote_image);
   }
   
   function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
   
-  // Generate button
+  function showLoader(show) {
+    let loader = document.getElementById('globalLoader');
+    if (show && !loader) {
+      const div = document.createElement('div');
+      div.id = 'globalLoader';
+      div.className = 'loader-overlay';
+      div.innerHTML = `<div class="neon-loader"></div><p style="margin-top:20px; color:cyan;">Saving your love story...</p>`;
+      document.body.appendChild(div);
+    } else if (!show && loader) {
+      loader.remove();
+    }
+  }
+  
   document.getElementById('generateBtn').onclick = async () => {
     const yourName = document.getElementById('yourName').value.trim();
     const partnerName = document.getElementById('partnerName').value.trim();
@@ -534,81 +544,91 @@
     const partnerBirthday = document.getElementById('partnerBirthday').value;
     const giftMessage = document.getElementById('giftMessage').value;
     if (!yourName || !partnerName || !startDate) { document.getElementById('genError').innerText = "💔 Please fill names and date."; document.getElementById('genError').style.display = 'block'; setTimeout(() => document.getElementById('genError').style.display = 'none', 3000); return; }
+    
+    showLoader(true);
     let myPhotoB64 = await compressImage(myPhotoFile);
     let partnerPhotoB64 = await compressImage(partnerPhotoFile);
     let quoteImageB64 = await compressImage(quoteImageFile, 400);
-    const loveData = { yourName, partnerName, startDate, customMsg, emotionalNote, relType, myPhoto: myPhotoB64, partnerPhoto: partnerPhotoB64, nameFont, quoteImage: quoteImageB64, mediaUrl, yourBirthday, partnerBirthday, giftMessage, loveMeter: 50 };
-    const encoded = encodeData(loveData);
-    const longUrl = window.location.origin + window.location.pathname + '?love=' + encoded;
-    window.history.pushState({}, '', longUrl);
     
-    // Generate short link in background (no long URL displayed)
-    try {
-      currentShortLink = await shortenUrlWithRetry(longUrl);
-    } catch (err) {
-      console.error("Shortening failed", err);
-      currentShortLink = null;
+    const id = generateId();
+    const payload = {
+      id: id,
+      your_name: yourName,
+      partner_name: partnerName,
+      start_date: startDate,
+      custom_message: customMsg,
+      emotional_note: emotionalNote,
+      rel_type: relType,
+      my_photo: myPhotoB64,
+      partner_photo: partnerPhotoB64,
+      name_font: nameFont,
+      quote_image: quoteImageB64,
+      media_url: mediaUrl,
+      your_birthday: yourBirthday,
+      partner_birthday: partnerBirthday,
+      gift_message: giftMessage,
+      love_meter: 50
+    };
+    
+    const { error } = await supabase.from('relationships').insert([payload]);
+    showLoader(false);
+    if (error) {
+      document.getElementById('genError').innerText = "Database error: " + error.message;
+      document.getElementById('genError').style.display = 'block';
+      setTimeout(() => document.getElementById('genError').style.display = 'none', 5000);
+      return;
     }
+    
+    // success – redirect to the same page with ?id=xxx
+    const shortUrl = window.location.origin + window.location.pathname + '?id=' + id;
+    window.history.pushState({}, '', shortUrl);
     loadFromUrl();
   };
   
   async function loadFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    const enc = params.get('love');
-    if (enc) {
-      const data = decodeData(enc);
-      if (data && data.yourName && data.partnerName && data.startDate) {
-        document.getElementById('generatorSection').style.display = 'none';
-        document.getElementById('countdownSection').style.display = 'block';
-        renderCountdown(data);
-        currentData = data;
-        if (!currentShortLink) {
-          try {
-            currentShortLink = await shortenUrlWithRetry(window.location.href);
-          } catch (err) {
-            console.error("Shortening failed on load", err);
-            currentShortLink = null;
-          }
-        }
+    const id = params.get('id');
+    if (id) {
+      const { data, error } = await supabase.from('relationships').select('*').eq('id', id).single();
+      if (error || !data) {
+        document.getElementById('generatorSection').style.display = 'block';
+        document.getElementById('countdownSection').style.display = 'none';
+        document.getElementById('genError').innerText = "Love story not found. Create a new one.";
+        document.getElementById('genError').style.display = 'block';
+        setTimeout(() => document.getElementById('genError').style.display = 'none', 5000);
         return;
       }
+      currentId = id;
+      document.getElementById('generatorSection').style.display = 'none';
+      document.getElementById('countdownSection').style.display = 'block';
+      renderCountdown(data);
+      currentData = data;
+    } else {
+      document.getElementById('generatorSection').style.display = 'block';
+      document.getElementById('countdownSection').style.display = 'none';
+      currentId = null;
     }
-    document.getElementById('generatorSection').style.display = 'block';
-    document.getElementById('countdownSection').style.display = 'none';
-    currentShortLink = null;
   }
   
-  // Copy short link button (no long URL ever shown)
-  document.getElementById('copyShortOnlyBtn')?.addEventListener('click', async () => {
-    if (currentShortLink) {
-      navigator.clipboard.writeText(currentShortLink);
+  // Copy short link button (the link is already short!)
+  document.getElementById('copyShortOnlyBtn')?.addEventListener('click', () => {
+    if (currentId) {
+      const shortUrl = window.location.origin + window.location.pathname + '?id=' + currentId;
+      navigator.clipboard.writeText(shortUrl);
       alert("✅ Short love link copied! Share it with your partner.");
     } else {
-      const longUrl = window.location.href;
-      try {
-        const shortUrl = await shortenUrlWithRetry(longUrl);
-        currentShortLink = shortUrl;
-        navigator.clipboard.writeText(shortUrl);
-        alert("✅ Short love link copied! Share it with your partner.");
-      } catch (err) {
-        alert("⚠️ Could not create short link. Please check your internet connection.");
-      }
+      alert("No love story loaded. Please generate one first.");
     }
   });
   
-  document.getElementById('shareBtn')?.addEventListener('click', async () => {
-    let linkToShare = currentShortLink;
-    if (!linkToShare) {
-      try {
-        linkToShare = await shortenUrlWithRetry(window.location.href);
-        currentShortLink = linkToShare;
-      } catch (err) {
-        alert("Unable to get short link. Use copy button instead.");
-        return;
-      }
+  document.getElementById('shareBtn')?.addEventListener('click', () => {
+    if (currentId) {
+      const shortUrl = window.location.origin + window.location.pathname + '?id=' + currentId;
+      if (navigator.share) navigator.share({ title: 'Eternal Vows', url: shortUrl });
+      else alert("Use the copy button");
+    } else {
+      alert("No love story loaded.");
     }
-    if (navigator.share) navigator.share({ title: 'Eternal Vows', url: linkToShare });
-    else alert("Use the 'Copy Short Love Link' button");
   });
   
   document.getElementById('screenshotBtn')?.addEventListener('click', () => { html2canvas(document.getElementById('countdownSection'), { scale: 2 }).then(canvas => { let a = document.createElement('a'); a.download = 'love_page.png'; a.href = canvas.toDataURL(); a.click(); }); });
