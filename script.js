@@ -1,49 +1,110 @@
 const titles = [
 
     "Broken Yet Brave",
+    "Silent Heart",
     "Future Queen",
     "Distance Love",
-    "Silent Heart",
     "Forever Story"
 ];
 
 const stories = [
 
 `Some people leave quietly,
-but memories never leave.`,
+but their memories stay forever.`,
 
-`Love survives distance
-when hearts stay loyal.`,
+`Distance never destroys real love.
+Silence does.`,
 
 `The pain changed me,
 but never destroyed me.`,
 
-`You were my peace
-inside all chaos.`
+`You were the peace
+inside all my chaos.`
 
 ];
 
 const loveLetters = [
 
-`You are still my favorite notification.`,
-
 `Even silence feels beautiful with you.`,
+
+`You are still my favorite notification.`,
 
 `One day,
 we will smile remembering this distance.`
 
 ];
 
-const gradients = [
 
-"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",
 
-"linear-gradient(135deg,#42275a,#734b6d)",
+/* ===========================
+   FALLBACK BACKGROUNDS
+=========================== */
 
-"linear-gradient(135deg,#000428,#004e92)",
+const fallbackBackgrounds = [
 
-"linear-gradient(135deg,#232526,#414345)"
+"assets/bg-img/romantic1.jpg",
+
+"assets/bg-img/romantic2.jpg",
+
+"assets/bg-img/romantic3.jpg"
 ];
+
+
+
+/* ===========================
+   DYNAMIC BACKGROUND
+=========================== */
+
+function setDynamicBackground(){
+
+    const random =
+    Math.floor(Math.random()*1000);
+
+    const aiImage =
+
+`https://source.unsplash.com/1600x900/?love,couple,romantic&sig=${random}`;
+
+    const img = new Image();
+
+    img.src = aiImage;
+
+    img.onload = () => {
+
+        document.body.style.backgroundImage =
+        `url(${aiImage})`;
+
+        document.body.style.backgroundSize =
+        "cover";
+
+        document.body.style.backgroundPosition =
+        "center";
+    };
+
+    img.onerror = () => {
+
+        const fallback =
+
+        fallbackBackgrounds[
+        Math.floor(
+        Math.random()*fallbackBackgrounds.length
+        )];
+
+        document.body.style.backgroundImage =
+        `url(${fallback})`;
+
+        document.body.style.backgroundSize =
+        "cover";
+
+        document.body.style.backgroundPosition =
+        "center";
+    };
+}
+
+
+
+/* ===========================
+   RANDOM STORY
+=========================== */
 
 function generateStory(){
 
@@ -53,18 +114,21 @@ function generateStory(){
     const randomStory =
     stories[Math.floor(Math.random()*stories.length)];
 
-    const randomBg =
-    gradients[Math.floor(Math.random()*gradients.length)];
-
-    document.body.style.background = randomBg;
-
     document.getElementById("title").innerText =
     randomTitle;
 
     typeWriter(randomStory);
 
+    setDynamicBackground();
+
     generateQRCode();
 }
+
+
+
+/* ===========================
+   TYPEWRITER
+=========================== */
 
 function typeWriter(text){
 
@@ -90,6 +154,77 @@ function typeWriter(text){
     typing();
 }
 
+
+
+/* ===========================
+   OPENAI STORY
+=========================== */
+
+async function generateAIStory(){
+
+    try{
+
+        const response =
+        await fetch("/api/openai");
+
+        const data =
+        await response.json();
+
+        const story =
+        data.choices[0].message.content;
+
+        document.getElementById("title").innerText =
+        "OpenAI Love Story";
+
+        typeWriter(story);
+
+        setDynamicBackground();
+
+    }catch(error){
+
+        generateStory();
+    }
+}
+
+
+
+/* ===========================
+   GEMINI STORY
+=========================== */
+
+async function generateGeminiStory(){
+
+    try{
+
+        const response =
+        await fetch("/api/gemini");
+
+        const data =
+        await response.json();
+
+        const story =
+        data.candidates[0]
+        .content.parts[0].text;
+
+        document.getElementById("title").innerText =
+        "Gemini Love Story";
+
+        typeWriter(story);
+
+        setDynamicBackground();
+
+    }catch(error){
+
+        generateStory();
+    }
+}
+
+
+
+/* ===========================
+   SPEAK STORY
+=========================== */
+
 function speakStory(){
 
     const text =
@@ -105,11 +240,17 @@ function speakStory(){
     window.speechSynthesis.speak(speech);
 }
 
+
+
+/* ===========================
+   SHARE STORY
+=========================== */
+
 function shareStory(){
 
     navigator.share({
 
-        title:"Relationship Story",
+        title:"LoveBirds AI",
 
         text:
         document.getElementById("story").innerText,
@@ -118,15 +259,27 @@ function shareStory(){
     });
 }
 
+
+
+/* ===========================
+   LOVE LETTER
+=========================== */
+
 function generateLoveLetter(){
 
     const letter =
     loveLetters[
-        Math.floor(Math.random()*loveLetters.length)
+    Math.floor(Math.random()*loveLetters.length)
     ];
 
     alert(letter);
 }
+
+
+
+/* ===========================
+   QR CODE
+=========================== */
 
 function generateQRCode(){
 
@@ -137,10 +290,6 @@ function generateQRCode(){
         window.location.href
     );
 }
-
-generateStory();
-
-
 
 
 
@@ -211,3 +360,14 @@ function drawRain(){
 }
 
 drawRain();
+
+
+
+/* ===========================
+   AUTO LOAD
+=========================== */
+
+window.onload = () => {
+
+    generateAIStory();
+};
