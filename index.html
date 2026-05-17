@@ -1,103 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<title>Only For You ❤️</title>
 
-    <title>LoveBirds AI</title>
+<link rel="stylesheet" href="style.css">
 
-    <link rel="stylesheet" href="style.css">
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
 </head>
 
 <body>
 
-    <!-- Rain Canvas -->
-    <canvas id="rain"></canvas>
+<!-- LANGUAGE PAGE -->
 
-    <!-- Overlay -->
-    <div class="overlay"></div>
+<div class="page page1 active" id="languagePage">
 
-    <!-- Background Music -->
-    <audio id="bgMusic" autoplay loop>
-        <source src="assets/music.mp3" type="audio/mpeg">
-    </audio>
+<div class="card">
 
-    <div class="container">
+<div class="title">
+Choose Your Journey ❤️
+</div>
 
-        <h1 id="title">
-            LoveBirds AI
-        </h1>
+<p>
+Every language unlocks a different emotional experience ✨
+</p>
 
-        <div class="story-box">
+<div class="language-buttons">
 
-            <p id="story">
-                Loading story...
-            </p>
+<button class="lang-btn" onclick="setLanguage('english')">
+English
+</button>
 
-        </div>
+<button class="lang-btn" onclick="setLanguage('hindi')">
+हिंदी
+</button>
 
-        <div class="buttons">
+<button class="lang-btn" onclick="setLanguage('marathi')">
+मराठी
+</button>
 
-            <button onclick="generateAIStory()">
-                OpenAI Story
-            </button>
+</div>
 
-            <button onclick="generateGeminiStory()">
-                Gemini Story
-            </button>
+</div>
 
-            <button onclick="generateStory()">
-                Random Story
-            </button>
+</div>
 
-            <button onclick="speakStory()">
-                Listen
-            </button>
+<!-- PAGE 1 -->
 
-            <button onclick="shareStory()">
-                Share
-            </button>
+<div class="page page2" id="page1">
 
-            <button onclick="generateLoveLetter()">
-                Love Letter
-            </button>
+<div class="card">
 
-        </div>
+<h2 id="title1"></h2>
 
-        <div id="qrcode"></div>
+<p id="text1"></p>
 
-        <div class="timeline">
+</div>
 
-            <div class="event">
-                ❤️ First Meet
-            </div>
+<button class="btn top-left"
+onclick="showPage(2)">
+Continue ❤️
+</button>
 
-            <div class="event">
-                ☎️ First Call
-            </div>
+</div>
 
-            <div class="event">
-                💍 Forever Promise
-            </div>
+<!-- PAGE 2 -->
 
-        </div>
+<div class="page page3" id="page2">
 
-    </div>
+<div class="card">
 
-    <script src="script.js"></script>
+<h2 id="title2"></h2>
+
+<p id="text2"></p>
+
+<div class="secret" id="secret2"></div>
+
+</div>
+
+<button class="btn top-right"
+onclick="showPage(3)">
+Next ✨
+</button>
+
+</div>
+
+<!-- PAGE 3 -->
+
+<div class="page page4" id="page3">
+
+<div class="card">
+
+<h2 id="title3"></h2>
+
+<p id="text3"></p>
+
+</div>
+
+<button class="btn bottom-left"
+onclick="showPage(4)">
+Continue 🌙
+</button>
+
+</div>
+
+<!-- PAGE 4 -->
+
+<div class="page page5" id="page4">
+
+<div class="card">
+
+<h2 id="title4"></h2>
+
+<div class="secret">
+
+<p id="text4"></p>
+
+</div>
+
+</div>
+
+<button class="btn bottom-right"
+onclick="showPage(5)">
+I’m Curious 👀
+</button>
+
+</div>
+
+<!-- PAGE 5 -->
+
+<div class="page page2" id="page5">
+
+<div class="card">
+
+<h2 id="title5"></h2>
+
+<p id="text5"></p>
+
+<div class="secret" id="secret5"></div>
+
+</div>
+
+<button class="btn middle-left"
+onclick="showPage(6)">
+Open Final Message ❤️
+</button>
+
+</div>
+
+<!-- FINAL PAGE -->
+
+<div class="page page6" id="page6">
+
+<div class="final-box">
+
+<h2 id="finalTitle"></h2>
+
+<div class="final-text" id="finalText"></div>
+
+<div class="signature">
+— Your Mahi ❤️
+</div>
+
+<button class="back-btn"
+onclick="goHome()">
+
+Back To Main Page ❤️
+
+</button>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
 
 </body>
-
 </html>
+
