@@ -4,7 +4,11 @@ title1:[
 "You Opened This... ❤️",
 "Hey You... ❤️",
 "Wait... You Came Here? ✨",
-"I Was Hoping You’d Read This ❤️"
+"I Was Hoping You’d Read This ❤️",
+"One Tiny Feeling ❤️",
+"You Stayed... ✨",
+"This Is For You 🌙",
+"Maybe Destiny ❤️"
 ],
 
 text1:[
@@ -14,14 +18,24 @@ text1:[
 
 "I didn’t plan any of this... but somehow your presence started feeling special 🌙",
 
-"You’re reading this right now... and honestly? That already means more than you think ❤️"
+"You’re reading this right now... and honestly? That already means more than you think ❤️",
+
+"Sometimes one person quietly changes your whole mood ❤️",
+
+"You became comfort before I even realized it 🌸",
+
+"I never expected random conversations to feel this important ✨",
+
+"Your messages slowly became part of my peace ❤️"
 ],
 
 title2:[
 "Something Feels Different 🌸",
 "This Feeling Is Strange ✨",
 "Soft Little Truth 🌙",
-"Comfort Looks Like You ❤️"
+"Comfort Looks Like You ❤️",
+"Somewhere Between Us ✨",
+"Unexpected Peace ❤️"
 ],
 
 text2:[
@@ -31,7 +45,11 @@ text2:[
 
 "I don’t know why... but talking to you slowly became part of my peace 🌸",
 
-"There’s something strangely calming about your presence ✨"
+"There’s something strangely calming about your presence ✨",
+
+"You quietly became someone my mind searches for naturally ❤️",
+
+"I didn’t notice when your presence started feeling important 🌙"
 ],
 
 secret2:[
@@ -46,7 +64,8 @@ title3:[
 "Mini Confession 🌙",
 "One Tiny Secret ❤️",
 "I Shouldn’t Admit This 👀",
-"Random Thought ✨"
+"Random Thought ✨",
+"Late Night Feeling ❤️"
 ],
 
 text3:[
@@ -56,7 +75,9 @@ text3:[
 
 "I never noticed when your presence started feeling comforting 🌸",
 
-"Somehow... talking to you became something I look forward to ✨"
+"Somehow... talking to you became something I look forward to ✨",
+
+"You slowly became my favorite notification ❤️"
 ],
 
 title4:[
@@ -88,39 +109,183 @@ text5:[
 
 "You’re about to read something my heart noticed before my mind did ❤️",
 
-"Some truths become impossible to hide forever ✨",
-
-"This page changes the meaning of everything before it ❤️"
+"Some truths become impossible to hide forever ✨"
 ],
 
 secret5:[
 "You’re about to read something my heart noticed before my mind did ❤️",
 
-"Some feelings quietly grow before we even realize them 🌙",
-
-"The next page contains the truth hidden inside ordinary moments ✨"
+"Some feelings quietly grow before we even realize them 🌙"
 ],
 
 finalTitle:[
 "The Truth I Never Said ❤️",
 "What I Never Admitted 🌙",
-"Maybe This Is Love ✨",
-"The Feeling I Hid ❤️"
+"Maybe This Is Love ✨"
 ],
 
 finalText:[
-"Maybe you still don’t realize it yet... but somewhere between the random conversations, the unexpected smiles, the late replies, and those tiny moments that looked ordinary... you quietly became something important to me.<br><br>I don’t even know when it started happening.<br><br>Maybe it was the way your messages suddenly became the best part of my day.<br><br>Maybe it was how your presence started feeling comforting in a way I never expected.<br><br>Nothing about this was planned.<br><br>Yet somehow... you slowly became someone my mind looks for naturally ❤️",
+"Maybe you still don’t realize it yet... but somewhere between the random conversations, the unexpected smiles, the late replies, and those tiny moments that looked ordinary... you quietly became something important to me ❤️",
 
-"Sometimes people slowly become home without even realizing it ❤️<br><br>And maybe that’s exactly what happened with you.<br><br>I didn’t expect your presence to matter this much... but now it quietly does 🌙",
+"Sometimes people slowly become home without even realizing it ❤️",
 
-"I don’t know when this feeling started.<br><br>Maybe during random late night conversations.<br><br>Maybe during the moments you unintentionally made me smile.<br><br>But somewhere along the way... you became special ❤️"
+"I don’t know when this feeling started... but somehow you became special ❤️"
 ]
 
 };
 
 
 
-/* RANDOM PICKER */
+const hindiData = {
+
+title1:[
+"सुनो ना ❤️",
+"तुम यहाँ तक आ गए? ✨",
+"एक छोटी सी बात ❤️",
+"तुम पढ़ रहे हो... अच्छा लग रहा है 🌙"
+],
+
+text1:[
+"ये छोटा सा सफर सिर्फ तुम्हारी मुस्कान देखने के लिए बनाया है ✨",
+
+"कुछ लोग अचानक important बन जाते हैं... शायद तुम भी ❤️",
+
+"तुमसे बात करना अब दिन का सबसे soft हिस्सा लगने लगा है 🌸",
+
+"पता नहीं क्यों... लेकिन तुम्हारी presence अलग feel होती है ❤️"
+],
+
+title2:[
+"कुछ तो अलग है 🌸",
+"ये feeling नई है ✨",
+"तुम अलग लगते हो ❤️"
+],
+
+text2:[
+"तुमसे बात करना अजीब तरह से सुकून देता है 👀",
+
+"कुछ लोग बातें नहीं... सुकून बन जाते हैं ❤️",
+
+"तुम्हारे messages अब randomly smile दे जाते हैं ✨"
+],
+
+secret2:[
+"छोटा Hint ❤️<br><br>अगले page में एक दिल की बात छुपी है ✨"
+],
+
+title3:[
+"एक Confession 🌙",
+"दिल की बात ❤️"
+],
+
+text3:[
+"कभी कभी तुम्हारे chats बिना वजह फिर से पढ़ लेता हूँ ❤️",
+
+"तुम्हारी बातें अब habit बनने लगी हैं ✨"
+],
+
+title4:[
+"असल Problem ❤️"
+],
+
+text4:[
+"तुम धीरे धीरे मेरी शांति का हिस्सा बन गए हो ❤️"
+],
+
+title5:[
+"Last Warning ✨"
+],
+
+text5:[
+"अब आगे जो है... वो शायद दिल की सच्चाई है ❤️"
+],
+
+secret5:[
+"कुछ feelings धीरे धीरे grow करती हैं ❤️"
+],
+
+finalTitle:[
+"जो कभी कहा नहीं ❤️"
+],
+
+finalText:[
+"शायद तुम्हें अभी एहसास नहीं... लेकिन कहीं random बातें करते करते तुम मेरे लिए special बन गए ❤️"
+]
+
+};
+
+
+
+const marathiData = {
+
+title1:[
+"अगं ऐक ना ❤️",
+"तू इथे आलीस? ✨",
+"एक छोटीशी गोष्ट 🌙"
+],
+
+text1:[
+"हा छोटासा प्रवास फक्त तुझ्या चेहऱ्यावर smile यावी म्हणून बनवलाय ✨",
+
+"काही लोक नकळत special बनतात ❤️",
+
+"तुझ्याशी बोलताना एक वेगळाच comfort वाटतो 🌸"
+],
+
+title2:[
+"काहीतरी वेगळं आहे 🌸",
+"ही feeling नवीन आहे ✨"
+],
+
+text2:[
+"तुझ्याशी बोलताना एक वेगळाच सुकून वाटतो 👀",
+
+"काही लोक हळूहळू सवय बनतात ❤️"
+],
+
+secret2:[
+"छोटासा Hint ❤️<br><br>पुढच्या page मध्ये मनातली गोष्ट आहे ✨"
+],
+
+title3:[
+"एक Confession 🌙"
+],
+
+text3:[
+"कधी कधी तुझे chats पुन्हा वाचतो ❤️"
+],
+
+title4:[
+"खरं सांगायचं तर ❤️"
+],
+
+text4:[
+"तू नकळत माझ्या शांततेचा भाग झाली आहेस ❤️"
+],
+
+title5:[
+"शेवटची Warning ✨"
+],
+
+text5:[
+"आता पुढे जे आहे... ते मनाची खरी गोष्ट आहे ❤️"
+],
+
+secret5:[
+"काही feelings हळूहळू वाढतात ❤️"
+],
+
+finalTitle:[
+"मनातलं खरं ❤️"
+],
+
+finalText:[
+"कदाचित तुला अजून कळलं नसेल... पण random बोलता बोलता तू माझ्यासाठी special झाली आहेस ❤️"
+]
+
+};
+
+
 
 function random(arr){
 
@@ -132,39 +297,35 @@ Math.floor(Math.random()*arr.length)
 
 
 
-/* GENERATE FRESH QUOTES */
-
-function generateFreshContent(){
+function generateFreshContent(data){
 
 return {
 
-title1:random(englishData.title1),
-text1:random(englishData.text1),
+title1:random(data.title1),
+text1:random(data.text1),
 
-title2:random(englishData.title2),
-text2:random(englishData.text2),
-secret2:random(englishData.secret2),
+title2:random(data.title2),
+text2:random(data.text2),
+secret2:random(data.secret2),
 
-title3:random(englishData.title3),
-text3:random(englishData.text3),
+title3:random(data.title3),
+text3:random(data.text3),
 
-title4:random(englishData.title4),
-text4:random(englishData.text4),
+title4:random(data.title4),
+text4:random(data.text4),
 
-title5:random(englishData.title5),
-text5:random(englishData.text5),
-secret5:random(englishData.secret5),
+title5:random(data.title5),
+text5:random(data.text5),
+secret5:random(data.secret5),
 
-finalTitle:random(englishData.finalTitle),
-finalText:random(englishData.finalText)
+finalTitle:random(data.finalTitle),
+finalText:random(data.finalText)
 
 };
 
 }
 
 
-
-/* SET LANGUAGE */
 
 function setLanguage(lang){
 
@@ -173,7 +334,21 @@ document.getElementById('languagePage')
 
 showPage(1);
 
-const d = generateFreshContent();
+let selectedData;
+
+if(lang === "english"){
+selectedData = englishData;
+}
+
+if(lang === "hindi"){
+selectedData = hindiData;
+}
+
+if(lang === "marathi"){
+selectedData = marathiData;
+}
+
+const d = generateFreshContent(selectedData);
 
 document.getElementById('title1').innerHTML=d.title1;
 document.getElementById('text1').innerHTML=d.text1;
@@ -190,7 +365,6 @@ document.getElementById('text4').innerHTML=d.text4;
 
 document.getElementById('title5').innerHTML=d.title5;
 document.getElementById('text5').innerHTML=d.text5;
-
 document.getElementById('secret5').innerHTML=d.secret5;
 
 document.getElementById('finalTitle').innerHTML=d.finalTitle;
@@ -199,8 +373,6 @@ document.getElementById('finalText').innerHTML=d.finalText;
 }
 
 
-
-/* PAGE SWITCH */
 
 function showPage(page){
 
@@ -218,8 +390,6 @@ window.scrollTo(0,0);
 }
 
 
-
-/* GO HOME */
 
 function goHome(){
 
