@@ -1,46 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Only For You ❤️</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="style.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@700&display=swap"
+rel="stylesheet">
 
 </head>
 
 <body>
 
-<!-- LANGUAGE PAGE -->
 
-<div class="page page1 active" id="languagePage">
+
+<!-- =========================================
+     FIREWORKS
+========================================= -->
+
+<canvas id="fireworks"></canvas>
+
+
+
+<!-- =========================================
+     LANGUAGE PAGE
+========================================= -->
+
+<div class="page page1 active"
+id="languagePage">
 
 <div class="card">
 
 <div class="title">
+
 Choose Your Journey ❤️
+
 </div>
 
 <p>
-Every language unlocks a different emotional experience ✨
+
+Every language unlocks
+a completely different emotional universe ✨
+
 </p>
+
+
 
 <div class="language-buttons">
 
-<button class="lang-btn" onclick="setLanguage('english')">
+<button class="lang-btn"
+onclick="setLanguage('english')">
+
 English
+
 </button>
 
-<button class="lang-btn" onclick="setLanguage('hindi')">
+
+
+<button class="lang-btn"
+onclick="setLanguage('hindi')">
+
 हिंदी
+
 </button>
 
-<button class="lang-btn" onclick="setLanguage('marathi')">
+
+
+<button class="lang-btn"
+onclick="setLanguage('marathi')">
+
 मराठी
+
 </button>
 
 </div>
@@ -49,9 +87,14 @@ English
 
 </div>
 
-<!-- PAGE 1 -->
 
-<div class="page page2" id="page1">
+
+<!-- =========================================
+     PAGE 1
+========================================= -->
+
+<div class="page page2"
+id="page1">
 
 <div class="card">
 
@@ -63,14 +106,21 @@ English
 
 <button class="btn top-left"
 onclick="showPage(2)">
+
 Continue ❤️
+
 </button>
 
 </div>
 
-<!-- PAGE 2 -->
 
-<div class="page page3" id="page2">
+
+<!-- =========================================
+     PAGE 2
+========================================= -->
+
+<div class="page page3"
+id="page2">
 
 <div class="card">
 
@@ -78,20 +128,28 @@ Continue ❤️
 
 <p id="text2"></p>
 
-<div class="secret" id="secret2"></div>
+<div class="secret"
+id="secret2"></div>
 
 </div>
 
 <button class="btn top-right"
 onclick="showPage(3)">
+
 Next ✨
+
 </button>
 
 </div>
 
-<!-- PAGE 3 -->
 
-<div class="page page4" id="page3">
+
+<!-- =========================================
+     PAGE 3
+========================================= -->
+
+<div class="page page4"
+id="page3">
 
 <div class="card">
 
@@ -103,14 +161,21 @@ Next ✨
 
 <button class="btn bottom-left"
 onclick="showPage(4)">
+
 Continue 🌙
+
 </button>
 
 </div>
 
-<!-- PAGE 4 -->
 
-<div class="page page5" id="page4">
+
+<!-- =========================================
+     PAGE 4
+========================================= -->
+
+<div class="page page5"
+id="page4">
 
 <div class="card">
 
@@ -126,14 +191,21 @@ Continue 🌙
 
 <button class="btn bottom-right"
 onclick="showPage(5)">
+
 I’m Curious 👀
+
 </button>
 
 </div>
 
-<!-- PAGE 5 -->
 
-<div class="page page2" id="page5">
+
+<!-- =========================================
+     PAGE 5
+========================================= -->
+
+<div class="page page2"
+id="page5">
 
 <div class="card">
 
@@ -141,30 +213,43 @@ I’m Curious 👀
 
 <p id="text5"></p>
 
-<div class="secret" id="secret5"></div>
+<div class="secret"
+id="secret5"></div>
 
 </div>
 
 <button class="btn middle-left"
-onclick="showPage(6)">
-Open Final Message ❤️
+onclick="openPasswordBox()">
+
+Unlock Secret Message 🔐
+
 </button>
 
 </div>
 
-<!-- FINAL PAGE -->
 
-<div class="page page6" id="page6">
+
+<!-- =========================================
+     FINAL PAGE
+========================================= -->
+
+<div class="page page6"
+id="page6">
 
 <div class="final-box">
 
 <h2 id="finalTitle"></h2>
 
-<div class="final-text" id="finalText"></div>
+<div class="final-text"
+id="finalText"></div>
 
 <div class="signature">
+
 — Your Mahi ❤️
+
 </div>
+
+
 
 <button class="back-btn"
 onclick="goHome()">
@@ -176,8 +261,77 @@ Back To Main Page ❤️
 </div>
 
 </div>
-<canvas id="fireworks"></canvas>
+
+
+
+<!-- =========================================
+     PASSWORD MODAL
+========================================= -->
+
+<div class="password-modal"
+id="passwordModal">
+
+<div class="password-box">
+
+
+
+<!-- FINGERPRINT -->
+
+<div class="fingerprint">
+
+<span>🔓</span>
+
+</div>
+
+
+
+<h2>
+
+Enter Secret Password ❤️
+
+</h2>
+
+
+
+<input
+type="password"
+id="secretPassword"
+placeholder="Enter password...">
+
+
+
+<button class="btn"
+onclick="checkPassword()">
+
+Unlock ✨
+
+</button>
+
+
+
+<p id="passwordError"></p>
+
+</div>
+
+</div>
+
+
+
+<!-- =========================================
+     QUOTES DATABASE
+========================================= -->
+
+<script src="quotes.js"></script>
+
+
+
+<!-- =========================================
+     MAIN SCRIPT
+========================================= -->
+
 <script src="script.js"></script>
+
+
 
 </body>
 </html>
