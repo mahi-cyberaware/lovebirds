@@ -1,8 +1,5 @@
 {
-  "name": "relationship-ui",
+  "name": "lovebirds",
   "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vercel dev"
-  }
+  "type": "module"
 }
