@@ -8,11 +8,9 @@ body{
 
     font-family:'Poppins',sans-serif;
 
-    height:100vh;
+    min-height:100vh;
 
-    overflow:hidden;
-
-    background:#000;
+    overflow-x:hidden;
 
     color:white;
 
@@ -21,6 +19,12 @@ body{
     justify-content:center;
 
     align-items:center;
+
+    position:relative;
+
+    background:#000;
+
+    transition:1s ease;
 }
 
 #rain{
@@ -33,7 +37,7 @@ body{
     width:100%;
     height:100%;
 
-    z-index:-2;
+    z-index:-3;
 }
 
 .overlay{
@@ -43,20 +47,22 @@ body{
     inset:0;
 
     background:
-    rgba(0,0,0,0.5);
+    rgba(0,0,0,0.55);
 
-    z-index:-1;
+    z-index:-2;
 }
 
 .container{
 
     width:90%;
 
-    max-width:800px;
+    max-width:850px;
+
+    padding:20px;
 
     text-align:center;
 
-    padding:20px;
+    z-index:5;
 }
 
 h1{
@@ -81,6 +87,9 @@ h1{
 
     backdrop-filter:blur(10px);
 
+    box-shadow:
+    0 0 30px rgba(0,0,0,0.4);
+
     animation:cinematic 1.5s ease;
 }
 
@@ -89,6 +98,8 @@ h1{
     font-size:1.3rem;
 
     line-height:2rem;
+
+    white-space:pre-line;
 }
 
 .buttons{
@@ -97,16 +108,16 @@ h1{
 
     display:flex;
 
-    gap:15px;
+    justify-content:center;
 
     flex-wrap:wrap;
 
-    justify-content:center;
+    gap:15px;
 }
 
 button{
 
-    padding:14px 24px;
+    padding:14px 22px;
 
     border:none;
 
@@ -133,12 +144,14 @@ button:hover{
 
     margin:15px 0;
 
-    padding:12px;
+    padding:14px;
 
     border-left:3px solid white;
 
     background:
     rgba(255,255,255,0.08);
+
+    border-radius:10px;
 }
 
 #qrcode{
@@ -167,7 +180,7 @@ button:hover{
 
     0%{
         opacity:0;
-        transform:scale(1.1);
+        transform:scale(1.08);
         filter:blur(10px);
     }
 
@@ -175,5 +188,21 @@ button:hover{
         opacity:1;
         transform:scale(1);
         filter:blur(0);
+    }
+}
+
+@media(max-width:768px){
+
+    h1{
+        font-size:2rem;
+    }
+
+    #story{
+        font-size:1.1rem;
+        line-height:1.8rem;
+    }
+
+    button{
+        width:100%;
     }
 }
