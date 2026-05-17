@@ -1,661 +1,538 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>💞 Eternal Vows · Short Permanent Link 💞</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at 30% 20%, #0b0b2b, #000000);
-      min-height: 100vh;
-      color: white;
-      padding: 16px;
-    }
-    .dynamic-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 50% 50%, rgba(255,80,120,0.2), rgba(0,0,0,0.85));
-      z-index: -2;
-      animation: breathe 7s infinite alternate;
-    }
-    @keyframes breathe { 0% { opacity: 0.4; } 100% { opacity: 0.8; } }
-    canvas#floating-hearts {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-    }
-    .glass-card {
-      background: rgba(20, 30, 55, 0.6);
-      backdrop-filter: blur(16px);
-      border-radius: 2rem;
-      border: 1px solid rgba(255,100,150,0.5);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,80,120,0.3);
-      padding: 1.8rem;
-    }
-    .neon-btn {
-      background: linear-gradient(95deg, #ff4d6d, #c9184a);
-      border: none;
-      padding: 12px 24px;
-      font-weight: bold;
-      border-radius: 60px;
-      color: white;
-      cursor: pointer;
-      box-shadow: 0 0 12px #ff4d6d;
-      transition: 0.2s;
-      width: 100%;
-    }
-    .neon-btn:hover { transform: scale(1.02); box-shadow: 0 0 26px #ff4d6d; }
-    input, select, textarea, input[type="date"] {
-      width: 100%;
-      padding: 14px;
-      margin: 8px 0;
-      background: rgba(0,0,0,0.6);
-      border: 1px solid #ff99cc;
-      border-radius: 60px;
-      color: white;
-      font-size: 1rem;
-      font-family: inherit;
-    }
-    input[type="date"] {
-      appearance: none;
-      -webkit-appearance: none;
-      color-scheme: dark;
-    }
-    label { font-weight: 600; font-size: 0.85rem; color: #ffccdd; display: block; margin-top: 12px; }
-    .dual-image {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin: 15px 0;
-    }
-    .img-preview { text-align: center; width: 110px; }
-    .img-preview img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #ff66cc;
-      box-shadow: 0 0 12px magenta;
-    }
-    .font-selector {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 8px 0;
-    }
-    .font-btn {
-      background: #222;
-      padding: 6px 12px;
-      border-radius: 60px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      border: 1px solid cyan;
-    }
-    .font-btn.active { background: #ff4d6d; border-color: white; }
-    .count-number { font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg,#fff,#ff99cc); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .quote-card {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 4 / 5;
-      background-size: cover;
-      background-position: center;
-      border-radius: 32px;
-      margin: 20px 0;
-      cursor: pointer;
-      overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
-    .quote-card:hover { transform: scale(1.01); box-shadow: 0 0 30px rgba(255,80,120,0.6); }
-    .quote-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.4));
-      backdrop-filter: blur(4px);
-      padding: 20px 16px;
-      text-align: center;
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.2rem;
-      line-height: 1.4;
-      transition: all 0.3s;
-      border-top: 2px solid transparent;
-    }
-    .quote-card:hover .quote-overlay { border-top: 2px solid #ff66cc; background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.6)); }
-    .quote-text { white-space: pre-line; color: white; text-shadow: 0 0 5px black; font-weight: 600; }
-    .tap-hint { font-size: 0.7rem; opacity: 0.8; margin-top: 6px; letter-spacing: 1px; }
-    .love-meter { margin: 20px 0; text-align: center; }
-    .love-slider { width: 100%; accent-color: #ff4d6d; }
-    .love-value { font-size: 2rem; font-weight: bold; color: #ff99cc; }
-    .gift-container { text-align: center; margin: 20px 0; }
-    .gift-box { font-size: 4rem; cursor: pointer; transition: transform 0.3s; display: inline-block; }
-    .gift-box:hover { transform: scale(1.1); filter: drop-shadow(0 0 15px gold); }
-    .gift-message { margin-top: 10px; background: #ff66cc30; border-radius: 60px; padding: 10px; display: none; }
-    .lang-selector { display: flex; justify-content: center; gap: 12px; margin: 15px 0; }
-    .lang-btn { background: #222; padding: 8px 20px; border-radius: 60px; cursor: pointer; font-weight: bold; }
-    .lang-btn.active { background: #ff4d6d; }
-    footer { font-size: 0.7rem; text-align: center; margin-top: 20px; opacity: 0.5; }
-    .popup-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.95);
-      backdrop-filter: blur(20px);
-      z-index: 2000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      animation: zoomPop 0.3s ease;
-    }
-    @keyframes zoomPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .popup-quote {
-      font-size: 1.4rem;
-      text-align: center;
-      max-width: 85%;
-      background: rgba(0,0,0,0.7);
-      padding: 30px;
-      border-radius: 60px;
-      font-family: 'Dancing Script', cursive;
-      border: 2px solid;
-      white-space: pre-line;
-      line-height: 1.5;
-    }
-    .embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0; }
-    .embed-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 30px; }
-    .safety-note {
-      background: #ffcc0033;
-      border-left: 4px solid #ffcc00;
-      padding: 12px;
-      border-radius: 20px;
-      margin: 12px 0;
-      font-size: 0.85rem;
-      text-align: center;
-    }
-    .loader-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(12px);
-      z-index: 1000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-    .neon-loader {
-      width: 80px;
-      height: 80px;
-      border: 5px solid rgba(0,255,255,0.2);
-      border-top: 5px solid cyan;
-      border-radius: 50%;
-      animation: spin 1s infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-  </style>
-</head>
-<body>
-<div class="dynamic-bg"></div>
-<canvas id="floating-hearts"></canvas>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- GENERATOR SECTION -->
-<div id="generatorSection" class="glass-card" style="max-width: 800px; margin: 20px auto;">
-  <div style="text-align:center;">
-    <i class="fas fa-heart" style="font-size: 2.2rem; color: #ff66cc;"></i>
-    <h1 style="font-size: 1.8rem;">✨ ETERNAL VOWS ✨</h1>
-    <p>Create your beautiful love page – short permanent link</p>
-  </div>
-  <div id="genError" style="color:#ffaaaa; background:#ff000033; border-radius: 30px; padding: 8px; margin: 10px 0; display:none;"></div>
-  
-  <label>💑 Relationship Type</label>
-  <select id="relType">
-    <option value="Wife">💍 Wife</option>
-    <option value="Girlfriend">💖 Girlfriend</option>
-    <option value="Best Friend">🌟 Best Friend</option>
-    <option value="Soulmate">🌌 Soulmate</option>
-  </select>
-  
-  <div class="dual-image">
-    <div class="img-preview"><label>📸 Your Photo</label><input type="file" id="myPhoto" accept="image/*"><div id="myPreview"></div></div>
-    <div class="img-preview"><label>📸 Partner's Photo</label><input type="file" id="partnerPhoto" accept="image/*"><div id="partnerPreview"></div></div>
-  </div>
-  
-  <label>💕 Your Name</label><input id="yourName" placeholder="e.g., Mahi">
-  <label>💕 Partner's Name</label><input id="partnerName" placeholder="e.g., Nancy">
-  
-  <label>✍️ Font Style for Names</label>
-  <div class="font-selector">
-    <span class="font-btn" data-font="'Inter', sans-serif">Modern</span>
-    <span class="font-btn" data-font="'Dancing Script', cursive">Romantic</span>
-    <span class="font-btn" data-font="'Great Vibes', cursive">Elegant</span>
-    <span class="font-btn" data-font="'Poppins', sans-serif">Soft</span>
-  </div>
-  
-  <label>📅 Anniversary / Start Date</label>
-  <input id="startDate" type="date">
-  
-  <label>🎂 Your Birthday (optional)</label>
-  <input id="yourBirthday" type="date">
-  <label>🎂 Partner's Birthday (optional)</label>
-  <input id="partnerBirthday" type="date">
-  
-  <label>🎵 Song / Video URL (Spotify or YouTube)</label>
-  <input id="mediaUrl" placeholder="https://open.spotify.com/track/... or https://youtu.be/...">
-  
-  <label>💬 Custom Romantic Message</label><input id="customMsg" placeholder="You are my everything...">
-  <label>📝 Emotional Note</label><textarea id="emotionalNote" rows="2" placeholder="A personal letter..."></textarea>
-  
-  <label>🎁 Virtual Gift Secret Message</label>
-  <input id="giftMessage" placeholder="Your secret surprise message...">
-  
-  <label>🖼️ Optional Quote Image (appears in popup)</label>
-  <input type="file" id="quoteImage" accept="image/*">
-  <div id="quoteImagePreview"></div>
-  
-  <button id="generateBtn" class="neon-btn"><i class="fas fa-meteor"></i> GENERATE & GET SHAREABLE LINK</button>
+<title>Only For Someone Special ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+overflow:hidden;
+font-family:'Poppins',sans-serif;
+background:#000;
+color:white;
+}
+
+/* GLOBAL PAGE */
+
+.page{
+width:100%;
+height:100vh;
+display:none;
+position:absolute;
+top:0;
+left:0;
+justify-content:center;
+align-items:center;
+text-align:center;
+overflow:hidden;
+padding:30px;
+}
+
+.page.active{
+display:flex;
+animation:fadePage 1.2s ease;
+}
+
+@keyframes fadePage{
+
+from{
+opacity:0;
+transform:scale(1.05);
+}
+
+to{
+opacity:1;
+transform:scale(1);
+}
+
+}
+
+/* BEAUTIFUL PREMIUM BACKGROUNDS */
+
+.page1{
+background:
+radial-gradient(circle at top left,#ff4d6d,#3a0ca3,#000);
+}
+
+.page2{
+background:
+linear-gradient(135deg,#03045e,#0077b6,#90e0ef);
+}
+
+.page3{
+background:
+radial-gradient(circle at bottom right,#ff006e,#8338ec,#3a86ff);
+}
+
+.page4{
+background:
+linear-gradient(135deg,#0f172a,#1e293b,#334155);
+}
+
+.page5{
+background:
+radial-gradient(circle at center,#ff5d8f,#6a00f4,#10002b);
+}
+
+.page6{
+background:
+linear-gradient(145deg,#000000,#1a1a40,#4a044e);
+overflow-y:auto;
+padding-top:80px;
+padding-bottom:120px;
+}
+
+/* GLASS CARD */
+
+.card{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(12px);
+border:1px solid rgba(255,255,255,0.1);
+padding:45px;
+border-radius:30px;
+max-width:950px;
+box-shadow:0 10px 40px rgba(0,0,0,0.3);
+}
+
+/* TITLES */
+
+.title{
+font-size:75px;
+font-family:'Cinzel',serif;
+margin-bottom:25px;
+letter-spacing:2px;
+background:linear-gradient(to right,#fff,#ffd6e7);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+h2{
+font-size:48px;
+margin-bottom:20px;
+font-family:'Dancing Script',cursive;
+color:#ffe5ec;
+}
+
+p{
+font-size:22px;
+line-height:2;
+font-weight:300;
+}
+
+/* SECRET */
+
+.secret{
+margin-top:30px;
+padding:25px;
+border-radius:25px;
+background:rgba(255,255,255,0.08);
+font-size:20px;
+line-height:1.8;
+}
+
+/* BUTTONS */
+
+.btn{
+padding:16px 38px;
+border:none;
+border-radius:50px;
+background:linear-gradient(135deg,#ffffff,#ffd6e7);
+color:#ff006e;
+font-size:16px;
+font-weight:700;
+cursor:pointer;
+transition:.4s;
+position:absolute;
+box-shadow:0 10px 25px rgba(0,0,0,0.25);
+}
+
+.btn:hover{
+transform:scale(1.1);
+}
+
+/* RANDOM POSITIONS */
+
+.btn1{
+bottom:10%;
+right:10%;
+}
+
+.btn2{
+top:12%;
+left:8%;
+}
+
+.btn3{
+bottom:12%;
+left:10%;
+}
+
+.btn4{
+top:15%;
+right:10%;
+}
+
+.btn5{
+bottom:10%;
+right:12%;
+}
+
+/* FINAL LONG MESSAGE */
+
+.final-box{
+background:rgba(255,255,255,0.08);
+padding:35px;
+border-radius:30px;
+backdrop-filter:blur(10px);
+max-width:900px;
+margin:auto;
+}
+
+.final-text{
+font-size:25px;
+line-height:2.1;
+font-family:'Dancing Script',cursive;
+text-align:left;
+color:#fff0f3;
+}
+
+/* SIGNATURE */
+
+.signature{
+margin-top:40px;
+font-size:34px;
+font-family:'Dancing Script',cursive;
+color:#ffd6e7;
+text-align:right;
+}
+
+/* HEARTS */
+
+.heart{
+position:fixed;
+bottom:-20px;
+font-size:20px;
+pointer-events:none;
+animation:float linear forwards;
+}
+
+@keyframes float{
+
+0%{
+transform:translateY(0);
+opacity:0;
+}
+
+20%{
+opacity:1;
+}
+
+100%{
+transform:translateY(-120vh);
+opacity:0;
+}
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.title{
+font-size:42px;
+}
+
+h2{
+font-size:34px;
+}
+
+p{
+font-size:18px;
+}
+
+.secret{
+font-size:17px;
+}
+
+.final-text{
+font-size:20px;
+line-height:1.9;
+}
+
+.card{
+padding:25px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LANGUAGE PAGE -->
+
+<div class="page page1 active" id="languagePage">
+
+<div class="card">
+
+<div class="title">
+Choose Your Journey ❤️
 </div>
 
-<!-- COUNTDOWN VIEWER -->
-<div id="countdownSection" class="glass-card" style="max-width: 900px; margin: 20px auto; display: none;">
-  <div id="countdownContent"></div>
-  <div id="additionalFeatures"></div>
-  <div class="lang-selector" id="langSelector"></div>
-  
-  <!-- Only copy short link button -->
-  <div style="text-align: center; margin: 20px 0;">
-    <button id="copyShortOnlyBtn" class="neon-btn" style="background: #2b6f8a;"><i class="fas fa-link"></i> Copy Shareable Love Link</button>
-    <div class="safety-note">
-      <i class="fas fa-shield-alt"></i> <strong>This link is 100% safe</strong> – stored in cloud, short and permanent.
-    </div>
-  </div>
-  
-  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 24px;">
-    <button id="shareBtn" class="neon-btn"><i class="fas fa-share-alt"></i> Share Link</button>
-    <button id="screenshotBtn" class="neon-btn"><i class="fas fa-camera"></i> Screenshot</button>
-    <button id="downloadQuoteBtn" class="neon-btn"><i class="fas fa-download"></i> Save Quote</button>
-    <button id="musicBtn" class="neon-btn"><i class="fas fa-music"></i> Ambience</button>
-    <button id="newStoryBtn" class="neon-btn"><i class="fas fa-heart-broken"></i> New Story</button>
-  </div>
-  <footer>✨ Tap the quote → new shayari + new background image ✨</footer>
+<p>
+Every language unlocks a completely different emotional experience ✨
+</p>
+
+<div style="margin-top:40px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+
+<button class="btn" style="position:relative;" onclick="setLanguage('english')">
+English
+</button>
+
+<button class="btn" style="position:relative;" onclick="setLanguage('hindi')">
+हिंदी
+</button>
+
+<button class="btn" style="position:relative;" onclick="setLanguage('marathi')">
+मराठी
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- PAGE 1 -->
+
+<div class="page page2" id="page1">
+
+<div class="card">
+
+<h2 id="title1"></h2>
+
+<p id="text1"></p>
+
+</div>
+
+<button class="btn btn1" onclick="showPage(2)">
+Continue ❤️
+</button>
+
+</div>
+
+<!-- PAGE 2 -->
+
+<div class="page page3" id="page2">
+
+<div class="card">
+
+<h2 id="title2"></h2>
+
+<p id="text2"></p>
+
+<div class="secret" id="secret2"></div>
+
+</div>
+
+<button class="btn btn2" onclick="showPage(3)">
+Next ✨
+</button>
+
+</div>
+
+<!-- PAGE 3 -->
+
+<div class="page page4" id="page3">
+
+<div class="card">
+
+<h2 id="title3"></h2>
+
+<p id="text3"></p>
+
+</div>
+
+<button class="btn btn3" onclick="showPage(4)">
+Continue 🌙
+</button>
+
+</div>
+
+<!-- PAGE 4 -->
+
+<div class="page page5" id="page4">
+
+<div class="card">
+
+<h2 id="title4"></h2>
+
+<div class="secret">
+<p id="text4"></p>
+</div>
+
+</div>
+
+<button class="btn btn4" onclick="showPage(5)">
+I’m Curious 👀
+</button>
+
+</div>
+
+<!-- PAGE 5 -->
+
+<div class="page page2" id="page5">
+
+<div class="card">
+
+<h2 id="title5"></h2>
+
+<p id="text5"></p>
+
+<div class="secret" id="secret5"></div>
+
+</div>
+
+<button class="btn btn5" onclick="showPage(6)">
+Open Final Message ❤️
+</button>
+
+</div>
+
+<!-- FINAL PAGE -->
+
+<div class="page page6" id="page6">
+
+<div class="final-box">
+
+<h2 id="finalTitle"></h2>
+
+<div class="final-text" id="finalText"></div>
+
+<div class="signature">
+— Your Mahi ❤️
+</div>
+
+</div>
+
 </div>
 
 <script>
-  // ================== SUPABASE CONFIGURATION ==================
-  const SUPABASE_URL = "https://jxmzkepwatmsljistezr.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4bXprZXB3YXRtc2xqaXN0ZXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3ODY5NjQsImV4cCI6MjA5NDM2Mjk2NH0.iswg7bbXgV8DaFmZwhzZEVeGD8XChuCBxUhj5NaeV8U";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // ================== QUOTES DATABASE ==================
-  const quotesDB = {
-    Wife: {
-      English: ["You are my queen, my home, my peace.\nEvery morning I wake up grateful for you.\nIn your arms, I have found forever.","The moment I saw you, I knew.\nYou are not just my wife, but my destiny.\nThank you for choosing me every day.","Through every storm and every sunshine,\nYou stood by me like a rock.\nMy love for you only grows deeper.","I promise to hold your hand till the end of time.\nTo laugh with you, cry with you, grow old with you.\nYou are my greatest blessing.","No words can capture what you mean to me.\nYou are the poetry I never knew I could write.\nI love you, my eternal wife."],
-      Hindi: ["तुम मेरी रानी हो, मेरा घर, मेरी शांति।\nहर सुबह तुम्हारे लिए शुक्रगुज़ार हूँ।\nतुम्हारी बाहों में मुझे हमेशा मिल गया।","जिस दिन तुमसे मिला, लगा मंज़िल मिल गई।\nतुम सिर्फ पत्नी नहीं, मेरी किस्मत हो।\nहर दिन चुनने के लिए शुक्रिया।","हर तूफान और हर धूप में,\nतुम मेरे साथ खड़ी रही।\nतुम्हारे लिए मेरा प्यार और गहरा होता जाता है।","वादा है तेरा हाथ थामे रखूंगा,\nतेरे संग हंसूं, रोऊं, बूढ़ा हो जाऊं।\nतू मेरी सबसे बड़ी दौलत है।","शब्द कम हैं तुझे बयां करने को,\nतू वो कविता है जो मैंने कभी लिखी नहीं थी।\nतुझसे प्यार है, मेरी हमसफर।"],
-      Marathi: ["तू माझी राणी आहेस, माझं घर, माझी शांती.\nप्रत्येक सकाळी तुझ्यासाठी कृतज्ञ असतो.\nतुझ्या बाहूत मला सदैव सापडलं.","ज्या दिवशी तुला भेटलो, वाटलं गंतव्य सापडलं.\nतू फक्त बायको नाहीस, तर माझं नशीब आहेस.\nरोज निवडण्याबद्दल धन्यवाद.","प्रत्येक वादळात आणि प्रत्येक ऊन्हात,\nतू माझ्यासोबत उभी राहिलीस.\nतुझ्यावरील प्रेम दिवसेंदिवस वाढतं.","वचन आहे तुझा हात धरून ठेवेन,\nतुझ्यासोबत हसेल, रडेन, म्हातारा होईल.\nतू माझी सर्वात मोठी संपत्ती आहेस.","शब्द कमी आहेत तुला व्यक्त करायला,\nतू ती कविता आहेस जी मी कधी लिहिली नव्हती.\nतुझ्यावर प्रेम आहे, माझ्या सोबतीणी."]
-    },
-    Girlfriend: {
-      English: ["Every text from you makes me smile like crazy.\nYou’ve turned my ordinary days into magic.\nI fall for you more each sunrise.","You are the melody I never want to stop hearing.\nWith you, life feels like a romantic movie.\nLet’s never say goodbye.","I love the way you laugh, the way you dream.\nYou make me believe in soulmates.\nThank you for being my girlfriend.","When I’m with you, I forget the world exists.\nYou are my favorite hello and hardest goodbye.\nStay with me forever.","Your smile is my favorite artwork.\nYour voice is my lullaby.\nI am so lucky to call you mine."],
-      Hindi: ["तेरा हर मैसेज मुझे पागलों की तरह हँसाता है।\nतूने मेरे साधारण दिनों को जादू बना दिया।\nहर सुबह तुझसे प्यार और बढ़ जाता है।","तू वो धुन है जो मैं हमेशा सुनना चाहता हूँ।\nतेरे संग जिंदगी रोमांटिक फिल्म लगती है।\nकभी अलविदा मत कहना।","मुझे तेरी हंसी पसंद है, तेरे सपने पसंद हैं।\nतूने मुझे यकीन दिलाया कि साउलमेट होते हैं।\nमेरी गर्लफ्रेंड होने के लिए शुक्रिया।","जब तेरे संग होता हूँ, दुनिया भूल जाता हूँ।\nतू मेरा पसंदीदा हैलो और सख्त गुडबाय है।\nहमेशा मेरे साथ रहना।","तेरी मुस्कान मेरी पसंदीदा कलाकृति है।\nतेरी आवाज मेरी लोरी है।\nतुझे अपना कहना बड़ी किस्मत वाली बात है।"],
-      Marathi: ["तुझा प्रत्येक मॅसेज मला वेड्यासारखं हसवतो.\nतू माझे सामान्य दिवस जादूत बदललेस.\nप्रत्येक सूर्योदयाला तुझ्यावर प्रेम वाढतं.","तू ती सुर आहेस जी मी सतत ऐकू इच्छितो.\nतुझ्यासोबत आयुष्य रोमँटिक चित्रपटासारखं वाटतं.\nकधीही निरोप देऊ नको.","मला तुझं हसणं आवडतं, तुझे स्वप्न आवडतात.\nतू मला सोलमेट्सवर विश्वास दिलास.\nमाझी गर्लफ्रेंड असल्याबद्दल धन्यवाद.","जेव्हा तुझ्यासोबत असतो, जग विसरतो.\nतू माझा आवडता हॅलो आणि कठीण गुडबाय आहेस.\nनेहमी माझ्यासोबत रहा.","तुझं स्मित माझी आवडती कलाकृती आहे.\nतुझा आवाज माझी लोरी आहे.\nतुला माझं म्हणणं मोठं भाग्याचं."]
-    },
-    "Best Friend": {
-      English: ["You are my crazy partner in crime.\nLife’s best memories are painted with you.\nThank you for being my best friend forever.","No judgment, just pure love and laughter.\nYou’ve seen my worst and still stayed.\nI cherish you deeply.","We don’t need a reason to celebrate.\nJust your presence makes everything better.\nStay goofy, stay mine.","You are the sibling I chose for myself.\nThrough heartbreaks and victories, you held my hand.\nI love you, my bestie.","Miles apart or sitting next to me,\nYou always feel like home.\nOur friendship is my greatest treasure."],
-      Hindi: ["तू मेरा पागल साथी है अपराधों में।\nजिंदगी की बेहतरीन यादें तेरे संग बनीं।\nबेस्ट फ्रेंड होने के लिए शुक्रिया।","कोई जजमेंट नहीं, बस प्यार और हँसी।\nतूने मेरा बुरा भी देखा फिर भी रुकी।\nमैं तुझे बहुत संजोकर रखता हूँ।","किसी वजह की जरूरत नहीं खुश होने के लिए।\nतेरा साथ सब कुछ बेहतर बना देता है।\nपागल बनी रह, मेरी बनी रह।","तू वो भाई/बहन है जो मैंने खुद चुना।\nदिल टूटने और जीत में, तूने हाथ थामा।\nमुझे तुझसे प्यार है, मेरे बेस्टी।","मीलों दूर या बगल में बैठे,\nतू हमेशा घर जैसा लगता है।\nहमारी दोस्ती मेरा सबसे बड़ा खजाना है।"],
-      Marathi: ["तू माझा वेडा गुन्हेगारी सोबती आहेस.\nआयुष्यातील सर्वोत्तम आठवणी तुझ्यासोबत रंगल्या.\nबेस्ट फ्रेंड असल्याबद्दल धन्यवाद.","निवाडा नाही, फक्त प्रेम आणि हशा.\nतू माझं वाईट पाहिलं तरी थांबलीस.\nमी तुला खूप जपतो.","खुश राहण्यासाठी कारण हवं असं नाही.\nतुझी साथ सगळं चांगलं करते.\nवेडी राहा, माझी राहा.","तू ती बहीण/भाऊ आहेस जी मी स्वतः निवडला.\nहृदयभंगात आणि विजयात, तू हात धरला.\nमी तुझ्यावर प्रेम करतो, माझ्या बेस्टी.","मैलो दूर किंवा शेजारी बसला,\nतू नेहमी घरासारखा वाटतोस.\nआमची मैत्री ही माझी सर्वात मोठी संपत्ती आहे."]
-    },
-    Soulmate: {
-      English: ["We met as strangers, stayed as soulmates.\nOur souls recognized each other instantly.\nI will find you in every lifetime.","You complete me in ways I never knew.\nWith you, silence speaks volumes.\nYou are my cosmic twin.","No distance can break what destiny wrote.\nYou are my yesterday, today, and tomorrow.\nI love you beyond words.","Your heart beats the same rhythm as mine.\nWe are two bodies, one soul.\nThank you for being my forever.","Every love story is beautiful, but ours is my favorite.\nYou are the answer to every prayer I never said.\nEternity is not enough with you."],
-      Hindi: ["हम अजनबी मिले, साउलमेट बनके रहे।\nहमारी आत्माओं ने एक दूसरे को तुरंत पहचान लिया।\nहर जन्म में तुझे ढूंढूंगा।","तूने मुझे उन तरीकों से पूरा किया जो मैं नहीं जानता था।\nतेरे संग चुप्पी भी बोलती है।\nतू मेरा ब्रह्मांडीय जुड़वां है।","कोई दूरी तोड़ नहीं सकती जो किस्मत ने लिखा।\nतू मेरा कल, आज और कल है।\nमैं तुझसे शब्दों से परे प्यार करता हूँ।","तेरा दिल उसी लय में धड़कता है जैसे मेरा।\nहम दो शरीर, एक आत्मा हैं।\nहमेशा के लिए मेरी होने का शुक्रिया।","हर प्रेम कहानी सुंदर है, पर हमारी सबसे प्यारी।\nतू हर उस दुआ का जवाब है जो मैंने कभी नहीं मांगी।\nतेरे साथ अनंत कम है।"],
-      Marathi: ["आम्ही अनोळखी भेटलो, सोलमेट बनून राहिलो.\nआमच्या आत्म्यांनी एकमेकांना ओळखलं.\nप्रत्येक जन्मात तुला शोधेन.","तू मला अशा प्रकारे पूर्ण केलंस जे मला माहित नव्हतं.\nतुझ्यासोबत शांतता देखील बोलते.\nतू माझा विश्व जुळवा आहेस.","कोणतेही अंतर तोडू शकत नाही जे नशीबाने लिहिलं.\nतू माझा काल, आज आणि उद्या आहेस.\nमी तुझ्यावर शब्दांच्या पलीकडे प्रेम करतो.","तुझं हृदय त्याच तालात धडधडतं जसे माझं.\nआम्ही दोन शरीरे, एक आत्मा आहोत.\nसदैव माझी असल्याबद्दल धन्यवाद.","प्रत्येक प्रेमकथा सुंदर आहे, पण आमची सर्वात प्रिय.\nतू त्या प्रत्येक प्रार्थनेचं उत्तर आहेस जी मी कधी विचारली नाही.\nतुझ्यासोबत अनंत कमी आहे."]
-    }
-  };
+/* DATA */
 
-  // Background images (place in assets/bg-img/romantic1.jpg etc.)
-  const bgImageList = [];
-  for (let i = 1; i <= 10; i++) {
-    bgImageList.push(`assets/bg-img/romantic${i}.jpg`);
-    bgImageList.push(`assets/bg-img/romantic${i}.png`);
-  }
-  function getRandomBgImage() { return bgImageList.length ? bgImageList[Math.floor(Math.random() * bgImageList.length)] : null; }
+const data = {
 
-  // Helper functions
-  function generateId() { return 'rel_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8); }
-  function compressImage(file, maxW=300) {
-    return new Promise((resolve) => {
-      if (!file) return resolve(null);
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (e) => {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let w = img.width, h = img.height;
-          if (w > maxW) { h = (h * maxW) / w; w = maxW; }
-          canvas.width = w; canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          resolve(canvas.toDataURL('image/jpeg', 0.7));
-        };
-        img.onerror = () => resolve(null);
-      };
-      reader.onerror = () => resolve(null);
-    });
-  }
-  function computeDays(startStr) {
-    const start = new Date(startStr);
-    const now = new Date();
-    const diffDays = Math.floor((now - start) / 86400000);
-    let nextAnniv = new Date(now.getFullYear(), start.getMonth(), start.getDate());
-    if (nextAnniv < now) nextAnniv.setFullYear(now.getFullYear()+1);
-    const daysUntil = Math.ceil((nextAnniv - now) / 86400000);
-    return { daysTogether: diffDays >=0 ? diffDays : 0, daysUntilAnniv: daysUntil };
-  }
-  function daysUntilBirthday(birthdayStr) {
-    if (!birthdayStr) return null;
-    const today = new Date();
-    const birth = new Date(birthdayStr);
-    let next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
-    if (next < today) next.setFullYear(today.getFullYear()+1);
-    return Math.ceil((next - today) / 86400000);
-  }
-  function getYouTubeEmbed(url) {
-    if (!url) return null;
-    if (url.includes('youtu.be/')) return url.replace('youtu.be/', 'youtube.com/embed/');
-    if (url.includes('youtube.com/watch?v=')) return url.replace('watch?v=', 'embed/');
-    if (url.includes('spotify.com/track/')) return `https://open.spotify.com/embed/track/${url.split('track/')[1].split('?')[0]}`;
-    if (url.includes('spotify.com/playlist/')) return `https://open.spotify.com/embed/playlist/${url.split('playlist/')[1].split('?')[0]}`;
-    return null;
-  }
+english: {
 
-  let currentData = null;
-  let currentLanguage = "English";
-  let quoteIndices = {};
-  let currentId = null; // store the supabase ID
+title1:"You Opened This... ❤️",
+text1:"I honestly didn’t expect you to follow every page this carefully... but now I’m smiling because you are ✨",
 
-  function getNextQuote(relType, lang) {
-    const arr = quotesDB[relType]?.[lang] || quotesDB.Wife.English;
-    const key = `${relType}_${lang}`;
-    if (!quoteIndices[key]) quoteIndices[key] = 0;
-    const idx = quoteIndices[key];
-    const quote = arr[idx];
-    quoteIndices[key] = (idx + 1) % arr.length;
-    return quote;
-  }
-  function getRandomThemeColor() { return `hsl(${[320,340,360,20,280,300][Math.floor(Math.random()*6)]}, ${75+Math.random()*20}%, ${65+Math.random()*15}%)`; }
-  
-  function showQuotePopup(quote, imageBase64, textColor, bgGradient) {
-    const overlay = document.createElement('div');
-    overlay.className = 'popup-overlay';
-    overlay.style.background = `radial-gradient(circle, ${textColor}30, #000000dd)`;
-    let imgHtml = imageBase64 ? `<img src="${imageBase64}" style="max-width:80%; max-height:200px; border-radius:30px; margin-bottom:20px; border:2px solid ${textColor};">` : '';
-    overlay.innerHTML = `<div class="popup-quote" style="color:${textColor}; border-color:${textColor}; background:${bgGradient};"><div style="white-space:pre-line;">${escapeHtml(quote)}</div></div>`;
-    document.body.appendChild(overlay);
-    for (let i=0;i<60;i++) {
-      const p = document.createElement('div');
-      p.innerHTML = ['❤️','💖','✨','💫','🌸','💕','🌟'][Math.floor(Math.random()*7)];
-      p.style.position = 'absolute';
-      p.style.left = Math.random()*100+'%';
-      p.style.top = '50%';
-      p.style.fontSize = (Math.random()*30+15)+'px';
-      p.style.animation = `floatUp ${Math.random()*2+1}s ease-out forwards`;
-      overlay.appendChild(p);
-    }
-    overlay.onclick = () => overlay.remove();
-    if (!document.getElementById('popupStyle')) {
-      const style = document.createElement('style');
-      style.id = 'popupStyle';
-      style.textContent = '@keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity:1; } 100% { transform: translateY(-250px) rotate(360deg); opacity:0; } }';
-      document.head.appendChild(style);
-    }
-  }
-  
-  function updateQuote(relType, quoteImageBase64) {
-    const quote = getNextQuote(relType, currentLanguage);
-    const textColor = getRandomThemeColor();
-    const bgImage = getRandomBgImage();
-    const bgStyle = bgImage ? `url('${bgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
-    const container = document.getElementById('quoteContainer');
-    if (!container) {
-      setTimeout(() => updateQuote(relType, quoteImageBase64), 100);
-      return;
-    }
-    container.innerHTML = `<div class="quote-card" id="dynamicQuoteCard" style="background-image: ${bgStyle}; background-size: cover;"><div class="quote-overlay"><div class="quote-text">${escapeHtml(quote)}</div><div class="tap-hint">✨ tap for next ✨</div></div></div>`;
-    const quoteDiv = document.getElementById('dynamicQuoteCard');
-    if (quoteDiv) {
-      quoteDiv.onclick = () => {
-        const newQuote = getNextQuote(relType, currentLanguage);
-        const newColor = getRandomThemeColor();
-        const newBgImage = getRandomBgImage();
-        const newBgStyle = newBgImage ? `url('${newBgImage}')` : 'linear-gradient(135deg, #2a2a4a, #0a0a2a)';
-        quoteDiv.style.backgroundImage = newBgStyle;
-        const overlayDiv = quoteDiv.querySelector('.quote-overlay');
-        if (overlayDiv) overlayDiv.querySelector('.quote-text').innerHTML = escapeHtml(newQuote);
-        showQuotePopup(newQuote, quoteImageBase64, newColor, `linear-gradient(135deg, rgba(0,0,0,0.8), ${newColor}40)`);
-      };
-    }
-  }
-  
-  function renderCountdown(data) {
-    const { your_name, partner_name, start_date, custom_message, emotional_note, my_photo, partner_photo, rel_type, name_font, quote_image, media_url, your_birthday, partner_birthday, gift_message, love_meter=50 } = data;
-    const { daysTogether, daysUntilAnniv } = computeDays(start_date);
-    const formattedStart = new Date(start_date).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-    const fontFamily = name_font || "'Inter', sans-serif";
-    const imageHtml = `<div class="dual-image">${my_photo ? `<div class="img-preview"><img src="${my_photo}"><br>❤️ ${escapeHtml(your_name)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(your_name)}</div>`}${partner_photo ? `<div class="img-preview"><img src="${partner_photo}"><br>💖 ${escapeHtml(partner_name)}</div>` : `<div class="img-preview"><i class="fas fa-user-circle" style="font-size:70px;"></i><br>${escapeHtml(partner_name)}</div>`}</div>`;
-    document.getElementById('countdownContent').innerHTML = `
-      ${imageHtml}
-      <h2 style="font-family:${fontFamily}; font-size:2rem; text-align:center;">❤️ ${escapeHtml(your_name)} & ${escapeHtml(partner_name)} ❤️</h2>
-      <p style="text-align:center;"><i class="fas fa-calendar-alt"></i> Together since ${formattedStart} | ${rel_type}</p>
-      <div style="background:#00000055; border-radius: 50px; padding: 18px; margin: 20px 0; text-align:center;">
-        <div class="count-number">${daysTogether} days together</div>
-        <div>✨ Next anniversary in ${daysUntilAnniv} days ✨</div>
-      </div>
-      <div id="quoteContainer"></div>
-      ${custom_message ? `<div style="background:#ff66cc20; border-radius: 30px; padding:12px; margin:12px 0;">✨ “${escapeHtml(custom_message)}” ✨</div>` : ''}
-      ${emotional_note ? `<div style="border-left: 3px solid #ff66cc; padding-left: 16px; margin:12px 0;"><i class="fas fa-feather"></i> ${escapeHtml(emotional_note)}</div>` : ''}
-    `;
-    let addHtml = '';
-    const yourBD = daysUntilBirthday(your_birthday);
-    const partnerBD = daysUntilBirthday(partner_birthday);
-    if (yourBD !== null || partnerBD !== null) {
-      addHtml += `<div style="background:#00000055; border-radius: 50px; padding:12px; margin:12px 0; text-align:center;">`;
-      if (yourBD !== null) addHtml += `<i class="fas fa-birthday-cake"></i> ${escapeHtml(your_name)}'s birthday in ${yourBD} days &nbsp;&nbsp;`;
-      if (partnerBD !== null) addHtml += `<i class="fas fa-birthday-cake"></i> ${escapeHtml(partner_name)}'s birthday in ${partnerBD} days`;
-      addHtml += `</div>`;
-    }
-    addHtml += `<div class="love-meter"><label>💕 Love Meter 💕</label><input type="range" id="loveSlider" class="love-slider" min="0" max="100" value="${love_meter}"><div class="love-value" id="loveValue">${love_meter}%</div></div>`;
-    const embedUrl = getYouTubeEmbed(media_url);
-    if (embedUrl) addHtml += `<div class="embed-container"><iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
-    addHtml += `<div class="gift-container"><div class="gift-box" id="giftBox"><i class="fas fa-gift"></i></div><div id="giftMessageDisplay" class="gift-message">${gift_message ? escapeHtml(gift_message) : '💝 A special surprise from their heart 💝'}</div></div>`;
-    document.getElementById('additionalFeatures').innerHTML = addHtml;
-    
-    const slider = document.getElementById('loveSlider');
-    const loveVal = document.getElementById('loveValue');
-    if (slider && loveVal) slider.oninput = () => { loveVal.innerText = slider.value + '%'; };
-    const giftBox = document.getElementById('giftBox');
-    const giftMsgDiv = document.getElementById('giftMessageDisplay');
-    if (giftBox && giftMsgDiv) {
-      giftBox.onclick = () => {
-        giftMsgDiv.style.display = 'block';
-        canvasConfetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff4d6d', '#ff99cc'] });
-      };
-    }
-    const today = new Date().toISOString().split('T')[0];
-    if (start_date === today) canvasConfetti({ particleCount: 200, spread: 100, origin: { y: 0.5 }, colors: ['#ff4d6d', '#ff99cc', '#ffcc00'], startVelocity: 20 });
-    
-    const langSelector = document.getElementById('langSelector');
-    langSelector.innerHTML = `<div class="lang-btn ${currentLanguage==='English'?'active':''}" data-lang="English">🇬🇧 English</div><div class="lang-btn ${currentLanguage==='Hindi'?'active':''}" data-lang="Hindi">🇮🇳 हिंदी</div><div class="lang-btn ${currentLanguage==='Marathi'?'active':''}" data-lang="Marathi">🇮🇳 मराठी</div>`;
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.onclick = () => {
-        currentLanguage = btn.getAttribute('data-lang');
-        quoteIndices[`${rel_type}_${currentLanguage}`] = 0;
-        updateQuote(rel_type, quote_image);
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      };
-    });
-    updateQuote(rel_type, quote_image);
-  }
-  
-  function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
-  
-  function showLoader(show) {
-    let loader = document.getElementById('globalLoader');
-    if (show && !loader) {
-      const div = document.createElement('div');
-      div.id = 'globalLoader';
-      div.className = 'loader-overlay';
-      div.innerHTML = `<div class="neon-loader"></div><p style="margin-top:20px; color:cyan;">Saving your love story...</p>`;
-      document.body.appendChild(div);
-    } else if (!show && loader) {
-      loader.remove();
-    }
-  }
-  
-  document.getElementById('generateBtn').onclick = async () => {
-    const yourName = document.getElementById('yourName').value.trim();
-    const partnerName = document.getElementById('partnerName').value.trim();
-    const startDate = document.getElementById('startDate').value;
-    const customMsg = document.getElementById('customMsg').value;
-    const emotionalNote = document.getElementById('emotionalNote').value;
-    const relType = document.getElementById('relType').value;
-    const myPhotoFile = document.getElementById('myPhoto').files[0];
-    const partnerPhotoFile = document.getElementById('partnerPhoto').files[0];
-    const quoteImageFile = document.getElementById('quoteImage').files[0];
-    const nameFont = document.querySelector('.font-btn.active')?.getAttribute('data-font') || "'Inter', sans-serif";
-    const mediaUrl = document.getElementById('mediaUrl').value;
-    const yourBirthday = document.getElementById('yourBirthday').value;
-    const partnerBirthday = document.getElementById('partnerBirthday').value;
-    const giftMessage = document.getElementById('giftMessage').value;
-    if (!yourName || !partnerName || !startDate) { document.getElementById('genError').innerText = "💔 Please fill names and date."; document.getElementById('genError').style.display = 'block'; setTimeout(() => document.getElementById('genError').style.display = 'none', 3000); return; }
-    
-    showLoader(true);
-    let myPhotoB64 = await compressImage(myPhotoFile);
-    let partnerPhotoB64 = await compressImage(partnerPhotoFile);
-    let quoteImageB64 = await compressImage(quoteImageFile, 400);
-    
-    const id = generateId();
-    const payload = {
-      id: id,
-      your_name: yourName,
-      partner_name: partnerName,
-      start_date: startDate,
-      custom_message: customMsg,
-      emotional_note: emotionalNote,
-      rel_type: relType,
-      my_photo: myPhotoB64,
-      partner_photo: partnerPhotoB64,
-      name_font: nameFont,
-      quote_image: quoteImageB64,
-      media_url: mediaUrl,
-      your_birthday: yourBirthday,
-      partner_birthday: partnerBirthday,
-      gift_message: giftMessage,
-      love_meter: 50
-    };
-    
-    const { error } = await supabase.from('relationships').insert([payload]);
-    showLoader(false);
-    if (error) {
-      document.getElementById('genError').innerText = "Database error: " + error.message;
-      document.getElementById('genError').style.display = 'block';
-      setTimeout(() => document.getElementById('genError').style.display = 'none', 5000);
-      return;
-    }
-    
-    // success – redirect to the same page with ?id=xxx
-    const shortUrl = window.location.origin + window.location.pathname + '?id=' + id;
-    window.history.pushState({}, '', shortUrl);
-    loadFromUrl();
-  };
-  
-  async function loadFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    if (id) {
-      const { data, error } = await supabase.from('relationships').select('*').eq('id', id).single();
-      if (error || !data) {
-        document.getElementById('generatorSection').style.display = 'block';
-        document.getElementById('countdownSection').style.display = 'none';
-        document.getElementById('genError').innerText = "Love story not found. Create a new one.";
-        document.getElementById('genError').style.display = 'block';
-        setTimeout(() => document.getElementById('genError').style.display = 'none', 5000);
-        return;
-      }
-      currentId = id;
-      document.getElementById('generatorSection').style.display = 'none';
-      document.getElementById('countdownSection').style.display = 'block';
-      renderCountdown(data);
-      currentData = data;
-    } else {
-      document.getElementById('generatorSection').style.display = 'block';
-      document.getElementById('countdownSection').style.display = 'none';
-      currentId = null;
-    }
-  }
-  
-  // Copy short link button (the link is already short!)
-  document.getElementById('copyShortOnlyBtn')?.addEventListener('click', () => {
-    if (currentId) {
-      const shortUrl = window.location.origin + window.location.pathname + '?id=' + currentId;
-      navigator.clipboard.writeText(shortUrl);
-      alert("✅ Short love link copied! Share it with your partner.");
-    } else {
-      alert("No love story loaded. Please generate one first.");
-    }
-  });
-  
-  document.getElementById('shareBtn')?.addEventListener('click', () => {
-    if (currentId) {
-      const shortUrl = window.location.origin + window.location.pathname + '?id=' + currentId;
-      if (navigator.share) navigator.share({ title: 'Eternal Vows', url: shortUrl });
-      else alert("Use the copy button");
-    } else {
-      alert("No love story loaded.");
-    }
-  });
-  
-  document.getElementById('screenshotBtn')?.addEventListener('click', () => { html2canvas(document.getElementById('countdownSection'), { scale: 2 }).then(canvas => { let a = document.createElement('a'); a.download = 'love_page.png'; a.href = canvas.toDataURL(); a.click(); }); });
-  document.getElementById('downloadQuoteBtn')?.addEventListener('click', () => { const quoteCard = document.getElementById('dynamicQuoteCard'); if (quoteCard) html2canvas(quoteCard, { scale: 2 }).then(canvas => { let a = document.createElement('a'); a.download = 'love_quote.png'; a.href = canvas.toDataURL(); a.click(); }); else alert("No quote card yet"); });
-  document.getElementById('newStoryBtn')?.addEventListener('click', () => { window.location.href = window.location.pathname; });
-  
-  document.querySelectorAll('.font-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }); });
-  document.querySelector('.font-btn')?.classList.add('active');
-  
-  document.getElementById('myPhoto').addEventListener('change', e => { if(e.target.files[0]){ let r=new FileReader(); r.onload=ev=>document.getElementById('myPreview').innerHTML=`<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:50%;border:2px solid cyan;">`; r.readAsDataURL(e.target.files[0]); } });
-  document.getElementById('partnerPhoto').addEventListener('change', e => { if(e.target.files[0]){ let r=new FileReader(); r.onload=ev=>document.getElementById('partnerPreview').innerHTML=`<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:50%;border:2px solid magenta;">`; r.readAsDataURL(e.target.files[0]); } });
-  document.getElementById('quoteImage').addEventListener('change', e => { if(e.target.files[0]){ let r=new FileReader(); r.onload=ev=>document.getElementById('quoteImagePreview').innerHTML=`<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:20px;border:1px solid cyan;">`; r.readAsDataURL(e.target.files[0]); } });
-  
-  const canvas = document.getElementById('floating-hearts');
-  let ctx = canvas.getContext('2d'), hearts = [];
-  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-  for (let i=0;i<50;i++) hearts.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*18+10, speedY: Math.random()*0.8+0.4, opacity: Math.random()*0.6+0.2 });
-  function drawHearts() { ctx.clearRect(0,0,canvas.width,canvas.height); hearts.forEach(h => { ctx.font = `${h.size}px "Font Awesome 6 Free"`; ctx.fillStyle = `rgba(255, 100, 150, ${h.opacity})`; ctx.fillText("❤️", h.x, h.y); h.y -= h.speedY; if (h.y < -30) { h.y = canvas.height+30; h.x = Math.random()*canvas.width; } }); requestAnimationFrame(drawHearts); }
-  drawHearts();
-  
-  let audioCtx = null, musicOn = false, gainNode = null;
-  async function startMusic() { if (audioCtx) return; audioCtx = new (window.AudioContext||window.webkitAudioContext)(); gainNode = audioCtx.createGain(); gainNode.gain.value = 0.12; gainNode.connect(audioCtx.destination); const osc1=audioCtx.createOscillator(), osc2=audioCtx.createOscillator(); osc1.type='sine'; osc2.type='triangle'; osc1.frequency.value=261.63; osc2.frequency.value=329.63; osc1.connect(gainNode); osc2.connect(gainNode); osc1.start(); osc2.start(); const lfo=audioCtx.createOscillator(), lfoGain=audioCtx.createGain(); lfo.frequency.value=0.18; lfoGain.gain.value=6; lfo.connect(lfoGain); lfoGain.connect(osc1.frequency); lfoGain.connect(osc2.frequency); lfo.start(); }
-  document.getElementById('musicBtn')?.addEventListener('click', async () => { if (!musicOn) { await startMusic(); if (audioCtx) await audioCtx.resume(); if (gainNode) gainNode.gain.value = 0.12; musicOn = true; document.getElementById('musicBtn').innerHTML = '<i class="fas fa-music"></i> On'; } else { if (gainNode) gainNode.gain.value = 0; musicOn = false; document.getElementById('musicBtn').innerHTML = '<i class="fas fa-music"></i> Ambience'; } });
-  
-  loadFromUrl();
+title2:"Something Feels Different 🌸",
+text2:"You know that rare comfort you unexpectedly feel with someone? Yeah... that kind.",
+secret2:"Tiny Hint ❤️<br><br>The next page contains a truth hidden between random conversations.",
+
+title3:"Mini Confession 🌙",
+text3:"Sometimes I re-read our chats for no reason... and somehow they still make me smile.",
+
+title4:"Dangerous Part 💖",
+text4:"The dangerous thing about you is... you slowly became part of my peace without even trying.",
+
+title5:"Last Warning ✨",
+text5:"After this page... there’s no going back 🌙",
+secret5:"You’re about to read something my heart noticed before my mind did ❤️",
+
+finalTitle:"The Truth I Never Said ❤️",
+
+finalText:"Maybe you still don’t realize it yet... but somewhere between the random conversations, the unexpected smiles, the late replies, and those tiny moments that looked ordinary... you quietly became something important to me.<br><br>I don’t even know when it started happening.<br><br>Maybe it was the way your messages suddenly became the best part of my day.<br><br>Maybe it was how your presence started feeling comforting in a way I never expected.<br><br>Or maybe it was those moments where I caught myself smiling at my phone for absolutely no reason... and then realizing the reason was you.<br><br>And honestly? That’s the dangerous thing about this whole connection.<br><br>Nothing was planned.<br><br>Nothing was forced.<br><br>Yet somehow... you slowly became someone my mind looks for naturally.<br><br>I don’t know where this story is going.<br><br>But I do know one thing for sure...<br><br>meeting you feels like one of those rare moments life accidentally gets beautifully right ❤️"
+
+}
+
+};
+
+/* LANGUAGE */
+
+function setLanguage(lang){
+
+document.getElementById('languagePage').classList.remove('active');
+
+showPage(1);
+
+const d = data[lang];
+
+document.getElementById('title1').innerHTML=d.title1;
+document.getElementById('text1').innerHTML=d.text1;
+
+document.getElementById('title2').innerHTML=d.title2;
+document.getElementById('text2').innerHTML=d.text2;
+document.getElementById('secret2').innerHTML=d.secret2;
+
+document.getElementById('title3').innerHTML=d.title3;
+document.getElementById('text3').innerHTML=d.text3;
+
+document.getElementById('title4').innerHTML=d.title4;
+document.getElementById('text4').innerHTML=d.text4;
+
+document.getElementById('title5').innerHTML=d.title5;
+document.getElementById('text5').innerHTML=d.text5;
+document.getElementById('secret5').innerHTML=d.secret5;
+
+document.getElementById('finalTitle').innerHTML=d.finalTitle;
+document.getElementById('finalText').innerHTML=d.finalText;
+
+}
+
+/* PAGE */
+
+function showPage(page){
+
+document.querySelectorAll('.page').forEach(p=>{
+p.classList.remove('active');
+});
+
+document.getElementById('page'+page).classList.add('active');
+
+}
+
+/* HEARTS */
+
+function createHeart(){
+
+const heart=document.createElement('div');
+
+heart.classList.add('heart');
+
+heart.innerHTML='❤️';
+
+heart.style.left=Math.random()*100+'vw';
+
+heart.style.fontSize=(Math.random()*20+10)+'px';
+
+heart.style.animationDuration=(Math.random()*5+5)+'s';
+
+document.body.appendChild(heart);
+
+setTimeout(()=>{
+heart.remove();
+},10000);
+
+}
+
+setInterval(createHeart,300);
+
 </script>
+
 </body>
 </html>
