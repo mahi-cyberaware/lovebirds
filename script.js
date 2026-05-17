@@ -437,7 +437,9 @@ heart.remove();
 }
 
 setInterval(createHeart,300);
-/* FIREWORKS */
+/* ====================================
+   PREMIUM COLORFUL FIREWORKS
+==================================== */
 
 const fireworksCanvas =
 document.getElementById("fireworks");
@@ -451,34 +453,56 @@ window.innerWidth;
 fireworksCanvas.height =
 window.innerHeight;
 
-let particles = [];
+let fireworks = [];
 
-function createFirework(){
+const fireworkColors = [
 
-const x =
-Math.random()*fireworksCanvas.width;
+"#ff4d6d",
+"#ff758f",
+"#ffd166",
+"#06d6a0",
+"#4cc9f0",
+"#c77dff",
+"#ffffff",
+"#ff85a1"
+];
 
-const y =
-Math.random()*fireworksCanvas.height/2;
 
-for(let i=0;i<80;i++){
 
-particles.push({
+/* CREATE FIREWORK */
+
+function createFirework(x,y){
+
+for(let i=0;i<100;i++){
+
+fireworks.push({
 
 x:x,
 y:y,
 
 radius:Math.random()*3+1,
 
-dx:(Math.random()-0.5)*6,
+color:
+fireworkColors[
+Math.floor(
+Math.random()*fireworkColors.length
+)],
 
-dy:(Math.random()-0.5)*6,
+speedX:(Math.random()-0.5)*8,
 
-alpha:1
+speedY:(Math.random()-0.5)*8,
+
+alpha:1,
+
+gravity:0.03
 });
 }
 
 }
+
+
+
+/* DRAW FIREWORKS */
 
 function animateFireworks(){
 
@@ -489,11 +513,13 @@ fireworksCanvas.width,
 fireworksCanvas.height
 );
 
-particles.forEach((p,index)=>{
+fireworks.forEach((p,index)=>{
 
-p.x += p.dx;
+p.x += p.speedX;
 
-p.y += p.dy;
+p.y += p.speedY;
+
+p.speedY += p.gravity;
 
 p.alpha -= 0.01;
 
@@ -508,13 +534,13 @@ Math.PI*2
 );
 
 fwCtx.fillStyle =
-`rgba(255,255,255,${p.alpha})`;
+hexToRgba(p.color,p.alpha);
 
 fwCtx.fill();
 
 if(p.alpha <= 0){
 
-particles.splice(index,1);
+fireworks.splice(index,1);
 }
 
 });
@@ -525,18 +551,119 @@ animateFireworks
 
 }
 
+
+
+/* COLOR HELPER */
+
+function hexToRgba(hex,alpha){
+
+const r =
+parseInt(hex.slice(1,3),16);
+
+const g =
+parseInt(hex.slice(3,5),16);
+
+const b =
+parseInt(hex.slice(5,7),16);
+
+return `rgba(${r},${g},${b},${alpha})`;
+}
+
+
+
+/* START LOOP */
+
 animateFireworks();
 
 
 
-/* FIREWORK ON REFRESH */
+/* DOUBLE TAP FIREWORK */
 
-window.addEventListener("load",()=>{
+let lastTap = 0;
+
+document.addEventListener(
+"touchend",
+function(event){
+
+const currentTime =
+new Date().getTime();
+
+const tapLength =
+currentTime - lastTap;
+
+if(tapLength < 300 && tapLength > 0){
+
+createFirework(
+
+event.changedTouches[0].clientX,
+
+event.changedTouches[0].clientY
+);
+
+}
+
+lastTap = currentTime;
+
+}
+);
+
+
+
+/* DESKTOP CLICK */
+
+document.addEventListener(
+"dblclick",
+function(event){
+
+createFirework(
+event.clientX,
+event.clientY
+);
+
+}
+);
+
+
+
+/* FINAL PAGE AUTO FIREWORKS */
+
+function launchCelebration(){
+
+const interval = setInterval(()=>{
+
+createFirework(
+
+Math.random()*window.innerWidth,
+
+Math.random()*window.innerHeight/2
+
+);
+
+},400);
+
+
 
 setTimeout(()=>{
 
-createFirework();
+clearInterval(interval);
 
-},500);
+},5000);
 
-});
+}
+
+
+
+/* FINAL PAGE DETECTION */
+
+const originalShowPage = showPage;
+
+showPage = function(page){
+
+originalShowPage(page);
+
+if(page === 6){
+
+launchCelebration();
+}
+
+};
