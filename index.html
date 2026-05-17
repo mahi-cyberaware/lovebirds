@@ -9,46 +9,57 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Relationship Story Generator</title>
+    <title>LoveBirds AI</title>
 
     <link rel="stylesheet" href="style.css">
 
-    <!-- FONT -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 </head>
 
 <body>
 
-    <!-- RAIN -->
+    <!-- Rain Canvas -->
     <canvas id="rain"></canvas>
 
-    <!-- MUSIC -->
+    <!-- Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Background Music -->
     <audio id="bgMusic" autoplay loop>
         <source src="assets/music.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="overlay"></div>
-
     <div class="container">
 
-        <h1 id="title"></h1>
+        <h1 id="title">
+            LoveBirds AI
+        </h1>
 
         <div class="story-box">
 
-            <p id="story"></p>
+            <p id="story">
+                Loading story...
+            </p>
 
         </div>
 
         <div class="buttons">
 
+            <button onclick="generateAIStory()">
+                OpenAI Story
+            </button>
+
+            <button onclick="generateGeminiStory()">
+                Gemini Story
+            </button>
+
             <button onclick="generateStory()">
-                New Story
+                Random Story
             </button>
 
             <button onclick="speakStory()">
@@ -66,8 +77,6 @@
         </div>
 
         <div id="qrcode"></div>
-
-        <!-- TIMELINE -->
 
         <div class="timeline">
 
