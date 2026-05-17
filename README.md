@@ -78,6 +78,6 @@ is prohibited.
 # 📸 Creator
 
 Instagram:
-@buildwithmahi
+@_buildwithmahi
 
 Built with ❤️ by mahi
