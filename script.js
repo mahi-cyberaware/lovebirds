@@ -437,3 +437,106 @@ heart.remove();
 }
 
 setInterval(createHeart,300);
+/* FIREWORKS */
+
+const fireworksCanvas =
+document.getElementById("fireworks");
+
+const fwCtx =
+fireworksCanvas.getContext("2d");
+
+fireworksCanvas.width =
+window.innerWidth;
+
+fireworksCanvas.height =
+window.innerHeight;
+
+let particles = [];
+
+function createFirework(){
+
+const x =
+Math.random()*fireworksCanvas.width;
+
+const y =
+Math.random()*fireworksCanvas.height/2;
+
+for(let i=0;i<80;i++){
+
+particles.push({
+
+x:x,
+y:y,
+
+radius:Math.random()*3+1,
+
+dx:(Math.random()-0.5)*6,
+
+dy:(Math.random()-0.5)*6,
+
+alpha:1
+});
+}
+
+}
+
+function animateFireworks(){
+
+fwCtx.clearRect(
+0,
+0,
+fireworksCanvas.width,
+fireworksCanvas.height
+);
+
+particles.forEach((p,index)=>{
+
+p.x += p.dx;
+
+p.y += p.dy;
+
+p.alpha -= 0.01;
+
+fwCtx.beginPath();
+
+fwCtx.arc(
+p.x,
+p.y,
+p.radius,
+0,
+Math.PI*2
+);
+
+fwCtx.fillStyle =
+`rgba(255,255,255,${p.alpha})`;
+
+fwCtx.fill();
+
+if(p.alpha <= 0){
+
+particles.splice(index,1);
+}
+
+});
+
+requestAnimationFrame(
+animateFireworks
+);
+
+}
+
+animateFireworks();
+
+
+
+/* FIREWORK ON REFRESH */
+
+window.addEventListener("load",()=>{
+
+setTimeout(()=>{
+
+createFirework();
+
+},500);
+
+});
