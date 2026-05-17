@@ -1,3 +1,7 @@
+/* =========================================
+   GLOBAL RESET
+========================================= */
+
 *{
 margin:0;
 padding:0;
@@ -10,52 +14,111 @@ scroll-behavior:smooth;
 }
 
 body{
+
 overflow:hidden;
-background:black;
+
+background:#000;
+
 color:white;
+
+-webkit-tap-highlight-color:transparent;
 }
 
-/* PAGES */
 
-.page{
-width:100%;
-height:100vh;
-display:none;
-position:absolute;
+
+/* =========================================
+   FIREWORKS
+========================================= */
+
+#fireworks{
+
+position:fixed;
+
 top:0;
 left:0;
+
+width:100%;
+height:100%;
+
+pointer-events:none;
+
+z-index:999;
+}
+
+
+
+/* =========================================
+   PAGES
+========================================= */
+
+.page{
+
+width:100%;
+height:100vh;
+
+display:none;
+
+position:absolute;
+
+top:0;
+left:0;
+
 justify-content:center;
 align-items:center;
-text-align:center;
-padding:30px;
+
+padding:25px;
+
 overflow:hidden;
+
+text-align:center;
 }
 
 .page.active{
+
 display:flex;
+
 animation:fadePage 1.2s ease;
 }
+
+
+
+/* =========================================
+   PAGE ANIMATION
+========================================= */
 
 @keyframes fadePage{
 
 from{
+
 opacity:0;
-transform:scale(1.05);
+
+transform:
+scale(1.06);
+
 }
 
 to{
+
 opacity:1;
-transform:scale(1);
-}
+
+transform:
+scale(1);
 
 }
 
-/* BACKGROUNDS */
+}
+
+
+
+/* =========================================
+   BACKGROUNDS
+========================================= */
 
 .page1{
+
 background:
-linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.55)),
-url('https://mahi-cyberaware.github.io/lovebirds/assets/bg-img/romantic1.jpg');
+linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.65)),
+url('assets/bg-img/romantic1.jpg');
 
 background-size:cover;
 background-position:center;
@@ -63,9 +126,10 @@ background-repeat:no-repeat;
 }
 
 .page2{
+
 background:
-linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.60)),
-url('https://mahi-cyberaware.github.io/lovebirds/assets/bg-img/romantic2.jpg');
+linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.70)),
+url('assets/bg-img/romantic2.jpg');
 
 background-size:cover;
 background-position:center;
@@ -73,9 +137,10 @@ background-repeat:no-repeat;
 }
 
 .page3{
+
 background:
-linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.65)),
-url('https://mahi-cyberaware.github.io/lovebirds/assets/bg-img/romantic3.jpg');
+linear-gradient(rgba(0,0,0,.50),rgba(0,0,0,.75)),
+url('assets/bg-img/romantic3.jpg');
 
 background-size:cover;
 background-position:center;
@@ -83,9 +148,10 @@ background-repeat:no-repeat;
 }
 
 .page4{
+
 background:
-linear-gradient(rgba(0,0,0,.50),rgba(0,0,0,.65)),
-url('https://mahi-cyberaware.github.io/lovebirds/assets/bg-img/romantic1.jpg');
+linear-gradient(rgba(0,0,0,.50),rgba(0,0,0,.75)),
+url('assets/bg-img/romantic1.jpg');
 
 background-size:cover;
 background-position:center;
@@ -93,22 +159,21 @@ background-repeat:no-repeat;
 }
 
 .page5{
+
 background:
-linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.70)),
-url('https://mahi-cyberaware.github.io/lovebirds/assets/bg-img/romantic2.jpg');
+linear-gradient(rgba(0,0,0,.50),rgba(0,0,0,.78)),
+url('assets/bg-img/romantic2.jpg');
 
 background-size:cover;
 background-position:center;
 background-repeat:no-repeat;
 }
 
-/* FINAL PAGE */
-
 .page6{
 
 background:
-linear-gradient(rgba(0,0,0,.60),rgba(0,0,0,.80)),
-url('https://mahi-cyberaware.github.io/lovebirds/assets/bg-img/romantic3.jpg');
+linear-gradient(rgba(0,0,0,.60),rgba(0,0,0,.82)),
+url('assets/bg-img/romantic3.jpg');
 
 background-size:cover;
 background-position:center;
@@ -119,41 +184,46 @@ overflow-y:auto;
 padding-top:80px;
 padding-bottom:140px;
 
+align-items:flex-start;
+
 scroll-behavior:smooth;
 
 -webkit-overflow-scrolling:touch;
-
-/* IMPORTANT FIX */
-
-align-items:flex-start;
-
-justify-content:center;
-
 }
 
-/* CARD */
+
+
+/* =========================================
+   GLASS CARD
+========================================= */
 
 .card{
 
-background:rgba(255,255,255,.08);
-
-backdrop-filter:blur(12px);
--webkit-backdrop-filter:blur(12px);
-
-padding:40px;
-
-border-radius:30px;
+width:100%;
 
 max-width:900px;
 
-border:1px solid rgba(255,255,255,.12);
+padding:40px;
+
+border-radius:35px;
+
+background:
+rgba(255,255,255,.08);
+
+backdrop-filter:blur(14px);
+
+border:
+1px solid rgba(255,255,255,.10);
 
 box-shadow:
-0 10px 40px rgba(0,0,0,.35);
-
+0 10px 45px rgba(0,0,0,.35);
 }
 
-/* TITLES */
+
+
+/* =========================================
+   TITLES
+========================================= */
 
 .title{
 
@@ -161,19 +231,21 @@ font-size:65px;
 
 font-family:'Cinzel',serif;
 
+line-height:1.3;
+
 margin-bottom:20px;
 
 background:
 linear-gradient(to right,#fff,#ffd6e7);
 
 -webkit-background-clip:text;
--webkit-text-fill-color:transparent;
 
+-webkit-text-fill-color:transparent;
 }
 
 h2{
 
-font-size:48px;
+font-size:50px;
 
 margin-bottom:20px;
 
@@ -181,9 +253,14 @@ font-family:'Dancing Script',cursive;
 
 color:#ffe5ec;
 
+line-height:1.4;
 }
 
-/* TEXT */
+
+
+/* =========================================
+   TEXT
+========================================= */
 
 p{
 
@@ -193,9 +270,16 @@ line-height:2;
 
 font-weight:300;
 
+white-space:pre-line;
+
+color:#fff5f7;
 }
 
-/* SECRET BOX */
+
+
+/* =========================================
+   SECRET BOX
+========================================= */
 
 .secret{
 
@@ -205,32 +289,38 @@ padding:25px;
 
 border-radius:25px;
 
-background:rgba(255,255,255,.08);
+background:
+rgba(255,255,255,.06);
 
-border:1px solid rgba(255,255,255,.08);
+border:
+1px solid rgba(255,255,255,.08);
 
 line-height:1.8;
-
 }
 
-/* BUTTONS */
+
+
+/* =========================================
+   BUTTONS
+========================================= */
 
 .btn,
 .lang-btn,
 .back-btn{
 
-padding:12px 22px;
+padding:13px 24px;
 
 border:none;
 
 border-radius:50px;
 
-background:rgba(255,255,255,.08);
+background:
+rgba(255,255,255,.08);
 
-border:1px solid rgba(255,255,255,.25);
+border:
+1px solid rgba(255,255,255,.18);
 
 backdrop-filter:blur(10px);
--webkit-backdrop-filter:blur(10px);
 
 color:white;
 
@@ -246,10 +336,11 @@ letter-spacing:.5px;
 
 box-shadow:
 0 8px 25px rgba(0,0,0,.25);
-
 }
 
-/* BUTTON HOVER */
+
+
+/* HOVER */
 
 .btn:hover,
 .lang-btn:hover,
@@ -259,13 +350,18 @@ transform:
 scale(1.08)
 translateY(-2px);
 
-background:rgba(255,255,255,.18);
+background:
+rgba(255,255,255,.18);
 
-border-color:rgba(255,255,255,.45);
-
+border-color:
+rgba(255,255,255,.35);
 }
 
-/* LANGUAGE BUTTONS */
+
+
+/* =========================================
+   LANGUAGE BUTTONS
+========================================= */
 
 .language-buttons{
 
@@ -278,83 +374,90 @@ justify-content:center;
 flex-wrap:wrap;
 
 margin-top:35px;
-
 }
 
-/* SAFE BUTTON POSITIONS */
+
+
+/* =========================================
+   BUTTON POSITIONS
+========================================= */
+
+.top-left,
+.top-right,
+.bottom-left,
+.bottom-right,
+.middle-left{
+
+position:fixed;
+
+z-index:1000;
+}
 
 .top-left{
 
-position:absolute;
-
-top:8%;
-left:8%;
-
+top:20px;
+left:20px;
 }
 
 .top-right{
 
-position:absolute;
-
-top:8%;
-right:8%;
-
+top:20px;
+right:20px;
 }
 
 .bottom-left{
 
-position:absolute;
-
-bottom:8%;
-left:8%;
-
+bottom:20px;
+left:20px;
 }
 
 .bottom-right{
 
-position:absolute;
-
-bottom:8%;
-right:8%;
-
+bottom:20px;
+right:20px;
 }
 
 .middle-left{
 
-position:absolute;
-
 top:50%;
-left:3%;
+left:20px;
 
-transform:translateY(-50%);
-
+transform:
+translateY(-50%);
 }
 
-/* FINAL BOX */
+
+
+/* =========================================
+   FINAL PAGE
+========================================= */
 
 .final-box{
 
-background:rgba(255,255,255,.08);
+width:100%;
+
+max-width:950px;
 
 padding:35px;
 
-border-radius:30px;
+border-radius:35px;
 
-max-width:900px;
+background:
+rgba(255,255,255,.08);
 
-backdrop-filter:blur(12px);
+backdrop-filter:blur(14px);
 
--webkit-backdrop-filter:blur(12px);
-
-border:1px solid rgba(255,255,255,.12);
+border:
+1px solid rgba(255,255,255,.10);
 
 margin-top:20px;
 margin-bottom:40px;
 
 box-shadow:
-0 10px 40px rgba(0,0,0,.35);
-
+0 10px 45px rgba(0,0,0,.35);
 }
+
+
 
 /* FINAL TEXT */
 
@@ -372,9 +475,12 @@ color:#fff0f3;
 
 padding-top:10px;
 
-letter-spacing:.4px;
+white-space:pre-line;
 
+letter-spacing:.3px;
 }
+
+
 
 /* SIGNATURE */
 
@@ -389,10 +495,13 @@ font-family:'Dancing Script',cursive;
 text-align:right;
 
 color:#ffd6e7;
-
 }
 
-/* HEARTS */
+
+
+/* =========================================
+   HEARTS
+========================================= */
 
 .heart{
 
@@ -400,20 +509,22 @@ position:fixed;
 
 bottom:-20px;
 
-font-size:20px;
-
 pointer-events:none;
 
 animation:float linear forwards;
-
 }
 
-/* HEART FLOAT */
+
+
+/* HEART ANIMATION */
 
 @keyframes float{
 
 0%{
-transform:translateY(0);
+
+transform:
+translateY(0);
+
 opacity:0;
 }
 
@@ -422,123 +533,22 @@ opacity:1;
 }
 
 100%{
-transform:translateY(-120vh);
+
+transform:
+translateY(-120vh);
+
 opacity:0;
 }
 
 }
 
-/* MOBILE */
 
-@media(max-width:768px){
 
-.title{
-font-size:42px;
-}
+/* =========================================
+   PASSWORD MODAL
+========================================= */
 
-h2{
-font-size:34px;
-}
-
-p{
-font-size:18px;
-line-height:1.9;
-}
-
-.card{
-padding:25px;
-}
-
-.final-box{
-padding:25px;
-}
-
-.final-text{
-font-size:20px;
-line-height:2;
-}
-
-.middle-left{
-left:5%;
-}
-
-.btn,
-.lang-btn,
-.back-btn{
-
-padding:11px 18px;
-
-font-size:13px;
-
-}
-
-}
-/* MOBILE BUTTON FIX */
-
-@media(max-width:768px){
-
-.top-left,
-.top-right,
-.bottom-left,
-.bottom-right,
-.middle-left{
-
-position:fixed;
-
-left:50%;
-
-right:auto;
-
-top:auto;
-
-transform:translateX(-50%);
-
-width:85%;
-
-max-width:320px;
-
-text-align:center;
-}
-
-.top-left{
-
-bottom:25px;
-}
-
-.top-right{
-
-bottom:25px;
-}
-
-.bottom-left{
-
-bottom:25px;
-}
-
-.bottom-right{
-
-bottom:25px;
-}
-
-.middle-left{
-
-bottom:25px;
-top:auto;
-}
-
-.btn{
-
-font-size:14px;
-
-padding:14px 18px;
-
-border-radius:40px;
-}
-
-}
-/* FIREWORKS */
-
-#fireworks{
+.password-modal{
 
 position:fixed;
 
@@ -548,8 +558,299 @@ left:0;
 width:100%;
 height:100%;
 
-pointer-events:none;
+background:
+rgba(0,0,0,.75);
 
-z-index:999;
+backdrop-filter:blur(10px);
+
+display:none;
+
+justify-content:center;
+align-items:center;
+
+z-index:9999;
+}
+
+
+
+/* ACTIVE */
+
+.password-modal.active{
+
+display:flex;
+
+animation:fadePage .5s ease;
+}
+
+
+
+/* PASSWORD BOX */
+
+.password-box{
+
+width:90%;
+
+max-width:420px;
+
+padding:35px;
+
+border-radius:35px;
+
+background:
+rgba(255,255,255,.08);
+
+backdrop-filter:blur(15px);
+
+border:
+1px solid rgba(255,255,255,.12);
+
+text-align:center;
+
+box-shadow:
+0 10px 45px rgba(0,0,0,.45);
+}
+
+
+
+/* INPUT */
+
+.password-box input{
+
+width:100%;
+
+padding:16px;
+
+margin-top:25px;
+
+border:none;
+
+outline:none;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,.08);
+
+color:white;
+
+font-size:16px;
+
+text-align:center;
+
+border:
+1px solid rgba(255,255,255,.10);
+}
+
+
+
+/* ERROR */
+
+#passwordError{
+
+margin-top:15px;
+
+color:#ffb3c1;
+
+font-size:14px;
+}
+
+
+
+/* =========================================
+   FINGERPRINT
+========================================= */
+
+.fingerprint{
+
+width:90px;
+height:90px;
+
+margin:0 auto 20px;
+
+border-radius:50%;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+font-size:40px;
+
+background:
+rgba(255,255,255,.08);
+
+border:
+1px solid rgba(255,255,255,.12);
+
+animation:
+pulseFinger 2s infinite;
+
+box-shadow:
+0 0 25px rgba(255,255,255,.12);
+}
+
+
+
+/* PULSE */
+
+@keyframes pulseFinger{
+
+0%{
+
+transform:
+scale(1);
+}
+
+50%{
+
+transform:
+scale(1.08);
+}
+
+100%{
+
+transform:
+scale(1);
+}
+
+}
+
+
+
+/* =========================================
+   FLOATING CLUES
+========================================= */
+
+.floating-clue{
+
+position:fixed;
+
+top:30px;
+
+left:50%;
+
+transform:
+translateX(-50%)
+translateY(-20px);
+
+background:
+rgba(255,255,255,.08);
+
+backdrop-filter:blur(12px);
+
+padding:14px 22px;
+
+border-radius:40px;
+
+border:
+1px solid rgba(255,255,255,.10);
+
+font-size:14px;
+
+opacity:0;
+
+transition:.5s ease;
+
+z-index:99999;
+
+box-shadow:
+0 10px 30px rgba(0,0,0,.35);
+}
+
+
+
+/* SHOW */
+
+.floating-clue.show{
+
+opacity:1;
+
+transform:
+translateX(-50%)
+translateY(0);
+}
+
+
+
+/* =========================================
+   MOBILE RESPONSIVE
+========================================= */
+
+@media(max-width:768px){
+
+.title{
+
+font-size:42px;
+}
+
+h2{
+
+font-size:36px;
+}
+
+p{
+
+font-size:18px;
+
+line-height:1.9;
+}
+
+.card{
+
+padding:25px;
+}
+
+.final-box{
+
+padding:25px;
+}
+
+.final-text{
+
+font-size:20px;
+
+line-height:2;
+}
+
+
+
+/* MOBILE BUTTON FIX */
+
+.top-left,
+.top-right,
+.bottom-left,
+.bottom-right,
+.middle-left{
+
+left:50%;
+
+right:auto;
+
+top:auto;
+
+transform:
+translateX(-50%);
+
+width:85%;
+
+max-width:320px;
+
+text-align:center;
+
+bottom:25px;
+}
+
+
+
+/* BUTTONS */
+
+.btn,
+.lang-btn,
+.back-btn{
+
+padding:12px 18px;
+
+font-size:13px;
+}
 
 }
