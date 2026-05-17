@@ -1,382 +1,94 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Only For Someone Special ❤️</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-body{
-overflow:hidden;
-background:#000;
-color:white;
-}
+    <title>Relationship Story Generator</title>
 
-.page{
-width:100%;
-height:100vh;
-display:none;
-position:absolute;
-top:0;
-left:0;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:30px;
-overflow:hidden;
-}
+    <link rel="stylesheet" href="style.css">
 
-.page.active{
-display:flex;
-animation:fadePage 1.2s ease;
-}
+    <!-- FONT -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
 
-@keyframes fadePage{
-from{
-opacity:0;
-transform:scale(1.05);
-}
-to{
-opacity:1;
-transform:scale(1);
-}
-}
+    <!-- QR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-.page1{
-background:radial-gradient(circle at top left,#ff4d6d,#3a0ca3,#000);
-}
-
-.page2{
-background:linear-gradient(135deg,#03045e,#0077b6,#90e0ef);
-}
-
-.page3{
-background:radial-gradient(circle at bottom right,#ff006e,#8338ec,#3a86ff);
-}
-
-.page4{
-background:linear-gradient(135deg,#0f172a,#1e293b,#334155);
-}
-
-.page5{
-background:radial-gradient(circle at center,#ff5d8f,#6a00f4,#10002b);
-}
-
-.page6{
-background:linear-gradient(145deg,#000000,#1a1a40,#4a044e);
-overflow-y:auto;
-padding-top:80px;
-padding-bottom:120px;
-}
-
-.card{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(12px);
-border:1px solid rgba(255,255,255,0.1);
-padding:45px;
-border-radius:30px;
-max-width:950px;
-box-shadow:0 10px 40px rgba(0,0,0,0.3);
-}
-
-.title{
-font-size:75px;
-font-family:'Cinzel',serif;
-margin-bottom:25px;
-letter-spacing:2px;
-background:linear-gradient(to right,#fff,#ffd6e7);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
-h2{
-font-size:48px;
-margin-bottom:20px;
-font-family:'Dancing Script',cursive;
-color:#ffe5ec;
-}
-
-p{
-font-size:22px;
-line-height:2;
-font-weight:300;
-}
-
-.secret{
-margin-top:30px;
-padding:25px;
-border-radius:25px;
-background:rgba(255,255,255,0.08);
-font-size:20px;
-line-height:1.8;
-}
-
-.btn{
-padding:16px 38px;
-border:none;
-border-radius:50px;
-background:linear-gradient(135deg,#ffffff,#ffd6e7);
-color:#ff006e;
-font-size:16px;
-font-weight:700;
-cursor:pointer;
-transition:.4s;
-position:absolute;
-box-shadow:0 10px 25px rgba(0,0,0,0.25);
-}
-
-.btn:hover{
-transform:scale(1.1);
-}
-
-.btn1{bottom:10%;right:10%;}
-.btn2{top:12%;left:8%;}
-.btn3{bottom:12%;left:10%;}
-.btn4{top:15%;right:10%;}
-.btn5{bottom:10%;right:12%;}
-
-.final-box{
-background:rgba(255,255,255,0.08);
-padding:35px;
-border-radius:30px;
-backdrop-filter:blur(10px);
-max-width:900px;
-margin:auto;
-}
-
-.final-text{
-font-size:25px;
-line-height:2.1;
-font-family:'Dancing Script',cursive;
-text-align:left;
-color:#fff0f3;
-}
-
-.signature{
-margin-top:40px;
-font-size:34px;
-font-family:'Dancing Script',cursive;
-color:#ffd6e7;
-text-align:right;
-}
-
-.heart{
-position:fixed;
-bottom:-20px;
-font-size:20px;
-pointer-events:none;
-animation:float linear forwards;
-}
-
-@keyframes float{
-0%{
-transform:translateY(0);
-opacity:0;
-}
-20%{
-opacity:1;
-}
-100%{
-transform:translateY(-120vh);
-opacity:0;
-}
-}
-
-@media(max-width:768px){
-.title{font-size:42px;}
-h2{font-size:34px;}
-p{font-size:18px;}
-.final-text{font-size:20px;line-height:1.9;}
-.card{padding:25px;}
-}
-</style>
 </head>
 
 <body>
 
-<div class="page page1 active" id="languagePage">
-<div class="card">
-<div class="title">Choose Your Journey ❤️</div>
-<p>Every language unlocks a different emotional experience ✨</p>
+    <!-- RAIN -->
+    <canvas id="rain"></canvas>
 
-<div style="margin-top:40px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+    <!-- MUSIC -->
+    <audio id="bgMusic" autoplay loop>
+        <source src="assets/music.mp3" type="audio/mpeg">
+    </audio>
 
-<button class="btn" style="position:relative;" onclick="setLanguage('english')">English</button>
+    <div class="overlay"></div>
 
-<button class="btn" style="position:relative;" onclick="setLanguage('hindi')">हिंदी</button>
+    <div class="container">
 
-<button class="btn" style="position:relative;" onclick="setLanguage('marathi')">मराठी</button>
+        <h1 id="title"></h1>
 
-</div>
-</div>
-</div>
+        <div class="story-box">
 
-<div class="page page2" id="page1">
-<div class="card">
-<h2 id="title1"></h2>
-<p id="text1"></p>
-</div>
-<button class="btn btn1" onclick="showPage(2)">Continue ❤️</button>
-</div>
+            <p id="story"></p>
 
-<div class="page page3" id="page2">
-<div class="card">
-<h2 id="title2"></h2>
-<p id="text2"></p>
-<div class="secret" id="secret2"></div>
-</div>
-<button class="btn btn2" onclick="showPage(3)">Next ✨</button>
-</div>
+        </div>
 
-<div class="page page4" id="page3">
-<div class="card">
-<h2 id="title3"></h2>
-<p id="text3"></p>
-</div>
-<button class="btn btn3" onclick="showPage(4)">Continue 🌙</button>
-</div>
+        <div class="buttons">
 
-<div class="page page5" id="page4">
-<div class="card">
-<h2 id="title4"></h2>
-<div class="secret"><p id="text4"></p></div>
-</div>
-<button class="btn btn4" onclick="showPage(5)">I’m Curious 👀</button>
-</div>
+            <button onclick="generateStory()">
+                New Story
+            </button>
 
-<div class="page page2" id="page5">
-<div class="card">
-<h2 id="title5"></h2>
-<p id="text5"></p>
-<div class="secret" id="secret5"></div>
-</div>
-<button class="btn btn5" onclick="showPage(6)">Open Final Message ❤️</button>
-</div>
+            <button onclick="speakStory()">
+                Listen
+            </button>
 
-<div class="page page6" id="page6">
-<div class="final-box">
-<h2 id="finalTitle"></h2>
-<div class="final-text" id="finalText"></div>
-<div class="signature">— Your Mahi ❤️</div>
-</div>
-</div>
+            <button onclick="shareStory()">
+                Share
+            </button>
 
-<script>
+            <button onclick="generateLoveLetter()">
+                Love Letter
+            </button>
 
-const data = {
-english: {
-title1:"You Opened This... ❤️",
-text1:"I honestly didn’t expect you to follow every page this carefully... but now I’m smiling because you are ✨",
-title2:"Something Feels Different 🌸",
-text2:"You know that rare comfort you unexpectedly feel with someone? Yeah... that kind.",
-secret2:"Tiny Hint ❤️<br><br>The next page contains a truth hidden between random conversations.",
-title3:"Mini Confession 🌙",
-text3:"Sometimes I re-read our chats for no reason... and somehow they still make me smile.",
-title4:"Dangerous Part 💖",
-text4:"The dangerous thing about you is... you slowly became part of my peace without even trying.",
-title5:"Last Warning ✨",
-text5:"After this page... there’s no going back 🌙",
-secret5:"You’re about to read something my heart noticed before my mind did ❤️",
-finalTitle:"The Truth I Never Said ❤️",
-finalText:"Maybe you still don’t realize it yet... but somewhere between the random conversations, the unexpected smiles, the late replies, and those tiny moments that looked ordinary... you quietly became something important to me.<br><br>I don’t even know when it started happening.<br><br>Maybe it was the way your messages suddenly became the best part of my day.<br><br>Maybe it was how your presence started feeling comforting in a way I never expected.<br><br>Or maybe it was those moments where I caught myself smiling at my phone for absolutely no reason... and then realizing the reason was you.<br><br>Nothing about this was planned.<br><br>Yet somehow... you slowly became someone my mind looks for naturally.<br><br>I don’t know where this story is going.<br><br>But I do know one thing for sure...<br><br>meeting you feels like one of those rare moments life accidentally gets beautifully right ❤️"
-},
+        </div>
 
-hindi: {
-title1:"सुनो ना ❤️",
-text1:"ये छोटा सा सफर सिर्फ तुम्हारी मुस्कान देखने के लिए बनाया है ✨",
-title2:"कुछ तो अलग है 🌸",
-text2:"तुमसे बात करना अजीब तरह से सुकून देता है...",
-secret2:"छोटा Hint ❤️<br><br>अगले page में वो बात है जो मैंने कभी सीधे नहीं कही।",
-title3:"एक बात बताऊँ? 🌙",
-text3:"कभी कभी मैं हमारी chats दोबारा पढ़ता हूँ...",
-title4:"Dangerous Part 💖",
-text4:"तुम धीरे धीरे मेरी आदत बनती जा रही हो।",
-title5:"Last Warning ✨",
-text5:"इसके बाद जो है... वो शायद तुम्हें सोचने पर मजबूर कर दे 🌙",
-secret5:"अगले page में वो बात है जो शायद दिल ने पहले महसूस की थी ❤️",
-finalTitle:"जो कभी कहा नहीं ❤️",
-finalText:"शायद तुम्हें अभी एहसास नहीं है... लेकिन random बातें, late replies, वो छोटी छोटी smiles... धीरे धीरे मेरी दिन की सबसे अच्छी चीज बन गईं।<br><br>मुझे नहीं पता ये सब कब शुरू हुआ।<br><br>शायद तब... जब तुम्हारा message आते ही mood अच्छा होने लगा।<br><br>लेकिन तुमने जगह बना ली... बहुत quietly... बहुत खूबसूरती से ❤️"
-},
+        <div id="qrcode"></div>
 
-marathi: {
-title1:"अगं ऐक ना ❤️",
-text1:"हा छोटासा प्रवास फक्त तुझ्या चेहऱ्यावर smile यावी म्हणून बनवलाय ✨",
-title2:"काहीतरी वेगळं आहे 🌸",
-text2:"तुझ्याशी बोलताना एक वेगळाच comfort वाटतो...",
-secret2:"छोटासा Hint ❤️<br><br>पुढच्या page मध्ये ती गोष्ट आहे जी मी कधी direct सांगितली नाही।",
-title3:"एक secret सांगू? 🌙",
-text3:"कधी कधी आपल्या chats पुन्हा वाचतो...",
-title4:"Dangerous Part 💖",
-text4:"तू हळूहळू माझी सवय होत चालली आहेस।",
-title5:"Last Warning ✨",
-text5:"यानंतर जे आहे... ते कदाचित तुला जास्त विचार करायला लावेल 🌙",
-secret5:"पुढच्या page मध्ये ती गोष्ट आहे जी आधी मनाने notice केली ❤️",
-finalTitle:"जे कधी बोललो नाही ❤️",
-finalText:"कदाचित तुला अजून जाणवलं नसेल... पण आपल्या random chats, उशिराचे replies, नकळत आलेली smile... हळूहळू माझ्या दिवसाचा सगळ्यात सुंदर भाग बनली।<br><br>हे सगळं कधी सुरू झालं ते मला पण कळलं नाही।<br><br>पण तू मनात जागा बनवलीस... खूप quietly... खूप beautifully ❤️"
-}
-};
+        <!-- TIMELINE -->
 
-function setLanguage(lang){
-document.getElementById('languagePage').classList.remove('active');
-showPage(1);
+        <div class="timeline">
 
-const d = data[lang];
+            <div class="event">
+                ❤️ First Meet
+            </div>
 
-document.getElementById('title1').innerHTML=d.title1;
-document.getElementById('text1').innerHTML=d.text1;
+            <div class="event">
+                ☎️ First Call
+            </div>
 
-document.getElementById('title2').innerHTML=d.title2;
-document.getElementById('text2').innerHTML=d.text2;
-document.getElementById('secret2').innerHTML=d.secret2;
+            <div class="event">
+                💍 Forever Promise
+            </div>
 
-document.getElementById('title3').innerHTML=d.title3;
-document.getElementById('text3').innerHTML=d.text3;
+        </div>
 
-document.getElementById('title4').innerHTML=d.title4;
-document.getElementById('text4').innerHTML=d.text4;
+    </div>
 
-document.getElementById('title5').innerHTML=d.title5;
-document.getElementById('text5').innerHTML=d.text5;
-document.getElementById('secret5').innerHTML=d.secret5;
-
-document.getElementById('finalTitle').innerHTML=d.finalTitle;
-document.getElementById('finalText').innerHTML=d.finalText;
-}
-
-function showPage(page){
-document.querySelectorAll('.page').forEach(p=>{
-p.classList.remove('active');
-});
-document.getElementById('page'+page).classList.add('active');
-}
-
-function createHeart(){
-const heart=document.createElement('div');
-heart.classList.add('heart');
-heart.innerHTML='❤️';
-heart.style.left=Math.random()*100+'vw';
-heart.style.fontSize=(Math.random()*20+10)+'px';
-heart.style.animationDuration=(Math.random()*5+5)+'s';
-document.body.appendChild(heart);
-
-setTimeout(()=>{
-heart.remove();
-},10000);
-}
-
-setInterval(createHeart,300);
-
-</script>
+    <script src="script.js"></script>
 
 </body>
+
 </html>
