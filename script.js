@@ -1,4 +1,59 @@
 /* =========================================
+   RANDOM BACKGROUNDS
+========================================= */
+
+const backgrounds = [
+
+"assets/bg-img/romantic1.jpg",
+"assets/bg-img/romantic2.jpg",
+"assets/bg-img/romantic3.jpg",
+"assets/bg-img/romantic4.jpg",
+"assets/bg-img/romantic5.jpg",
+"assets/bg-img/romantic6.jpg",
+"assets/bg-img/romantic7.jpg",
+"assets/bg-img/romantic8.jpg",
+"assets/bg-img/romantic9.jpg",
+"assets/bg-img/romantic10.jpg",
+"assets/bg-img/romantic11.jpg",
+"assets/bg-img/romantic12.jpg",
+"assets/bg-img/romantic13.jpg",
+"assets/bg-img/romantic14.jpg",
+"assets/bg-img/romantic15.jpg",
+"assets/bg-img/romantic16.jpg",
+"assets/bg-img/romantic17.jpg",
+"assets/bg-img/romantic18.jpg",
+"assets/bg-img/romantic19.jpg"
+
+];
+/* =========================================
+   RANDOM BACKGROUND SETTER
+========================================= */
+
+function setRandomBackgrounds(){
+
+document.querySelectorAll('.page')
+.forEach(page=>{
+
+const randomBg = random(backgrounds);
+
+page.style.background = `
+linear-gradient(
+rgba(0,0,0,.45),
+rgba(0,0,0,.75)
+),
+url('${randomBg}')
+`;
+
+page.style.backgroundSize = "cover";
+
+page.style.backgroundPosition = "center";
+
+page.style.backgroundRepeat = "no-repeat";
+
+});
+
+}
+/* =========================================
    LOVEBIRDS PREMIUM SCRIPT
 ========================================= */
 
@@ -742,3 +797,12 @@ window.innerHeight;
 
 }
 );
+/* =========================================
+   WEBSITE START
+========================================= */
+
+window.onload = function(){
+
+setRandomBackgrounds();
+
+};
