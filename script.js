@@ -4,7 +4,9 @@
 
 
 
-/* RANDOM PICKER */
+/* =========================================
+   RANDOM PICKER
+========================================= */
 
 function random(arr){
 
@@ -422,6 +424,7 @@ document
 
 /* =========================================
    TYPEWRITER FINAL EFFECT
+   FIXED VERSION
 ========================================= */
 
 function typeFinalMessage(text){
@@ -431,17 +434,21 @@ document.getElementById("finalText");
 
 element.innerHTML = "";
 
-let i = 0;
+let index = 0;
+
+/* FIXED UNICODE SUPPORT */
+
+const chars = [...text];
 
 function typing(){
 
-if(i < text.length){
+if(index < chars.length){
 
-element.innerHTML += text.charAt(i);
+element.innerHTML += chars[index];
 
-i++;
+index++;
 
-setTimeout(typing,18);
+setTimeout(typing,15);
 
 }
 
@@ -609,7 +616,9 @@ animateFireworks
 
 
 
-/* COLOR CONVERTER */
+/* =========================================
+   COLOR CONVERTER
+========================================= */
 
 function hexToRgba(hex,alpha){
 
@@ -628,7 +637,9 @@ return `rgba(${r},${g},${b},${alpha})`;
 
 
 
-/* START FIREWORK LOOP */
+/* =========================================
+   START FIREWORK LOOP
+========================================= */
 
 animateFireworks();
 
@@ -669,7 +680,9 @@ lastTap = currentTime;
 
 
 
-/* DESKTOP DOUBLE CLICK */
+/* =========================================
+   DESKTOP DOUBLE CLICK
+========================================= */
 
 document.addEventListener(
 "dblclick",
@@ -710,3 +723,22 @@ clearInterval(interval);
 },5000);
 
 }
+
+
+
+/* =========================================
+   MOBILE FIX
+========================================= */
+
+window.addEventListener(
+'resize',
+()=>{
+
+fireworksCanvas.width =
+window.innerWidth;
+
+fireworksCanvas.height =
+window.innerHeight;
+
+}
+);
